@@ -1,0 +1,4 @@
+[Project]
+Name=CCP
+Manager=KDevCMakeManager
+VersionControl=kdevgit
