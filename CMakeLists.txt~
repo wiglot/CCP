@@ -5,7 +5,7 @@ enable_testing()
 
 include_directories(${QT_INCLUDES} ${CMAKE_CURRENT_BINARY_DIR})
 
-set(CCP_SRCS aclass.cpp CCP.cpp main.cpp)
+set(CCP_SRCS CCP.cpp main.cpp)
 qt4_automoc(${CCP_SRCS})
 add_executable(CCP ${CCP_SRCS})
 target_link_libraries(CCP ${QT_QTCORE_LIBRARY})

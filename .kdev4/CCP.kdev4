@@ -1,0 +1,18 @@
+[Buildset]
+BuildItems=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x00)
+
+[CMake]
+BuildDirs=/home/wagner/src/CCP/build
+CMakeDir=/usr/share/cmake-2.6/Modules
+Current CMake Binary=file:///usr/bin/cmake
+CurrentBuildDir=file:///home/wagner/src/CCP/build
+CurrentBuildType=debug
+CurrentInstallDir=file:///usr/local/
+ProjectRootRelative=./
+
+[Project]
+VersionControlSupport=kdevgit
+
+[Veritas]
+executables=
+framework=QTest
