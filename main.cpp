@@ -1,10 +1,6 @@
-#include <QCoreApplication>
-#include "CCP.h"
+#include <iostream>
 
-
-int main(int argc, char** argv)
-{
-    QCoreApplication app(argc, argv);
-    CCP foo;
-    return app.exec();
+int main(int argc, char **argv) {
+    std::cout << "Hello, world!" << std::endl;
+    return 0;
 }
