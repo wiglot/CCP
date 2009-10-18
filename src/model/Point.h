@@ -2,7 +2,7 @@
 #define POINT_H
 
 #include <string>
-#include "position.h"
+#include "Position.h"
 
 /**
  * Namespace
@@ -23,7 +23,9 @@ public:
     /**
      * Empty Constructor
      */
-    Point ( ) { }
+    Point ( );
+    Point (double x, double y, double demand);
+    Point (Position pos, double demand): _pos(pos), _demand(demand){ }
     /**
      * Accessor Methods
      */

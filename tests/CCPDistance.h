@@ -17,28 +17,22 @@
 
 */
 
-#ifndef CCPMODEL_TEST_H
-#define CCPMODEL_TEST_H
+#ifndef CCPDISTANCE_H
+#define CCPDISTANCE_H
+#include <QObject>
 
-#include <QtCore/QObject>
-#include <Instance.h>
-
-namespace CCP{
-  class Instance;
-};
-
-class CCPModel_test : public QObject
+class CCPDistance : public QObject
 {
 Q_OBJECT
 private slots:
-    void initTestCase();
-    void init();
-    void cleanup();
-    void cleanupTestCase();
-    void simpleInstance();
-    void setPoints();
-    void tight();
-  private:
-    CCP::Instance * instance;
+    void initTestCase(){ }
+    void init(){}
+    void cleanup(){}
+    void cleanupTestCase(){}
+
+    void distance();
+    void distance2Points();
+
 };
-#endif // CCPMODEL_TEST_H
+
+#endif // CCPDISTANCE_H

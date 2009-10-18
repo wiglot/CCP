@@ -17,12 +17,28 @@
 
 */
 
-#include "ccpmodel_test.h"
 
+#include "ccpmodel_test.h"
 #include <QtTest/QTest>
 
+#include "Instance.h"
+#include "Distance.h"
+#include "Point.h"
+
+using namespace CCP;
+
+
 void CCPModel_test::initTestCase()
-{}
+{
+    this->instance = new Instance;
+    Point ** points = new Point*[2];
+    points[0] = new Point(0.0, 1.0, 1.0);
+    points[1] = new Point(1.0, 1.0, 2.0);
+    instance->setPoints(points, 2);
+    instance->setNumCenters(2);
+    instance->setCapacity(1.0);
+    Distance * distance = new Distance(instance);
+}
 
 void CCPModel_test::init()
 {}
@@ -30,13 +46,32 @@ void CCPModel_test::init()
 void CCPModel_test::cleanup()
 {}
 
-void CCPModel_test::cleanupTestCase()
-{}
+void CCPModel_test::cleanupTestCase(){
+//    delete instance;
+ QFAIL("Delete instance error. Fix it!");
+}
 
+void CCPModel_test::tight(){
+    QFAIL("Not Implemented");
+}
+
+void CCPModel_test::setPoints(){
+    
+    
+    QCOMPARE(instance->numPoints(), (unsigned short)2);
+    QCOMPARE(instance->point(0)->demand(),1.0);
+    QCOMPARE(instance->point(1)->demand(),2.0);
+    
+}
 void CCPModel_test::simpleInstance()
 {
-  //dumb test
-    QCOMPARE(1,2);
+   
+    QCOMPARE(instance->numCenters(), (unsigned short)2);
+    QCOMPARE(instance->numPoints(), (unsigned short)2);
+    QCOMPARE(instance->distance(0,1), 1.0);
+    QCOMPARE(instance->distance(1,1), 0.0);
+    QCOMPARE(instance->distance(1,0), 1.0);
+    QCOMPARE(instance->capacity(), 1.0);
 }
 
 

@@ -10,9 +10,51 @@ CurrentBuildType=debug
 CurrentInstallDir=file:///usr/local/
 ProjectRootRelative=./
 
+[Launch]
+Launch Configurations=Launch Configuration 0
+
+[Launch][Launch Configuration 0]
+Configured Launch Modes=execute
+Configured Launchers=nativeAppLauncher
+Name=CPPModel_test
+Type=Native Application
+
+[Launch][Launch Configuration 0][Data]
+Arguments=
+Debugger Shell=
+Dependencies=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x00)
+Dependency Action=Nothing
+Display Demangle Names=true
+Display Static Members=false
+EnvironmentGroup=default
+Executable=file:///home/wagner/src/CCP/build/tests/CCPModel
+Extra Synchronization Events=0
+Floating Toolbar=false
+Framestack Depth=12
+Free Block List Size=5000000
+Full Cache Simulation=false
+GDB Path=gdb
+Leak Resolution Matching=1
+Leak Summary=2
+Limit Errors=false
+Maximum Framestack Size=2000000
+Remote GDB Config Script=
+Remote GDB Run Script=
+Remote GDB Shell Script=
+Separate Terminal For Application IO=false
+Separate Thread Reporting=false
+Show Reachable Blocks=true
+Simulate Hardware Prefetcher=false
+Try Setting Breakpoints On Loading Libraries=true
+Use External Terminal=false
+Valgrind Arguments=
+Valgrind Executable=file:///usr/bin/valgrind
+Working Directory=
+isExecutable=true
+
 [Project]
 VersionControlSupport=kdevgit
 
 [Veritas]
-executables=/home/wagner/src/CCP/build/tests/CCPTest,/home/wagner/src/CCP/build/tests/CCPModel
+executables=/home/wagner/src/CCP/build/tests/CCPTest,/home/wagner/src/CCP/build/tests/CCPModel,/home/wagner/src/CCP/build/tests/CCPDistance
 framework=QTest

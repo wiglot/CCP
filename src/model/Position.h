@@ -1,7 +1,7 @@
 #ifndef POSITION_H
 #define POSITION_H
 
-#include <string>
+#include <cmath>
 
 /**
  * Namespace
@@ -23,6 +23,10 @@ public:
      * Empty Constructor
      */
     Position ( ) { }
+    Position (double x, double y) {
+      _x = x;
+      _y = y;
+    }
     /**
      * Accessor Methods
      */
@@ -50,7 +54,10 @@ public:
     void setY (double value ) {
         _y = value;
     }
-    
+    double distance(const Position p){
+      return sqrt((this->_x - p._x)*(this->_x - p._x) + (this->_y - p._y)*(this->_y - p._y));
+    }
+
 /**
  * Private stuff
  */

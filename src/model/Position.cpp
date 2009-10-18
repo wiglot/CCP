@@ -1,24 +1,4 @@
-#include "position.h"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#include "Position.h"
 
 /**
  * Constructors/Destructors
@@ -26,4 +6,3 @@
 /**
  * Methods
  */
-

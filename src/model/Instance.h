@@ -2,11 +2,10 @@
 #define INSTANCE_H
 #include <string>
 #include "Distance.h"
-/**
- * Namespace
- */
+#include "Point.h"
+
 namespace CCP {
-class Point;
+
 class Solution;
 /**
  * Class Instance
@@ -20,6 +19,9 @@ public:
      * Empty Constructor
      */
     Instance ( ) { }
+    /** Basic Destructor
+    */
+    ~Instance( );
     /**
      * Accessor Methods
      */
@@ -35,29 +37,40 @@ public:
     void setNumCenters (unsigned short value ) {
         _numCenters = value;
     }
+    
+    unsigned short numPoints(){ return _numPoints;   }
     /**
      *
      */
-    Point * points ( ) {
-        return _points;
+    Point * point (unsigned short index ) {
+      if (index < _numPoints){
+        return _points[index];
+      } else {
+	return 0;
+      }
     }
     /**
      *
      */
-    void setPoints (Point * value ) {
+    void setPoints (Point ** value, unsigned short numPoints) {
         _points = value;
+	this->_numPoints = numPoints;
+    }
+    /**
+    * Overloaded function, same that instance::distancesMatrixes()->distance(p1, p2)
+    */
+    double distance (unsigned short p1, unsigned short p2);
+    /**
+     *
+     */
+    CCP::Distance * distancesMatrixes ( ) {
+        return _distance;
     }
     /**
      *
      */
-    CCP::Distance distances ( ) {
-        return _distances;
-    }
-    /**
-     *
-     */
-    void setDistances (CCP::Distance value ) {
-        _distances = value;
+    void setDistances (CCP::Distance * value ) {
+        _distance = value;
     }
     /**
      *
@@ -83,6 +96,7 @@ public:
     void setCapacity(double value){
 	_capacity = value;
     }
+     
 
     /**
      * Private stuff
@@ -92,21 +106,14 @@ private:
      * Fields
      */
     unsigned short _numCenters;
-    Point * _points;
-    CCP::Distance _distances;
+    Point ** _points;
+    short unsigned int _numPoints;
+    CCP::Distance * _distance;
     unsigned short _numSolutions;
     Solution ** _solutions;
     
     double _capacity;
-    /**
-     *
-     */
-    /**
-     * Constructors
-     */
-    /**
-     * Accessor Methods
-     */
+
 };
 }
 #endif //INSTANCE_H
