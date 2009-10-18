@@ -1,39 +1,7 @@
 #ifndef POSITION_H
 #define POSITION_H
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #include <string>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /**
  * Namespace
@@ -41,32 +9,13 @@
 namespace CCP { 
 /**
  * Class Position
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
  */
 class Position {
 /**
  * Public stuff
  */
 public:
-    /**
-     * Fields
-     */
-    /**
-     * 
-     */
+
     /**
      * Constructors
      */
@@ -80,43 +29,28 @@ public:
     /**
      * 
      */
-    double get__x ( ) {
+    double x ( ) {
         return _x;
     }
     /**
      * 
      */
-    void set__x (double value ) {
+    void setX (double value ) {
         _x = value;
     }
     /**
      * 
      */
-    double get__y ( ) {
+    double y ( ) {
         return _y;
     }
     /**
      * 
      */
-    void set__y (double value ) {
+    void setY (double value ) {
         _y = value;
     }
-/**
- * Protected stuff
- */
-protected:
-    /**
-     * Fields
-     */
-    /**
-     * 
-     */
-    /**
-     * Constructors
-     */
-    /**
-     * Accessor Methods
-     */
+    
 /**
  * Private stuff
  */
@@ -126,15 +60,7 @@ private:
      */
      double _x;
      double _y;
-    /**
-     * 
-     */
-    /**
-     * Constructors
-     */
-    /**
-     * Accessor Methods
-     */
+    
 };
 } 
 #endif //POSITION_H

@@ -1,6 +1,6 @@
 /*
-    <one line to give the program's name and a brief idea of what it does.>
-    Copyright (C) <year>  <name of author>
+    CCP (Capacited Clusterin Problem)
+    Copyright (C) 2009  Wagner Reck
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -17,5 +17,28 @@
 
 */
 
-#include "aclass.h"
+#include "ccpmodel_test.h"
 
+#include <QtTest/QTest>
+
+void CCPModel_test::initTestCase()
+{}
+
+void CCPModel_test::init()
+{}
+
+void CCPModel_test::cleanup()
+{}
+
+void CCPModel_test::cleanupTestCase()
+{}
+
+void CCPModel_test::simpleInstance()
+{
+  //dumb test
+    QCOMPARE(1,2);
+}
+
+
+QTEST_MAIN(CCPModel_test)
+#include "ccpmodel_test.moc"

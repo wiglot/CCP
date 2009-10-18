@@ -14,5 +14,5 @@ ProjectRootRelative=./
 VersionControlSupport=kdevgit
 
 [Veritas]
-executables=
+executables=/home/wagner/src/CCP/build/tests/CCPTest,/home/wagner/src/CCP/build/tests/CCPModel
 framework=QTest

@@ -1,16 +1,11 @@
-#include <QApplication>
-#include <QMainWindow>
+#include <QCoreApplication>
+#include "Instance.h"
 
-#include "ui_mainwindow.h"
+using namespace CCP;
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
-    QApplication app(argc, argv);
-
-    QMainWindow w;
-    Ui::MainWindow main;
-    main.setupUi(&w);
-    w.show();
-
+    QCoreApplication app(argc, argv);
+    Instance foo;
     return app.exec();
 }

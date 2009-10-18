@@ -17,11 +17,21 @@
 
 */
 
-#ifndef ACLASS_H
-#define ACLASS_H
+#ifndef CCPMODEL_TEST_H
+#define CCPMODEL_TEST_H
 
-class AClass
+#include <QtCore/QObject>
+
+class CCPModel_test : public QObject
 {
-};
+Q_OBJECT
+private slots:
+    void initTestCase();
+    void init();
+    void cleanup();
+    void cleanupTestCase();
 
-#endif // ACLASS_H
+    void simpleInstance();
+    
+};
+#endif // CCPMODEL_TEST_H

@@ -15,7 +15,7 @@ void CCPTest::cleanupTestCase()
 
 void CCPTest::someTest()
 {
-    QCOMPARE(1,2);
+    QCOMPARE(1,1);
 }
 
 
