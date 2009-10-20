@@ -16,7 +16,7 @@ CCP::Distance::Distance (Instance * inst):
   this->_ordered = new short*[_numPoints];
   for (count = 0; count < _numPoints; ++count){
       this->_values[count] = new double[count];
-      this->_ordered[count] = new short[_numPoints];
+      this->_ordered[count] = new short[_numPoints-1]; //To all nodes except to it self
       for (count2 = 0; count2 < _numPoints; ++count2){
 	 if (count2 < count){
 	    _values[count][count2] = -1;
@@ -46,4 +46,17 @@ double CCP::Distance::distanceBetween(unsigned short int point1, unsigned short 
   }else{
       return p1->position().distance(p2->position());
   }
+}
+
+void CCP::Distance::buildNears(unsigned short point){
+ //ToDo Need order it!! man it looks hard by now...let's sleep a little...
+ for (unsigned short count = 0; count < _numPoints-1; ++count){
+   _ordered[point][count] = count;
+ }
+}
+
+short unsigned int CCP::Distance::near ( unsigned short point, unsigned short nearest ){
+    if (_ordered[point][nearest-1] == -1)
+      buildNears(point);
+    return _ordered[point][nearest-1];
 }

@@ -32,9 +32,7 @@ public:
      */
     /** 
     */
-    void setInstance (Instance * inst){
-      _myInstance = inst;
-    }
+    void setInstance (Instance * inst);
     
     /**
     *
@@ -45,16 +43,18 @@ public:
     /**
      * 
      */
-    PointType * pointType (unsigned short index) {
+    PointType pointType (unsigned short index) {
         return _pointsType[index];
     }
     /**
      * 
      */
-    void setPointsType (PointType ** value ) {
+    void setPointsType (PointType * value ) {
         _pointsType = value;
     }
     
+    void constructSolution();
+      void findBestCenters();
 /**
  * Private stuff
  */
@@ -64,10 +64,11 @@ private:
      */
 
      Instance * _myInstance;
-     PointType ** _pointsType;
+     PointType * _pointsType;
      unsigned short * _centersIndex;
      
-    
+    void selectFirstCenters();
+    void findBasicClusters();
 };
 } 
 #endif //SOLUTION_H

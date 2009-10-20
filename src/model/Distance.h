@@ -2,33 +2,33 @@
 #define DISTANCE_H
 
 /**
- * Namespace
- */
+* Namespace
+*/
 namespace CCP {
   class Instance; 
 /**
- * Class Distance
- * Contains the values of distances, will be build empty, and at every request, it will build the matrix and vectors(ordered) of distances  
- */
+* Class Distance
+* Contains the values of distances, will be build empty, and at every request, it will build the matrix and vectors(ordered) of distances  
+*/
 class Distance {
 /**
- * Public stuff
- */
+* Public stuff
+*/
 public:
     /**
-     * Constructors
-     */
+    * Constructors
+    */
     /**
-     * Empty Constructor
-     */
+    * Empty Constructor
+    */
     Distance (Instance * inst);
     ~Distance();
     /**
-     * Accessor Methods
-     */
+    * Accessor Methods
+    */
     /**
-     * 
-     */
+    * 
+    */
     inline double distance(unsigned short point1, unsigned short point2 ) {
 	if (point1 == point2){
 	  return 0.0;
@@ -44,16 +44,17 @@ public:
 	  return _values [point2][point1];
 	}
     }
+    short unsigned int near ( short unsigned int arg1, short unsigned int nearest );
     /**
-     * 
-     */
+    * 
+    */
 //     void set__values (double value ) {
 //         _values = value;
 //     }
 private:
     /**
-     * Fields
-     */
+    * Fields
+    */
     
       Instance * _instance;
       unsigned short _numPoints;
@@ -63,6 +64,7 @@ private:
       /**
       */
       double distanceBetween ( short unsigned int arg1, short unsigned int arg2 );
+      void buildNears ( short unsigned int arg1 );
 
 };
 } 
