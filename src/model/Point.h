@@ -29,9 +29,6 @@ public:
     /**
      * Accessor Methods
      */
-    /**
-     * 
-     */
     CCP::Position position ( ) {
         return _pos;
     }

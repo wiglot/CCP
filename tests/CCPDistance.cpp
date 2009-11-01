@@ -49,5 +49,21 @@ void CCPDistance::distance2Points(){
 
 }
 
+void CCPDistance::near(){
+    Instance * instance = new Instance;
+    Point ** points = new Point*[4];
+    points[0] = new Point(0.0, 0.0, 1.0);
+    points[1] = new Point(0.0, 1.0, 2.0);
+    points[2] = new Point(0.0, 2.0, 3.0);
+    points[3] = new Point(0.0, 3.0, 4.0);
+    instance->setPoints(points, 4);
+    Distance * distance = new Distance(instance);
+    instance->setDistances(distance);
+    QCOMPARE(distance->near(0,0), (unsigned short)0);
+    QCOMPARE(distance->near(0,1), (unsigned short)1);
+    QCOMPARE(distance->near(0,2), (unsigned short)2);
+    QCOMPARE(distance->near(0,3), (unsigned short)3);
+}
+
 QTEST_MAIN(CCPDistance)
 #include "CCPDistance.moc"

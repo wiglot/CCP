@@ -59,12 +59,10 @@ private:
       Instance * _instance;
       unsigned short _numPoints;
       double ** _values;
-      short ** _ordered;
 
       /**
       */
       double distanceBetween ( short unsigned int arg1, short unsigned int arg2 );
-      void buildNears ( short unsigned int arg1 );
 
 };
 } 

@@ -18,4 +18,57 @@
 */
 
 #include "Cluster.h"
+#include "Instance.h"
+#include "Solution.h"
+#include "Point.h"
+#include <QList>
 
+CCP::Cluster::Cluster(Solution* inst): solution(inst)
+{ 
+  this->center = 0;
+}
+
+CCP::Cluster::~Cluster(){ }
+
+void CCP::Cluster::addPoint(CCP::Point* p){
+    points.append(p);
+}
+
+double CCP::Cluster::actualDemand(){
+  double totalDemand = 0;
+    foreach(Point * i, points){
+      totalDemand += i->demand();
+    }
+    totalDemand += this->center->demand();
+    return totalDemand;
+}
+
+double CCP::Cluster::remainCapacity(){
+  return (solution->getInstance()->capacity() - actualDemand());
+}
+
+void CCP::Cluster::removePoint(Point * p){
+  for (int i = 0; i < points.size(); ++i){
+    if (p == points[i]){
+	points.removeAt(i);
+	return;
+    }
+  }
+}
+
+double CCP::Cluster::totalDistance(){
+  double total = 0.0;
+  Instance * inst = this->solution->getInstance();
+  foreach(Point * p, points){
+    total += inst->distance(center, p);
+  }
+  return total;
+}
+
+CCP::Point * CCP::Cluster::getPoint(unsigned short index){
+    return points.at(index);
+}
+
+unsigned short int CCP::Cluster::numPoints(){
+    return points.size();
+}

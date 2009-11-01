@@ -36,7 +36,7 @@ void CCPModel_test::initTestCase()
     points[1] = new Point(1.0, 1.0, 2.0);
     instance->setPoints(points, 2);
     instance->setNumCenters(2);
-    instance->setCapacity(1.0);
+    instance->setCapacity(6.0);
     Distance * distance = new Distance(instance);
 }
 
@@ -47,12 +47,12 @@ void CCPModel_test::cleanup()
 {}
 
 void CCPModel_test::cleanupTestCase(){
-//    delete instance;
- QFAIL("Delete instance error. Fix it!");
+    delete instance;
+// QFAIL("Delete instance error. Fix it!");
 }
 
 void CCPModel_test::tight(){
-    QFAIL("Not Implemented");
+    QCOMPARE(instance->tight(), 0.5); 
 }
 
 void CCPModel_test::setPoints(){
@@ -71,7 +71,7 @@ void CCPModel_test::simpleInstance()
     QCOMPARE(instance->distance(0,1), 1.0);
     QCOMPARE(instance->distance(1,1), 0.0);
     QCOMPARE(instance->distance(1,0), 1.0);
-    QCOMPARE(instance->capacity(), 1.0);
+    QCOMPARE(instance->capacity(), 6.0);
 }
 
 

@@ -19,9 +19,44 @@
 
 #ifndef CLUSTER_H
 #define CLUSTER_H
+#include <qtextstream.h>
 
-class Cluster
-  {
-  };
+namespace CCP{
+  class Point;
+  class Solution;
 
+
+class Cluster {
+private:
+      Point * center;
+      QList<Point *> points;
+      Solution* solution;
+      
+  public:
+    Cluster(Solution * inst);
+    ~Cluster();
+    void addPoint(Point * p);
+    void removePoint(Point * p);
+    
+    double actualDemand();
+    double remainCapacity();
+    
+    inline void setCenter(Point * center){
+//       if (this->center != 0){
+// 	 removePoint(center);
+//       }
+      this->center = center;
+//       addPoint(center);
+    }
+    
+    inline Point * getCenter(){
+	return this->center;
+    }
+    Point * getPoint(unsigned short index);
+    
+    double totalDistance();
+    short unsigned int numPoints();
+    
+};
+}
 #endif // CLUSTER_H

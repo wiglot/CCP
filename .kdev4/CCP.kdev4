@@ -11,7 +11,7 @@ CurrentInstallDir=file:///usr/local/
 ProjectRootRelative=./
 
 [Launch]
-Launch Configurations=Launch Configuration 0
+Launch Configurations=Launch Configuration 0,Launch Configuration 1
 
 [Launch][Launch Configuration 0]
 Configured Launch Modes=execute
@@ -51,6 +51,37 @@ Valgrind Arguments=
 Valgrind Executable=file:///usr/bin/valgrind
 Working Directory=
 isExecutable=true
+
+[Launch][Launch Configuration 1]
+Configured Launch Modes=execute
+Configured Launchers=nativeAppLauncher
+Name=CCPDistance_Test
+Type=Native Application
+
+[Launch][Launch Configuration 1][Data]
+Debugger Shell=
+Display Demangle Names=true
+Display Static Members=false
+Extra Synchronization Events=0
+Floating Toolbar=false
+Framestack Depth=12
+Free Block List Size=5000000
+Full Cache Simulation=false
+GDB Path=
+Leak Resolution Matching=0
+Leak Summary=1
+Limit Errors=false
+Maximum Framestack Size=2000000
+Remote GDB Config Script=
+Remote GDB Run Script=
+Remote GDB Shell Script=
+Separate Terminal For Application IO=false
+Separate Thread Reporting=false
+Show Reachable Blocks=false
+Simulate Hardware Prefetcher=false
+Try Setting Breakpoints On Loading Libraries=true
+Valgrind Arguments=
+Valgrind Executable=file:///usr/bin/valgrind
 
 [Project]
 VersionControlSupport=kdevgit

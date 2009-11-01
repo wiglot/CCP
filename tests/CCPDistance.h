@@ -32,7 +32,7 @@ private slots:
 
     void distance();
     void distance2Points();
-
+    void near();
 };
 
 #endif // CCPDISTANCE_H

@@ -59,7 +59,10 @@ public:
     /**
     * Overloaded function, same that instance::distancesMatrixes()->distance(p1, p2)
     */
-    double distance (unsigned short p1, unsigned short p2);
+    double distance (unsigned short p1, unsigned short p2, double factor = 1);
+    
+    
+    double distance (Point * p1, Point * p2, double factor = 1);
     /**
      *
      */
@@ -97,7 +100,10 @@ public:
 	_capacity = value;
     }
      
-
+    /** @brief Return how tight is demands by capacity.
+    *
+    */
+    double tight();
     /**
      * Private stuff
      */

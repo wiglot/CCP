@@ -4,9 +4,12 @@
 /**
  * Namespace
  */
+#include "Point.h"
 
 namespace CCP {
+  class Point;
 class Instance; 
+class Cluster;
 
 enum PointType {
   Center,
@@ -26,7 +29,9 @@ public:
     /**
      * Empty Constructor
      */
-    Solution ( ) { }
+    Solution ( Instance * instance);
+    
+    ~Solution();
     /**
      * Accessor Methods
      */
@@ -54,7 +59,21 @@ public:
     }
     
     void constructSolution();
-      void findBestCenters();
+    
+    void findBestCenters();
+    
+    Cluster cluster(unsigned short index);
+    
+    /**
+     * @brief Return the point thats represent the center of cluster at index.
+     * Use this method is same that does Solution::cluster(index)->centerPoint();
+     * @param index index of cluster in array. Shoud be less than number of centers.
+     * @return Point considered as center os cluster.
+    */
+    Point centerOfCluster(unsigned short index);
+    Instance * getInstance(){
+      return _myInstance;
+    }
 /**
  * Private stuff
  */
@@ -65,10 +84,14 @@ private:
 
      Instance * _myInstance;
      PointType * _pointsType;
-     unsigned short * _centersIndex;
+     Cluster ** _centers;
      
-    void selectFirstCenters();
-    void findBasicClusters();
+     
+     /** some only private use methods
+     */
+     void selectFirstCenters();
+     void findBasicClusters();
+    
 };
 } 
 #endif //SOLUTION_H
