@@ -67,10 +67,10 @@ void Solution::selectFirstCenters() {
         }
     }
     _centers[0]->setCenter( _myInstance->point( center1 ) );
-    _pointsType[center1] = CCP::Center;
+//     _pointsType[center1] = CCP::Center;
 
     _centers[1]->setCenter( _myInstance->point( center2 ) );
-    _pointsType[center2] = CCP::Center;
+//     _pointsType[center2] = CCP::Center;
 
     int centersInserted = 2;
     while ( _myInstance->numCenters() > centersInserted ) {
@@ -111,8 +111,10 @@ void Solution::findBasicClusters() {
             for ( count = 0; count < _myInstance->numCenters(); ++count ) {
                 cluster = this->_centers[count];
                 if ( cluster->remainCapacity() > selectedPoint->demand() ) {
-		    double tmp = _myInstance->distance(count2, count, selectedPoint->demand());
-		    if (tmp < indicator){
+		    double tmp = _myInstance->distance(selectedPoint, cluster->getCenter(),
+							  selectedPoint->demand());
+		    if (tmp <= indicator){
+			indicator = tmp;
 			clusterToAdd = count;
 		    }
                 }
@@ -136,7 +138,7 @@ void Solution::findBestCenters() {
       cluster = _centers[count];
       value = cluster->totalDistance();
       for (countPoints = 0; countPoints < cluster->numPoints(); ++countPoints){
-	Point * candidacte = cluster->getPoint(0);
+	Point * candidacte = cluster->takePoint(0);
 	cluster->addPoint(cluster->getCenter());
 	cluster->setCenter(candidacte);
 	double newValue = cluster->totalDistance();
@@ -151,5 +153,13 @@ void Solution::findBestCenters() {
 	  cluster->setCenter(newCenter);
       }
   }
+}
+
+double Solution::getValue(){
+  double acum = 0.0;
+  for (unsigned short i = 0; i < _myInstance->numCenters(); ++i){
+      acum += _centers[i]->totalDistance();
+  }
+  return acum;
   
 }

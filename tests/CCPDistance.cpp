@@ -37,6 +37,15 @@ void CCPDistance::distance(){
     QCOMPARE(distance->distance(0,1), 1.0);
     QCOMPARE(distance->distance(0,0), 0.0);
     QCOMPARE(distance->distance(1,0), 1.0);
+    
+    QCOMPARE(instance->distance((unsigned short)0,1), 1.0);
+    QCOMPARE(instance->distance((unsigned short)1,0), 1.0);
+    QCOMPARE(instance->distance((unsigned short)0,0), 0.0);
+    
+    QCOMPARE(instance->distance(points[0],points[1]), 1.0);
+    QCOMPARE(instance->distance(points[0],points[0]), 0.0);
+    QCOMPARE(instance->distance(points[1],points[0]), 1.0);
+    
 }
 
 void CCPDistance::distance2Points(){

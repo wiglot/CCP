@@ -74,6 +74,7 @@ public:
     Instance * getInstance(){
       return _myInstance;
     }
+    double getValue();
 /**
  * Private stuff
  */

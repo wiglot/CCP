@@ -59,14 +59,20 @@ void CCP::Cluster::removePoint(Point * p){
 double CCP::Cluster::totalDistance(){
   double total = 0.0;
   Instance * inst = this->solution->getInstance();
-  foreach(Point * p, points){
-    total += inst->distance(center, p);
+  for (int i = 0; i< points.size(); ++i){
+     total += inst->distance(center, points.at(i));
   }
   return total;
 }
 
 CCP::Point * CCP::Cluster::getPoint(unsigned short index){
     return points.at(index);
+}
+
+CCP::Point * CCP::Cluster::takePoint( unsigned short  arg1 ){
+  Point* candidacte = getPoint(arg1);
+  removePoint(candidacte);
+  return candidacte;
 }
 
 unsigned short int CCP::Cluster::numPoints(){

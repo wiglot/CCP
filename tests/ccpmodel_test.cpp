@@ -48,7 +48,6 @@ void CCPModel_test::cleanup()
 
 void CCPModel_test::cleanupTestCase(){
     delete instance;
-// QFAIL("Delete instance error. Fix it!");
 }
 
 void CCPModel_test::tight(){

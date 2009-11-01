@@ -53,9 +53,10 @@ private:
 	return this->center;
     }
     Point * getPoint(unsigned short index);
-    
+    Point * takePoint( unsigned short  arg1 );
     double totalDistance();
     short unsigned int numPoints();
+    
     
 };
 }

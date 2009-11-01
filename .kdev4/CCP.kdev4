@@ -11,7 +11,7 @@ CurrentInstallDir=file:///usr/local/
 ProjectRootRelative=./
 
 [Launch]
-Launch Configurations=Launch Configuration 0,Launch Configuration 1
+Launch Configurations=Launch Configuration 0,Launch Configuration 1,Launch Configuration 2
 
 [Launch][Launch Configuration 0]
 Configured Launch Modes=execute
@@ -83,9 +83,27 @@ Try Setting Breakpoints On Loading Libraries=true
 Valgrind Arguments=
 Valgrind Executable=file:///usr/bin/valgrind
 
+[Launch][Launch Configuration 2]
+Configured Launch Modes=execute
+Configured Launchers=nativeAppLauncher
+Name=CCPSolution
+Type=Native Application
+
+[Launch][Launch Configuration 2][Data]
+Debugger Shell=
+Display Demangle Names=true
+Display Static Members=false
+Floating Toolbar=false
+GDB Path=
+Remote GDB Config Script=
+Remote GDB Run Script=
+Remote GDB Shell Script=
+Separate Terminal For Application IO=false
+Try Setting Breakpoints On Loading Libraries=true
+
 [Project]
 VersionControlSupport=kdevgit
 
 [Veritas]
-executables=/home/wagner/src/CCP/build/tests/CCPTest,/home/wagner/src/CCP/build/tests/CCPModel,/home/wagner/src/CCP/build/tests/CCPDistance
+executables=/home/wagner/src/CCP/build/tests/CCPTest,/home/wagner/src/CCP/build/tests/CCPModel,/home/wagner/src/CCP/build/tests/CCPDistance,/home/wagner/src/CCP/build/tests/CCPSolution
 framework=QTest
