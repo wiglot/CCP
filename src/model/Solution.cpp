@@ -22,6 +22,10 @@ Solution::~Solution() {
 /**
  * Methods
  */
+void Solution::setPointType( Point* arg1, PointType type ){
+  int index = _myInstance->pointIndex(arg1);
+  _pointsType[index] = type;
+}
 
 void Solution::setInstance( Instance * inst ) {
     //Alloc stuff
@@ -137,6 +141,7 @@ void Solution::findBestCenters() {
   for (count = 0; count < _myInstance->numCenters(); ++count){
       cluster = _centers[count];
       value = cluster->totalDistance();
+      newCenter = cluster->getCenter();
       for (countPoints = 0; countPoints < cluster->numPoints(); ++countPoints){
 	Point * candidacte = cluster->takePoint(0);
 	cluster->addPoint(cluster->getCenter());

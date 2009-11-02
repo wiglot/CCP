@@ -104,6 +104,14 @@ public:
     *
     */
     double tight();
+    unsigned short pointIndex( Point* arg1 ){
+      for (unsigned short i = 0 ; i<_numPoints; ++i){
+	  if (arg1 == _points[i]){
+	    return i;
+	  }
+      }
+      return _numPoints;
+    }
     /**
      * Private stuff
      */

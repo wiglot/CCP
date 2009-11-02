@@ -31,6 +31,8 @@ CCP::Cluster::Cluster(Solution* inst): solution(inst)
 CCP::Cluster::~Cluster(){ }
 
 void CCP::Cluster::addPoint(CCP::Point* p){
+    solution->setPointType(p, CCP::Consumer);
+    
     points.append(p);
 }
 
@@ -56,11 +58,21 @@ void CCP::Cluster::removePoint(Point * p){
   }
 }
 
+void CCP::Cluster::setCenter(Point * center){
+//       if (this->center != 0){
+// 	 removePoint(center);
+//       }
+      solution->setPointType(center, CCP::Center);
+      this->center = center;
+//       addPoint(center);
+    }
+
 double CCP::Cluster::totalDistance(){
   double total = 0.0;
   Instance * inst = this->solution->getInstance();
+  
   for (int i = 0; i< points.size(); ++i){
-     total += inst->distance(center, points.at(i));
+     total += inst->distance(center, getPoint(i));
   }
   return total;
 }

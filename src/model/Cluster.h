@@ -41,13 +41,7 @@ private:
     double actualDemand();
     double remainCapacity();
     
-    inline void setCenter(Point * center){
-//       if (this->center != 0){
-// 	 removePoint(center);
-//       }
-      this->center = center;
-//       addPoint(center);
-    }
+    void setCenter(Point * center);
     
     inline Point * getCenter(){
 	return this->center;

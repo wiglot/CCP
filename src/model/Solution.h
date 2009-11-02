@@ -62,7 +62,9 @@ public:
     
     void findBestCenters();
     
-    Cluster cluster(unsigned short index);
+    Cluster * cluster(unsigned short index){
+	return _centers[index];
+    }
     
     /**
      * @brief Return the point thats represent the center of cluster at index.
@@ -75,6 +77,7 @@ public:
       return _myInstance;
     }
     double getValue();
+    void setPointType( Point* arg1, PointType arg2 );
 /**
  * Private stuff
  */
