@@ -17,11 +17,27 @@
 
 */
 
-#include "Position.h"
+#ifndef CCPSOLUTION_H
+#define CCPSOLUTION_H
 
-/**
- * Constructors/Destructors
- */
-/**
- * Methods
- */
+
+#include <QtCore/QObject>
+#include "Instance.h"
+// class Instance;
+using namespace CCP;
+
+class CCPSolution : public QObject
+{
+Q_OBJECT
+  private:
+     Instance * instance;
+private slots:
+    void initTestCase();
+    void init();
+    void cleanup();
+    void cleanupTestCase();
+
+    void buildInitial();
+};
+
+#endif // CCPSOLUTION_H

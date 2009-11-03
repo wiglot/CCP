@@ -1,6 +1,6 @@
 /*
-    CCP (Capacited Clusterin Problem)
-    Copyright (C) 2009  Wagner Reck
+    CCP - Capacited Clustering Problem.
+    Copyright (C) 2009  Wagner Reck (wagner.reck@gmail.com)
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by

@@ -17,11 +17,26 @@
 
 */
 
-#include "Position.h"
+#ifndef READCCP_H
+#define READCCP_H
+#include "Instance.h"
+#include <qstring.h>
 
-/**
- * Constructors/Destructors
- */
-/**
- * Methods
- */
+class readCCP {
+  public:
+    /** @brief Read a file for a instance.
+    *The file mus be in the follow format:
+    *name: instance 1
+    *Capacity: 5
+    *numClusters: 3
+    *1: 1.0: 2.0: 4
+    *2: 1.0: 1.0: 1 
+    * Separator is allway ':' and the points follow this order ID : X : Y : Demand. ID can be a string, others shoud be float numbers.
+    * @param filename Name of file (with relative path).
+    * @return return a Instance poiter or a null pointer (0) if can't open the filename.
+    */
+    static CCP::Instance * readSimpleTXT(QString filename);
+    
+};
+
+#endif // READCCP_H

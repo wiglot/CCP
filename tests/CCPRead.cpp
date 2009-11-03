@@ -17,11 +17,35 @@
 
 */
 
-#include "Position.h"
+#include "CCPRead.h"
+#include "Instance.h"
+#include "readccp.h"
+#include <QTest>
 
-/**
- * Constructors/Destructors
- */
-/**
- * Methods
- */
+using namespace CCP;
+
+void CCPRead::initTestCase(){
+  
+}
+
+void CCPRead::init(){
+  
+}
+void CCPRead::cleanup(){
+  
+}
+void CCPRead::cleanupTestCase(){
+  
+}
+
+void CCPRead::simpleTXT(){
+    Instance * inst = readCCP::readSimpleTXT("instance1.txt");
+    QVERIFY(inst != (Instance*) 0);
+    QCOMPARE(inst->name(), QString("instance 1")); 
+    QCOMPARE(inst->capacity(), 5.0);
+    QCOMPARE(inst->numCenters(), (unsigned short)3);
+    QCOMPARE(inst->numPoints(), (unsigned short) 6);
+}
+
+QTEST_MAIN(CCPRead)
+#include "CCPRead.moc"

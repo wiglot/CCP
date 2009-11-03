@@ -17,11 +17,21 @@
 
 */
 
-#include "Position.h"
+#ifndef CCPREAD_H
+#define CCPREAD_H
 
-/**
- * Constructors/Destructors
- */
-/**
- * Methods
- */
+#include <QtCore/QObject>
+
+class CCPRead : public QObject
+{
+Q_OBJECT
+private slots:
+    void initTestCase();
+    void init();
+    void cleanup();
+    void cleanupTestCase();
+    
+    void simpleTXT();
+};
+
+#endif // CCPREAD_H
