@@ -39,12 +39,23 @@ void CCPRead::cleanupTestCase(){
 }
 
 void CCPRead::simpleTXT(){
-    Instance * inst = readCCP::readSimpleTXT("instance1.txt");
+    Instance * inst = readCCP::readSimpleTXT("../../instances/instance1.txt");
     QVERIFY(inst != (Instance*) 0);
     QCOMPARE(inst->name(), QString("instance 1")); 
     QCOMPARE(inst->capacity(), 5.0);
     QCOMPARE(inst->numCenters(), (unsigned short)3);
     QCOMPARE(inst->numPoints(), (unsigned short) 6);
+    delete inst;
+}
+
+void CCPRead::lorenaEuclidian(){
+    Instance * inst = readCCP::readLorenaEuclidian("../../instances/lorenaEuclidian.dat");
+    QVERIFY2(inst != (Instance*) 0, "Can't open the file");
+    QCOMPARE(inst->name(), QString("../../instances/lorenaEuclidian.dat")); 
+    QCOMPARE(inst->capacity(), 191.0);
+    QCOMPARE(inst->numCenters(), (unsigned short) 1000);
+    QCOMPARE(inst->numPoints(), (unsigned short) 3038);
+    delete inst;
 }
 
 QTEST_MAIN(CCPRead)

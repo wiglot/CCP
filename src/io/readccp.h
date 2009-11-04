@@ -37,6 +37,15 @@ class readCCP {
     */
     static CCP::Instance * readSimpleTXT(QString filename);
     
+    /** @brief Read a file in format descrite by Lorena at http://www.lac.inpe.br/~lorena/instancias.html
+    * First line contains # of points and # of p-medians
+    * Next lines are the points descriptions.
+    * the distances will be calculated by euclidian method
+    * @param name file name (with path)
+    * @return return a Instance poiter or a null pointer (0) if can't open the filename.
+    */
+    static CCP::Instance * readLorenaEuclidian(QString name);
+    
 };
 
 #endif // READCCP_H

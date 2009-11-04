@@ -1,6 +1,6 @@
 
 include_directories(${QT_INCLUDES} ${CMAKE_CURRENT_BINARY_DIR} ../src/model ../src/io)
-set(CMAKE_EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR}/../)
+set(CMAKE_EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR}/..)
 
 set(CCPTest_SRCS CCPTest.cpp)
 set(CCPModel_SRCS ccpmodel_test.cpp )

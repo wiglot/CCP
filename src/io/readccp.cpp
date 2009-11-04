@@ -34,6 +34,7 @@ Instance * readCCP::readSimpleTXT(QString name){
   QFile file(name);
   if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
     qDebug() << "Can't open file: " + name; 
+    delete inst;
     return 0;
   }
   QTextStream input(&file);
@@ -67,6 +68,59 @@ Instance * readCCP::readSimpleTXT(QString name){
       points[i] = pointsList[i];
   }
   inst->setPoints(points,pointsList.size());
+  
+  return inst;
+}
+
+Instance * readCCP::readLorenaEuclidian(QString name){
+  QString line;
+  QStringList list;
+  Point** pointsList;
+  unsigned short numPoints;
+  Instance * inst = new Instance;
+  int count = 0;
+  double capacity = 0;
+  
+  QFile file(name);
+  if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+    qDebug() << "Can't open file: " + name; 
+    delete inst;
+    return 0;
+  }
+  
+  QTextStream input(&file);
+  if (!input.atEnd()){
+      line = input.readLine();
+      list = line.split(' ', QString::SkipEmptyParts);
+      if (list.size() != 2){
+	  qDebug() << "Assertion Error. line 1 of file.";
+	  return 0;
+      }
+      numPoints = list[0].toUShort();
+      inst->setNumCenters(list[1].toUShort());
+      inst->setName(name);
+  }
+  pointsList = new  Point*[numPoints];
+  
+  while (!input.atEnd()){
+    
+      if (count >= numPoints){
+	  break;
+      }
+      line = input.readLine();
+      list = line.split (' ', QString::SkipEmptyParts);
+      if (list.size() != 4){
+	qDebug() << "Assertion error. Skiping line " << count+2;
+	--count;
+      }else {
+	pointsList[count] = new Point(list[0].toDouble(), list[1].toDouble(), list[3].toDouble());
+	if (capacity < list[2].toDouble())
+	    capacity = list[2].toDouble();
+      }
+      ++count;
+  }
+  inst->setCapacity(capacity);
+  inst->setPoints(pointsList, count);
   
   return inst;
 }

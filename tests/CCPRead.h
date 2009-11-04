@@ -32,6 +32,7 @@ private slots:
     void cleanupTestCase();
     
     void simpleTXT();
+    void lorenaEuclidian();
 };
 
 #endif // CCPREAD_H
