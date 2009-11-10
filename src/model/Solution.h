@@ -24,6 +24,7 @@
  * Namespace
  */
 #include "Point.h"
+#include <QList>
 
 namespace CCP {
   class Point;
@@ -108,12 +109,27 @@ private:
      Instance * _myInstance;
      PointType * _pointsType;
      Cluster ** _centers;
+     double * _pointsDensity;
+     double * _pointsRegret;
      
      
      /** some only private use methods
      */
      void selectFirstCenters();
      void findBasicClusters();
+     /** @brief find the 'nNeibor' most near from the 'point' that don't over capacity of cluster.
+      @param point Origin point.
+      @param nNeibor Number of neibors to find.
+      @return returnn a list of the neibors.
+     */
+     QList< int > findNeiborhood(short unsigned int point, unsigned short nNeibor);
+     /** @brief calculate the distance from 'point' to all points at 'list'
+	 @param point origin point
+	 @param list list of points.
+	 @return Total distance from point to all list.
+     */
+     double distance(short unsigned int point, QList< int > list);
+     void calculateDensity();
     
 };
 } 

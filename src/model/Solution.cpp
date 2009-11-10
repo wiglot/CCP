@@ -17,6 +17,10 @@
 
 */
 
+/**ToDo
+      Density by points
+      penalty(regret) by points
+*/
 #include "Solution.h"
 #include "Instance.h"
 #include "Cluster.h"
@@ -31,6 +35,8 @@ Solution::Solution( Instance * instance ) {
     _centers = 0;
     _myInstance = 0;
     _pointsType = 0;
+    _pointsDensity = 0;
+    _pointsRegret = 0;
     setInstance( instance );
 }
 
@@ -60,7 +66,50 @@ void Solution::setInstance( Instance * inst ) {
         delete [] _pointsType;
     }
     _pointsType = new PointType[inst->numPoints()];
+    
 
+}
+
+QList < int >  Solution::findNeiborhood(unsigned short point, unsigned short nNeibor){
+    QList<int> list;
+    double acumDemand = 0.0;
+    unsigned short tmp = 0;
+    bool inserted;
+    unsigned short p;
+    Distance * distance = _myInstance->distancesMatrixes();
+    for (unsigned short i = 0; i < nNeibor; ++i){
+	inserted = false;
+	do{
+	  ++tmp;
+	  p = distance->near(point, tmp);
+	  if ((_myInstance->point(p)->demand()+acumDemand) < _myInstance->capacity()) {
+	      inserted = true;
+	  }
+	}while (!inserted && tmp < _myInstance->numPoints());
+    }
+    return list;
+}
+
+
+double Solution::distance(unsigned short point, QList <int> list){
+    double acum = 0.0;
+    foreach(int i, list){
+	acum += _myInstance->distance(i, point);
+    }
+    return acum;
+}
+
+void Solution::calculateDensity(){
+    this->_pointsDensity = new double[this->_myInstance->numPoints()];
+    unsigned short m;
+    QList <int>  neibors;
+    
+    m = _myInstance->numPoints() / _myInstance->numCenters();
+    for (unsigned short i = 0; i < _myInstance->numPoints(); ++i){
+	neibors = this->findNeiborhood(i, m);
+	_pointsDensity[i] = neibors.size()/this->distance(i, neibors);
+	
+    }
 }
 
 void Solution::constructSolution() {
