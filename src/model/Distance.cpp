@@ -26,10 +26,10 @@
  * Constructors/Destructors
  */
 CCP::Distance::Distance ( Instance * inst ) :
-        _numPoints ( inst->numPoints() ),
-        _instance ( inst )
+        _instance ( inst ),
+	_numPoints ( inst->numPoints() )
 {
-    _instance->setDistances ( this );
+    
     unsigned short count, count2;
     this->_values = new double*[_numPoints];
 
@@ -42,6 +42,9 @@ CCP::Distance::Distance ( Instance * inst ) :
 
         }
     }
+    
+    _instance->setDistances ( this );
+    
 }
 
 CCP::Distance::~Distance()
@@ -75,7 +78,6 @@ short unsigned int CCP::Distance::near ( unsigned short point, unsigned short ne
 {
     bool * visited = new bool[_numPoints];
     unsigned short i, count, found;
-    double foundedDistance = 0.0;
     double min;
 
     if ( nearest == 0 )

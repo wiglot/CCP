@@ -6,7 +6,7 @@ enable_testing()
 add_subdirectory(src)
 add_subdirectory(tests)
 
-include_directories(${QT_INCLUDES} ${CMAKE_CURRENT_BINARY_DIR})
+
 
 
 

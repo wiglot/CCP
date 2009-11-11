@@ -39,8 +39,7 @@ void CCPSolution::initTestCase()
     instance->setPoints(points, 6);
     instance->setNumCenters(2);
     instance->setCapacity(3.5);
-    Distance * distance = new Distance(instance);
-    
+    new Distance(instance);
 }
 
 void CCPSolution::init()
@@ -87,7 +86,7 @@ void CCPSolution::buildInitial()
 }
 void CCPSolution::buildDensity(){
     Solution * sol = new Solution(this->instance);
-    sol->constructSolution();
+    sol->constructSolution(CCP::Density);
     QVERIFY(qAbs(sol->pointDensity(0)-(double)0.878683) < 0.00001); 
     QVERIFY(qAbs(sol->pointDensity(1)-(double)0.878683) < 0.00001); 
     QVERIFY(qAbs(sol->pointDensity(2)-(double)1.242647) < 0.00001); 
@@ -95,7 +94,26 @@ void CCPSolution::buildDensity(){
     QVERIFY(qAbs(sol->pointDensity(4)-(double)0.878683) < 0.00001);
     QVERIFY(qAbs(sol->pointDensity(5)-(double)0.878683) < 0.00001);
     
+    
+    QCOMPARE(sol->greatDensity(), (unsigned short)2);
+    QCOMPARE(sol->greatDensity(1),(unsigned short) 3);
+    QCOMPARE(sol->greatDensity(2),(unsigned short) 0);
+    
+    QCOMPARE(sol->greatRegret(), (unsigned short) 2);
+    QCOMPARE(sol->greatRegret(1), (unsigned short) 3);
+    QCOMPARE(sol->greatRegret(2), (unsigned short) 0);
+    QCOMPARE(sol->greatRegret(3), (unsigned short) 1);
+    QCOMPARE(sol->greatRegret(4), (unsigned short) 4);
+    QCOMPARE(sol->greatRegret(5), (unsigned short) 5);
+    
+    
 }
+/*
+void CCPSolution::buildDensity(){
+    Solution * sol = new Solution(this->instance);
+    sol->constructSolution();
+    
+}*/
 
 QTEST_MAIN(CCPSolution)
 #include "CCPSolution.moc"

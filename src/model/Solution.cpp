@@ -94,6 +94,66 @@ QList < int >  Solution::findNeiborhood(unsigned short point, unsigned short nNe
     return list;
 }
 
+unsigned short Solution::greatDensity(unsigned short big){
+    bool * visited = new bool[_myInstance->numPoints()];
+    unsigned short i, count, found;
+    double min;
+
+    ++big;
+
+    for ( i = 0; i < _myInstance->numPoints(); ++i )
+    {
+        visited[i] = false;
+    }
+//     visited[point] = true;
+    
+    for ( i = 0 ; i < big; ++i )
+    {
+        min = 0.0;
+        for ( count = 0; count < _myInstance->numPoints(); count++ ) {
+            if ( !visited[count] )
+            {
+                if ( pointDensity(count) > min ) {
+                    min = pointDensity(count);
+                    found = count;
+                }
+            }
+        }
+        visited[found] = true;
+    }
+    delete [] visited;
+    return found;
+  
+}
+
+unsigned short Solution::greatRegret(unsigned short big){
+    bool * visited = new bool[_myInstance->numPoints()];
+    unsigned short i, count, found;
+    double min;
+
+    ++big;
+
+    for ( i = 0; i < _myInstance->numPoints(); ++i ){
+        visited[i] = false;
+    }
+    
+    for ( i = 0 ; i < big; ++i ){
+        min = 0.0;
+        for ( count = 0; count < _myInstance->numPoints(); count++ ) {
+            if ( !visited[count] )
+            {
+                if ( pointRegret(count) > min ) {
+                    min = pointRegret(count);
+                    found = count;
+                }
+            }
+        }
+        visited[found] = true;
+    }
+    delete [] visited;
+    return found;
+  
+}
 
 double Solution::distance(unsigned short point, QList <int> list){
     double acum = 0.0;
@@ -116,21 +176,56 @@ void Solution::calculateDensity(){
     }
 }
 
-void Solution::constructSolution() {
+void Solution::calculateRegret(){
+    unsigned short * tmpCenters = new unsigned short[_myInstance->numCenters()];
+    unsigned short count, count2;
+    double distance1, distance2;
+    unsigned short center1, center2;
+    this->_pointsRegret = new double[_myInstance->numPoints()];
+    
+    for (count = 0; count < _myInstance->numCenters(); ++count){
+	tmpCenters[count] = this->greatDensity(count);
+    }
+    for (count = 0; count < _myInstance->numPoints(); ++count){
+	distance1 = 1.0e10;
+	distance2 = 1.0e10;
+	for (count2 = 0; count2 < _myInstance->numCenters(); ++count2){
+	      if (_myInstance->distance(count, tmpCenters[count2]) < distance1){
+		  distance1 = _myInstance->distance(count, tmpCenters[count2]);
+		  center1 = tmpCenters[count2];
+	      }
+	}
+	for (count2 = 0; count2 < _myInstance->numCenters(); ++count2){
+	      if (_myInstance->distance(count, tmpCenters[count2]) < distance2 && tmpCenters[count2] != center1){
+		  distance2 = _myInstance->distance(count, tmpCenters[count2]);
+		  center2 = tmpCenters[count2];
+	      }
+	}
+	this->_pointsRegret[count] = _myInstance->distance(count, center2) - _myInstance->distance(count, center1);
+    }
+}
+
+void Solution::constructSolution(HeuristicType type) {
     unsigned short count;
     for ( count = 0; count < _myInstance->numPoints(); ++count ) {
         _pointsType[count] = CCP::Consumer;//Everyone is consumer at begin...
     }
-    calculateDensity();
-    selectFirstCenters();
-    findBasicClusters();
-    findBestCenters();
+    switch(type){
+      case CCP::Farthest :
+	selectFirstCenters();
+	findBasicClusters();
+	findBestCenters();
+	break;
+      case CCP::Density:
+	calculateDensity();
+	calculateRegret();
+	break;
+    }
 
 }
 
 void Solution::selectFirstCenters() {
     unsigned short count, center1, center2, numPoints = _myInstance->numPoints();
-    short unsigned int nextCenter;
     double distance = 0.0, max = 0.0;
     short unsigned int centerFound;
 

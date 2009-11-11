@@ -35,6 +35,11 @@ enum PointType {
   Center,
   Consumer
 };
+
+enum HeuristicType {
+  Density,
+  Farthest
+};
 /**
  * Class Solution
  */
@@ -74,14 +79,19 @@ public:
     double pointDensity(unsigned short index){
 	return this->_pointsDensity[index];
     }
-    /**
-     * 
-     */
+    
+    double pointRegret(unsigned short index){
+	return this->_pointsRegret[index];
+    }
+    unsigned short greatDensity(unsigned short big = 0);
+    
+    unsigned short greatRegret(unsigned short big = 0);
+    
     void setPointsType (PointType * value ) {
         _pointsType = value;
     }
     
-    void constructSolution();
+    void constructSolution(HeuristicType type = CCP::Farthest);
     
     void findBestCenters();
     
@@ -133,6 +143,7 @@ private:
      */
      double distance(short unsigned int point, QList< int > list);
      void calculateDensity();
+     void calculateRegret();
     
 };
 } 
