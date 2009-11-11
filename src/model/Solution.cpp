@@ -80,13 +80,17 @@ QList < int >  Solution::findNeiborhood(unsigned short point, unsigned short nNe
     for (unsigned short i = 0; i < nNeibor; ++i){
 	inserted = false;
 	do{
-	  ++tmp;
+	  
 	  p = distance->near(point, tmp);
 	  if ((_myInstance->point(p)->demand()+acumDemand) < _myInstance->capacity()) {
+	      acumDemand += _myInstance->point(p)->demand();
+	      list.append(p);
 	      inserted = true;
 	  }
+	  ++tmp;
 	}while (!inserted && tmp < _myInstance->numPoints());
     }
+    
     return list;
 }
 
@@ -107,7 +111,7 @@ void Solution::calculateDensity(){
     m = _myInstance->numPoints() / _myInstance->numCenters();
     for (unsigned short i = 0; i < _myInstance->numPoints(); ++i){
 	neibors = this->findNeiborhood(i, m);
-	_pointsDensity[i] = neibors.size()/this->distance(i, neibors);
+	_pointsDensity[i] = (double)neibors.size()/this->distance(i, neibors);
 	
     }
 }
@@ -117,7 +121,7 @@ void Solution::constructSolution() {
     for ( count = 0; count < _myInstance->numPoints(); ++count ) {
         _pointsType[count] = CCP::Consumer;//Everyone is consumer at begin...
     }
-
+    calculateDensity();
     selectFirstCenters();
     findBasicClusters();
     findBestCenters();

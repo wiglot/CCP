@@ -71,6 +71,9 @@ public:
     PointType pointType (unsigned short index) {
         return _pointsType[index];
     }
+    double pointDensity(unsigned short index){
+	return this->_pointsDensity[index];
+    }
     /**
      * 
      */

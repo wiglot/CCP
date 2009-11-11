@@ -85,7 +85,17 @@ void CCPSolution::buildInitial()
     QVERIFY((sol->getValue() - 5.65685) < 0.00001);
     
 }
-
+void CCPSolution::buildDensity(){
+    Solution * sol = new Solution(this->instance);
+    sol->constructSolution();
+    QVERIFY(qAbs(sol->pointDensity(0)-(double)0.878683) < 0.00001); 
+    QVERIFY(qAbs(sol->pointDensity(1)-(double)0.878683) < 0.00001); 
+    QVERIFY(qAbs(sol->pointDensity(2)-(double)1.242647) < 0.00001); 
+    QVERIFY(qAbs(sol->pointDensity(3)-(double)1.242647) < 0.00001); 
+    QVERIFY(qAbs(sol->pointDensity(4)-(double)0.878683) < 0.00001);
+    QVERIFY(qAbs(sol->pointDensity(5)-(double)0.878683) < 0.00001);
+    
+}
 
 QTEST_MAIN(CCPSolution)
 #include "CCPSolution.moc"

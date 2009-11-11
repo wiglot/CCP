@@ -38,6 +38,7 @@ private slots:
     void cleanupTestCase();
 
     void buildInitial();
+    void buildDensity();
 };
 
 #endif // CCPSOLUTION_H
