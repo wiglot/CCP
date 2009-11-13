@@ -35,8 +35,6 @@ Solution::Solution( Instance * instance ) {
     _centers = 0;
     _myInstance = 0;
     _pointsType = 0;
-    _pointsDensity = 0;
-    _pointsRegret = 0;
     setInstance( instance );
 }
 
@@ -70,140 +68,7 @@ void Solution::setInstance( Instance * inst ) {
 
 }
 
-QList < int >  Solution::findNeiborhood(unsigned short point, unsigned short nNeibor){
-    QList<int> list;
-    double acumDemand = 0.0;
-    unsigned short tmp = 0;
-    bool inserted;
-    unsigned short p;
-    Distance * distance = _myInstance->distancesMatrixes();
-    for (unsigned short i = 0; i < nNeibor; ++i){
-	inserted = false;
-	do{
-	  
-	  p = distance->near(point, tmp);
-	  if ((_myInstance->point(p)->demand()+acumDemand) < _myInstance->capacity()) {
-	      acumDemand += _myInstance->point(p)->demand();
-	      list.append(p);
-	      inserted = true;
-	  }
-	  ++tmp;
-	}while (!inserted && tmp < _myInstance->numPoints());
-    }
-    
-    return list;
-}
 
-unsigned short Solution::greatDensity(unsigned short big){
-    bool * visited = new bool[_myInstance->numPoints()];
-    unsigned short i, count, found;
-    double min;
-
-    ++big;
-
-    for ( i = 0; i < _myInstance->numPoints(); ++i )
-    {
-        visited[i] = false;
-    }
-//     visited[point] = true;
-    
-    for ( i = 0 ; i < big; ++i )
-    {
-        min = 0.0;
-        for ( count = 0; count < _myInstance->numPoints(); count++ ) {
-            if ( !visited[count] )
-            {
-                if ( pointDensity(count) > min ) {
-                    min = pointDensity(count);
-                    found = count;
-                }
-            }
-        }
-        visited[found] = true;
-    }
-    delete [] visited;
-    return found;
-  
-}
-
-unsigned short Solution::greatRegret(unsigned short big){
-    bool * visited = new bool[_myInstance->numPoints()];
-    unsigned short i, count, found;
-    double min;
-
-    ++big;
-
-    for ( i = 0; i < _myInstance->numPoints(); ++i ){
-        visited[i] = false;
-    }
-    
-    for ( i = 0 ; i < big; ++i ){
-        min = 0.0;
-        for ( count = 0; count < _myInstance->numPoints(); count++ ) {
-            if ( !visited[count] )
-            {
-                if ( pointRegret(count) > min ) {
-                    min = pointRegret(count);
-                    found = count;
-                }
-            }
-        }
-        visited[found] = true;
-    }
-    delete [] visited;
-    return found;
-  
-}
-
-double Solution::distance(unsigned short point, QList <int> list){
-    double acum = 0.0;
-    foreach(int i, list){
-	acum += _myInstance->distance(i, point);
-    }
-    return acum;
-}
-
-void Solution::calculateDensity(){
-    this->_pointsDensity = new double[this->_myInstance->numPoints()];
-    unsigned short m;
-    QList <int>  neibors;
-    
-    m = _myInstance->numPoints() / _myInstance->numCenters();
-    for (unsigned short i = 0; i < _myInstance->numPoints(); ++i){
-	neibors = this->findNeiborhood(i, m);
-	_pointsDensity[i] = (double)neibors.size()/this->distance(i, neibors);
-	
-    }
-}
-
-void Solution::calculateRegret(){
-    unsigned short * tmpCenters = new unsigned short[_myInstance->numCenters()];
-    unsigned short count, count2;
-    double distance1, distance2;
-    unsigned short center1, center2;
-    this->_pointsRegret = new double[_myInstance->numPoints()];
-    
-    for (count = 0; count < _myInstance->numCenters(); ++count){
-	tmpCenters[count] = this->greatDensity(count);
-    }
-    for (count = 0; count < _myInstance->numPoints(); ++count){
-	distance1 = 1.0e10;
-	distance2 = 1.0e10;
-	for (count2 = 0; count2 < _myInstance->numCenters(); ++count2){
-	      if (_myInstance->distance(count, tmpCenters[count2]) < distance1){
-		  distance1 = _myInstance->distance(count, tmpCenters[count2]);
-		  center1 = tmpCenters[count2];
-	      }
-	}
-	for (count2 = 0; count2 < _myInstance->numCenters(); ++count2){
-	      if (_myInstance->distance(count, tmpCenters[count2]) < distance2 && tmpCenters[count2] != center1){
-		  distance2 = _myInstance->distance(count, tmpCenters[count2]);
-		  center2 = tmpCenters[count2];
-	      }
-	}
-	this->_pointsRegret[count] = _myInstance->distance(count, center2) - _myInstance->distance(count, center1);
-    }
-}
 
 void Solution::constructSolution(HeuristicType type) {
     unsigned short count;
@@ -212,120 +77,18 @@ void Solution::constructSolution(HeuristicType type) {
     }
     switch(type){
       case CCP::Farthest :
-	selectFirstCenters();
-	findBasicClusters();
-	findBestCenters();
+// 	selectFirstCenters();
+// 	findBasicClusters();
+// 	findBestCenters();
 	break;
       case CCP::Density:
-	calculateDensity();
-	calculateRegret();
+
 	break;
     }
 
 }
 
-void Solution::selectFirstCenters() {
-    unsigned short count, center1, center2, numPoints = _myInstance->numPoints();
-    double distance = 0.0, max = 0.0;
-    short unsigned int centerFound;
 
-    for ( count = 0; count < numPoints; ++count ) {
-        distance = _myInstance->distance( count, _myInstance->distancesMatrixes()->near( count, numPoints - 1 ) );
-        if ( distance > max ) {
-            max = distance;
-            center1 = count;
-            center2 = _myInstance->distancesMatrixes()->near( count, numPoints - 1 );
-        }
-    }
-    _centers[0]->setCenter( _myInstance->point( center1 ) );
-//     _pointsType[center1] = CCP::Center;
-
-    _centers[1]->setCenter( _myInstance->point( center2 ) );
-//     _pointsType[center2] = CCP::Center;
-
-    int centersInserted = 2;
-    while ( _myInstance->numCenters() > centersInserted ) {
-        max = 0.0;
-        for ( count = 0; count < numPoints; ++count ) {
-            if ( _pointsType[count]  == CCP::Consumer ) {
-                distance = 1.0;
-                for ( int count2 = 0; count2 < centersInserted; ++count2 ) {
-                    distance *= _myInstance->distance(
-                                    _myInstance->point( count ),
-                                    _centers[count2]->getCenter()
-                                );
-                }
-                if ( distance > max ) {
-                    max = distance;
-                    centerFound = count;
-                }
-            }
-        }
-        _centers[centersInserted]->setCenter( _myInstance->point( centerFound ) );
-        _pointsType[centerFound] = CCP::Center;
-        ++centersInserted;
-    }
-}
-
-void Solution::findBasicClusters() {
-    unsigned short  count, count2;
-    Point * selectedPoint;
-    unsigned short clusterToAdd;
-    double indicator = 0.0;
-    
-    Cluster * cluster;
-    for ( count2 = 0; count2 < _myInstance->numPoints(); ++count2 ) {
-        if ( this->_pointsType[count2] == CCP::Consumer ) {
-            selectedPoint = _myInstance->point( count2 );
-	    indicator = 200000.0;
-	    clusterToAdd = _myInstance->numPoints();
-            for ( count = 0; count < _myInstance->numCenters(); ++count ) {
-                cluster = this->_centers[count];
-                if ( cluster->remainCapacity() > selectedPoint->demand() ) {
-		    double tmp = _myInstance->distance(selectedPoint, cluster->getCenter(),
-							  selectedPoint->demand());
-		    if (tmp <= indicator){
-			indicator = tmp;
-			clusterToAdd = count;
-		    }
-                }
-            }
-	    if (clusterToAdd == _myInstance->numPoints()){
-	      throw QString ("There is no cluster with capacity to suporte a point");
-	    }
-	    cluster = this->_centers[clusterToAdd];
-	    cluster->addPoint(selectedPoint);
-        }
-    }
-}
-
-void Solution::findBestCenters() {
-  Point * newCenter;
-  Cluster * cluster;
-  unsigned short count, countPoints;
-  double value;
-  
-  for (count = 0; count < _myInstance->numCenters(); ++count){
-      cluster = _centers[count];
-      value = cluster->totalDistance();
-      newCenter = cluster->getCenter();
-      for (countPoints = 0; countPoints < cluster->numPoints(); ++countPoints){
-	Point * candidacte = cluster->takePoint(0);
-	cluster->addPoint(cluster->getCenter());
-	cluster->setCenter(candidacte);
-	double newValue = cluster->totalDistance();
-	if (newValue < value){
-	    value = newValue;
-	    newCenter = candidacte;
-	}
-      }
-      if (newCenter != cluster->getCenter()){
-	  cluster->removePoint(newCenter);
-	  cluster->addPoint(cluster->getCenter());
-	  cluster->setCenter(newCenter);
-      }
-  }
-}
 
 double Solution::getValue(){
   double acum = 0.0;

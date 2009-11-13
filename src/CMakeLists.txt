@@ -2,6 +2,7 @@
 
 add_subdirectory(model)
 add_subdirectory(io)
+add_subdirectory(algorithms)
 
 include_directories(${QT_INCLUDES} ${CMAKE_CURRENT_BINARY_DIR} model io)
 
