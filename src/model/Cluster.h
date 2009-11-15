@@ -23,17 +23,17 @@
 
 namespace CCP{
   class Point;
-  class Solution;
+  class Instance;
 
 
 class Cluster {
 private:
       Point * center;
       QList<Point *> points;
-      Solution* solution;
+      Instance* _instance;
       
   public:
-    Cluster(Solution * inst);
+    Cluster(Instance * inst);
     ~Cluster();
     void addPoint(Point * p);
     void removePoint(Point * p);

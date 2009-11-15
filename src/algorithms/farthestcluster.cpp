@@ -18,13 +18,24 @@
 */
 
 #include "farthestcluster.h"
-#include "Instance.h"
+#include "../model/Instance.h"
 #include "Distance.h"
 #include "Cluster.h"
 
 
 using namespace CCP;
 
+
+CCP::Cluster** FarthestCluster::buildClusters(){
+    this->_centers = new Cluster*[_myInstance->numCenters()];
+    for (unsigned short count = 0 ; count < _myInstance->numCenters(); ++count){
+	this->_centers[count] = new Cluster(_myInstance);
+    }
+    this->selectFirstCenters();
+    this->findBasicClusters();
+    this->findBestCenters();
+    return this->_centers;
+}
 
 void FarthestCluster::selectFirstCenters() {
     unsigned short count, center1, center2, numPoints = instance()->numPoints();

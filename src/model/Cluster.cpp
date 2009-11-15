@@ -23,7 +23,7 @@
 #include "Point.h"
 #include <QList>
 
-CCP::Cluster::Cluster(Solution* inst): solution(inst)
+CCP::Cluster::Cluster(Instance* inst): _instance(inst)
 { 
   this->center = 0;
 }
@@ -31,7 +31,7 @@ CCP::Cluster::Cluster(Solution* inst): solution(inst)
 CCP::Cluster::~Cluster(){ }
 
 void CCP::Cluster::addPoint(CCP::Point* p){
-    solution->setPointType(p, CCP::Consumer);
+//     _instance->setPointType(p, CCP::Consumer);
     
     points.append(p);
 }
@@ -46,7 +46,7 @@ double CCP::Cluster::actualDemand(){
 }
 
 double CCP::Cluster::remainCapacity(){
-  return (solution->getInstance()->capacity() - actualDemand());
+  return (_instance->capacity() - actualDemand());
 }
 
 void CCP::Cluster::removePoint(Point * p){
@@ -62,17 +62,17 @@ void CCP::Cluster::setCenter(Point * center){
 //       if (this->center != 0){
 // 	 removePoint(center);
 //       }
-      solution->setPointType(center, CCP::Center);
+      //_instance->setPointType(center, CCP::Center);
       this->center = center;
 //       addPoint(center);
     }
 
 double CCP::Cluster::totalDistance(){
   double total = 0.0;
-  Instance * inst = this->solution->getInstance();
+//   Instance * inst = this->_instance->getInstance();
   
   for (int i = 0; i< points.size(); ++i){
-     total += inst->distance(center, getPoint(i));
+     total += _instance->distance(center, getPoint(i));
   }
   return total;
 }

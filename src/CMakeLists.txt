@@ -10,4 +10,4 @@ set(CCP_SRCS main.cpp model/Distance.cpp model/Instance.cpp model/Point.cpp mode
 qt4_automoc(${CCP_SRCS})
 add_executable(CCP main.cpp )
 
-target_link_libraries(CCP ${QT_QTCORE_LIBRARY} CCPModelLib CCPIOLib) 
+target_link_libraries(CCP ${QT_QTCORE_LIBRARY} CCPModelLib CCPIOLib CCPAlgorithms) 

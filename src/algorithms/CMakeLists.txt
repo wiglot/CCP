@@ -7,6 +7,6 @@ set (Algorithms_CCP densitycluster.cpp farthestcluster.cpp algorithmstruct.cpp)
 qt4_automoc(${Algorithms_CCP})
 
 
-add_library(CCPAlgorithms SHARED ${Algorithms_CCP})
+add_library(CCPAlgorithms STATIC ${Algorithms_CCP})
 
-link_libraries(CCPModelLib ${QT_QT_LIBRARY} ${CCPModelLib})
+link_libraries(CCPModelLib ${QT_QT_LIBRARY} CCPModelLib )

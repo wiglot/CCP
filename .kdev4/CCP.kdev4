@@ -105,5 +105,5 @@ Try Setting Breakpoints On Loading Libraries=true
 VersionControlSupport=kdevgit
 
 [Veritas]
-executables=/home/wagner/src/CCP/build/tests/CCPTest,/home/wagner/src/CCP/build/tests/CCPModel,/home/wagner/src/CCP/build/tests/CCPDistance,/home/wagner/src/CCP/build/tests/CCPSolution,/home/wagner/src/CCP/build/tests/CCPRead
+executables=
 framework=QTest

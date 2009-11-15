@@ -25,6 +25,7 @@
 #include "Instance.h"
 #include "Cluster.h"
 #include "Point.h"
+#include "farthestcluster.h"
 
 using namespace CCP;
 
@@ -34,7 +35,6 @@ using namespace CCP;
 Solution::Solution( Instance * instance ) {
     _centers = 0;
     _myInstance = 0;
-    _pointsType = 0;
     setInstance( instance );
 }
 
@@ -56,7 +56,7 @@ void Solution::setInstance( Instance * inst ) {
     if ( _centers != 0 ) {
         delete [] _centers;
     }
-    _centers = new Cluster*[inst->numCenters()];
+    _centers = 0;/*new Cluster*[inst->numCenters()];
     for (unsigned short count = 0 ; count < inst->numCenters(); ++count){
 	_centers[count] = new Cluster(this);
     }
@@ -64,7 +64,7 @@ void Solution::setInstance( Instance * inst ) {
         delete [] _pointsType;
     }
     _pointsType = new PointType[inst->numPoints()];
-    
+    */
 
 }
 
@@ -76,13 +76,17 @@ void Solution::constructSolution(HeuristicType type) {
         _pointsType[count] = CCP::Consumer;//Everyone is consumer at begin...
     }
     switch(type){
-      case CCP::Farthest :
-// 	selectFirstCenters();
-// 	findBasicClusters();
-// 	findBestCenters();
-	break;
+      
       case CCP::Density:
 
+	break;
+	
+      case CCP::Farthest :
+	FarthestCluster far(_myInstance);
+	_centers = far.buildClusters();
+// 	selectFirstCenters();
+// 	findBasicClusters();	
+// 	findBestCenters();
 	break;
     }
 

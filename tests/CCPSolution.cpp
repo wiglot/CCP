@@ -58,7 +58,7 @@ void CCPSolution::buildInitial()
 {
     Solution * sol = new Solution(this->instance);
     Cluster * cluster;
-    sol->constructSolution();
+    sol->constructSolution(CCP::Farthest);
     
     cluster = sol->cluster(0);
     QCOMPARE(cluster->numPoints(), (unsigned short) 2);

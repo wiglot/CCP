@@ -20,15 +20,15 @@
 #ifndef ALGORITHMSTRUCT_H
 #define ALGORITHMSTRUCT_H
 #include <QList>
-#include "Instance.h"
-#include "Solution.h"
-#include "Cluster.h"
+#include "../model/Instance.h"
+#include "../model/Solution.h"
+#include "../model/Cluster.h"
 /** @class AlgorithmStruct
     @brief A helper class that take care of know if a point is assigned or not, and some operations needed by various methods.
     
 */
 class AlgorithmStruct {
-private:    
+protected:    
   CCP::Instance * _myInstance;
   int * _assigned;
   CCP::PointType * _pointType;
