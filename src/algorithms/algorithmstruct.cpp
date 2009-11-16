@@ -28,10 +28,17 @@ AlgorithmStruct::AlgorithmStruct( Instance* inst ):
 {
   _assigned = new int[_myInstance->numPoints()];
   for (unsigned short count = 0; count < _myInstance->numPoints(); ++count){
-     unAssign(count); 
+     unAssign(count);
   }
 }
 
+CCP::PointType AlgorithmStruct::pointType(int index){
+    for (unsigned short i = 0; i < _myInstance->numCenters(); ++i){
+	if (_centers[i]->getCenter() == _myInstance->point(index))
+	    return CCP::Center;
+    }
+    return CCP::Consumer;
+}
 
 double AlgorithmStruct::distance(unsigned short point, QList <int> list){
     double acum = 0.0;

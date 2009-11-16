@@ -41,10 +41,10 @@ public:
     
     inline CCP::Instance * instance(){return _myInstance;}
     CCP::Cluster * cluster(int index){return _centers[index];}
-    CCP::PointType pointType(int index){return _pointType[index];}
-    inline void setPointType(unsigned short point, CCP::PointType type){
-	_pointType[point] = type;
-    }
+    CCP::PointType pointType(int index);
+//     inline void setPointType(unsigned short point, CCP::PointType type){
+// 	_pointType[point] = type;
+//     }
     inline bool isAssigned(unsigned short index){
       return (this->assignedTo(index) != -1);
     }

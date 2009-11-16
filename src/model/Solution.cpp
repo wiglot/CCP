@@ -40,15 +40,15 @@ Solution::Solution( Instance * instance ) {
 
 Solution::~Solution() {
     delete [] _centers;
-    delete [] _pointsType;
+//     delete [] _pointsType;
 }
 /**
  * Methods
  */
-void Solution::setPointType( Point* arg1, PointType type ){
-  int index = _myInstance->pointIndex(arg1);
-  _pointsType[index] = type;
-}
+// void Solution::setPointType( Point* arg1, PointType type ){
+//   int index = _myInstance->pointIndex(arg1);
+//   _pointsType[index] = type;
+// }
 
 void Solution::setInstance( Instance * inst ) {
     //Alloc stuff
@@ -68,13 +68,21 @@ void Solution::setInstance( Instance * inst ) {
 
 }
 
-
+PointType Solution::pointType (unsigned short index){
+  for (unsigned short i = 0; i < _myInstance->numCenters(); ++i){
+      if (_myInstance->point(index) == _centers[i]->getCenter()){
+	  return CCP::Center;
+      }
+  }
+  return CCP::Consumer;
+  
+}
 
 void Solution::constructSolution(HeuristicType type) {
     unsigned short count;
-    for ( count = 0; count < _myInstance->numPoints(); ++count ) {
-        _pointsType[count] = CCP::Consumer;//Everyone is consumer at begin...
-    }
+//     for ( count = 0; count < _myInstance->numPoints(); ++count ) {
+//         _pointsType[count] = CCP::Consumer;//Everyone is consumer at begin...
+//     }
     switch(type){
       
       case CCP::Density:

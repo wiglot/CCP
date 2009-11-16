@@ -75,7 +75,7 @@ void FarthestCluster::selectFirstCenters() {
             }
         }
         cluster(centersInserted)->setCenter( instance()->point( centerFound ) );
-        setPointType(centerFound, CCP::Center);
+//         setPointType(centerFound, CCP::Center);
         ++centersInserted;
     }
 }
@@ -87,6 +87,8 @@ void FarthestCluster::findBasicClusters() {
     double indicator = 0.0;
     
     CCP::Cluster * tmpcluster;
+    
+    
     for ( count2 = 0; count2 < instance()->numPoints(); ++count2 ) {
         if ( this->pointType(count2) == CCP::Consumer ) {
             selectedPoint = instance()->point( count2 );

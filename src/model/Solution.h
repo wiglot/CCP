@@ -73,14 +73,12 @@ public:
     /**
      * 
      */
-    PointType pointType (unsigned short index) {
-        return _pointsType[index];
-    }
+    PointType pointType (unsigned short index);
 
-    
-    void setPointsType (PointType * value ) {
-        _pointsType = value;
-    }
+
+//     void setPointsType (PointType * value ) {
+//         _pointsType = value;
+//     }
     
     void constructSolution(HeuristicType type = CCP::Farthest);
     
@@ -111,7 +109,7 @@ private:
      */
 
      Instance * _myInstance;
-     PointType * _pointsType;
+//      PointType * _pointsType;
      Cluster ** _centers;
      
      
