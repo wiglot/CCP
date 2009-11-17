@@ -92,6 +92,8 @@ public:
      *
      */
     CCP::Distance * distancesMatrixes ( ) {
+	if (_distance == 0)
+	    throw QString ("Initialize \"Distance\" First.");
         return _distance;
     }
     /**

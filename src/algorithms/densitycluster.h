@@ -24,6 +24,9 @@
 
 class DensityCluster:public AlgorithmStruct{
 public:
+  
+    DensityCluster(CCP::Instance* inst);
+    
     double pointDensity(unsigned short index){
 	return this->_pointsDensity[index];
     }
@@ -46,10 +49,12 @@ public:
 	 @param list list of points.
 	 @return Total distance from point to all list.
      */
-     double distance(short unsigned int point, QList< int > list);
+//      double distance(short unsigned int point, QList< int > list);
      void calculateDensity();
      void calculateRegret();
     
+     CCP::Cluster ** buildClusters();
+     
 private:
     double * _pointsDensity;
     double * _pointsRegret;

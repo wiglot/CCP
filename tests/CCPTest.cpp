@@ -19,6 +19,10 @@
 
 #include "CCPTest.h"
 #include <QtTest/QTest>
+#include "Instance.h"
+#include "readccp.h"
+
+using namespace CCP;
 
 void CCPTest::initTestCase()
 {}

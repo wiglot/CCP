@@ -39,6 +39,8 @@ private slots:
 
     void buildInitial();
     void buildDensity();
+    void buildFile();
+
 };
 
 #endif // CCPSOLUTION_H

@@ -23,7 +23,11 @@
 #include "Distance.h"
 #include "Solution.h"
 #include "Cluster.h"
+#include "readccp.h"
 #include <QtTest/QTest>
+
+#include "../src/algorithms/densitycluster.h"
+
 using namespace CCP;
 
 void CCPSolution::initTestCase()
@@ -85,36 +89,41 @@ void CCPSolution::buildInitial()
     
 }
 void CCPSolution::buildDensity(){
-    Solution * sol = new Solution(this->instance);
-    sol->constructSolution(CCP::Density);
-    QFAIL("Not implemented yet");
-//     QVERIFY(qAbs(sol->pointDensity(0)-(double)0.878683) < 0.00001); 
-//     QVERIFY(qAbs(sol->pointDensity(1)-(double)0.878683) < 0.00001); 
-//     QVERIFY(qAbs(sol->pointDensity(2)-(double)1.242647) < 0.00001); 
-//     QVERIFY(qAbs(sol->pointDensity(3)-(double)1.242647) < 0.00001); 
-//     QVERIFY(qAbs(sol->pointDensity(4)-(double)0.878683) < 0.00001);
-//     QVERIFY(qAbs(sol->pointDensity(5)-(double)0.878683) < 0.00001);
-//     
-//     
-//     QCOMPARE(sol->greatDensity(), (unsigned short)2);
-//     QCOMPARE(sol->greatDensity(1),(unsigned short) 3);
-//     QCOMPARE(sol->greatDensity(2),(unsigned short) 0);
-//     
-//     QCOMPARE(sol->greatRegret(), (unsigned short) 2);
-//     QCOMPARE(sol->greatRegret(1), (unsigned short) 3);
-//     QCOMPARE(sol->greatRegret(2), (unsigned short) 0);
-//     QCOMPARE(sol->greatRegret(3), (unsigned short) 1);
-//     QCOMPARE(sol->greatRegret(4), (unsigned short) 4);
-//     QCOMPARE(sol->greatRegret(5), (unsigned short) 5);
+    
+    DensityCluster  density(instance);
+    density.buildClusters();
+    
+//     QFAIL("Not implemented yet");
+     QVERIFY(qAbs(density.pointDensity(0)-(double)0.878683) < 0.00001); 
+     QVERIFY(qAbs(density.pointDensity(1)-(double)0.878683) < 0.00001); 
+    QVERIFY(qAbs(density.pointDensity(2)-(double)1.242647) < 0.00001); 
+    QVERIFY(qAbs(density.pointDensity(3)-(double)1.242647) < 0.00001); 
+    QVERIFY(qAbs(density.pointDensity(4)-(double)0.878683) < 0.00001);
+    QVERIFY(qAbs(density.pointDensity(5)-(double)0.878683) < 0.00001);
+    
+    
+    QCOMPARE(density.greatDensity(), (unsigned short)2);
+    QCOMPARE(density.greatDensity(1),(unsigned short) 3);
+    QCOMPARE(density.greatDensity(2),(unsigned short) 0);
+    
+    QCOMPARE(density.greatRegret(), (unsigned short) 2);
+    QCOMPARE(density.greatRegret(1), (unsigned short) 3);
+    QCOMPARE(density.greatRegret(2), (unsigned short) 0);
+    QCOMPARE(density.greatRegret(3), (unsigned short) 1);
+    QCOMPARE(density.greatRegret(4), (unsigned short) 4);
+    QCOMPARE(density.greatRegret(5), (unsigned short) 5);
     
     
 }
-/*
-void CCPSolution::buildDensity(){
-    Solution * sol = new Solution(this->instance);
-    sol->constructSolution();
-    
-}*/
+
+void CCPSolution::buildFile(){
+  Instance * fileInst = readCCP::readLorenaEuclidian("../../instances/lorenaEuclidian.dat");
+  Distance * dist = new Distance(fileInst);
+  DensityCluster  density(fileInst);
+  density.buildClusters();
+  
+  
+}
 
 QTEST_MAIN(CCPSolution)
 #include "CCPSolution.moc"

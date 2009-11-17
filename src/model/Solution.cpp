@@ -79,7 +79,6 @@ PointType Solution::pointType (unsigned short index){
 }
 
 void Solution::constructSolution(HeuristicType type) {
-    unsigned short count;
 //     for ( count = 0; count < _myInstance->numPoints(); ++count ) {
 //         _pointsType[count] = CCP::Consumer;//Everyone is consumer at begin...
 //     }

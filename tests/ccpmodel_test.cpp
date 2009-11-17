@@ -38,6 +38,7 @@ void CCPModel_test::initTestCase()
     instance->setNumCenters(2);
     instance->setCapacity(6.0);
     Distance * distance = new Distance(instance);
+    distance->distance(0,0);
 }
 
 void CCPModel_test::init()

@@ -23,6 +23,32 @@
 
 using namespace CCP;
 
+
+
+DensityCluster::DensityCluster(Instance* inst): AlgorithmStruct(inst)
+{
+
+}
+
+
+
+// double DensityCluster::distance(short unsigned int point, QList< int > list)
+// {
+//   return 0.0;
+// }
+
+
+CCP::Cluster ** DensityCluster::buildClusters(){
+    this->_centers = new Cluster*[_myInstance->numCenters()];
+    for (unsigned short count = 0 ; count < _myInstance->numCenters(); ++count){
+	this->_centers[count] = new Cluster(_myInstance);
+    }
+    this->calculateDensity();
+    this->calculateRegret();
+    return this->_centers;
+    
+}
+
 void DensityCluster::calculateDensity(){
     this->_pointsDensity = new double[this->instance()->numPoints()];
     unsigned short m;
