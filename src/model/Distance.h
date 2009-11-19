@@ -78,6 +78,7 @@ private:
       Instance * _instance;
       unsigned short _numPoints;
       double ** _values;
+      int ** _near;
 
       /**
       */

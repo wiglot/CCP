@@ -32,14 +32,14 @@ CCP::Distance::Distance ( Instance * inst ) :
     
     unsigned short count, count2;
     this->_values = new double*[_numPoints];
-
-    for ( count = 0; count < _numPoints; ++count )
-    {
+    this->_near = new int*[_numPoints];
+    for ( count = 0; count < _numPoints; ++count ){
         this->_values[count] = new double[count];
-        for ( count2 = 0; count2 < count; ++count2 )
-        {
-            _values[count][count2] = -1;
-
+	this->_near[count] = new int[_numPoints];
+        for ( count2 = 0; count2 < _numPoints; ++count2 ) {
+	    if (count2 < count)
+		_values[count][count2] =-1;
+	    _near[count][count2] = -1;
         }
     }
     
@@ -51,9 +51,11 @@ CCP::Distance::~Distance()
 {
     unsigned short count;
     for ( count = 0; count < _numPoints; ++count ) {
-        delete _values[count];
+        delete [] _values[count];
+	delete [] _near[count];
     }
     delete [] _values;
+    delete [] _near;
 
 
 }
@@ -78,17 +80,36 @@ short unsigned int CCP::Distance::near ( unsigned short point, unsigned short ne
 {
     bool * visited = new bool[_numPoints];
     unsigned short i, count, found;
+    unsigned short init = 1;
     double min;
-
+    
     if ( nearest == 0 )
-        return point;
-
+	_near[point][0] = point;
+    
+    if (_near[point][nearest] != -1){
+	return _near[point][nearest];
+    }
+  
     for ( i = 0; i < _numPoints; ++i )
     {
         visited[i] = false;
     }
+    
     visited[point] = true;
-    for ( i = 0 ; i < nearest; ++i )
+    
+    
+    for (i = nearest-1; i > 0; --i){
+	if (_near[point][i] != -1){
+	    init = i;
+	    for (count = i; count > 0; --count){
+		visited[  _near[point][count]  ] = true;
+	    }
+	    break;
+	}
+    }
+    
+    
+    for ( i = init ; i <= nearest; ++i )
     {
         min = 2000000;
         for ( count = 0; count < _numPoints; count++ ) {
@@ -100,7 +121,8 @@ short unsigned int CCP::Distance::near ( unsigned short point, unsigned short ne
                 }
             }
         }
+	_near[point][i] = found;
         visited[found] = true;
     }
-    return found;
+    return _near[point][nearest];
 }
