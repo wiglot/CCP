@@ -53,13 +53,9 @@ public:
 	return this->_assigned[index];
     }
     
-    inline void assign(unsigned short point, int cluster){
-	this->_assigned[point] = cluster;
-    }
-    
-    inline void unAssign(unsigned short index){
-	this->_assigned[index] = -1;
-    }
+    void assign(unsigned short point, int cluster, CCP::PointType asType = CCP::Consumer);
+    void assign(CCP::Point * point, int cluster, CCP::PointType asType = CCP::Consumer);
+    void unAssign(unsigned short index);
     
     /** @brief calculate the distance from 'center' to all points on list 'points'.
     */

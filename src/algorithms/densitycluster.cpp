@@ -39,10 +39,7 @@ DensityCluster::DensityCluster(Instance* inst): AlgorithmStruct(inst)
 
 
 CCP::Cluster ** DensityCluster::buildClusters(){
-    this->_centers = new Cluster*[_myInstance->numCenters()];
-    for (unsigned short count = 0 ; count < _myInstance->numCenters(); ++count){
-	this->_centers[count] = new Cluster(_myInstance);
-    }
+
     this->calculateDensity();
     this->calculateRegret();
     return this->_centers;

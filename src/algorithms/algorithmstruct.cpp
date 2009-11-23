@@ -27,8 +27,12 @@ AlgorithmStruct::AlgorithmStruct( Instance* inst ):
   _myInstance(inst)
 {
   _assigned = new int[_myInstance->numPoints()];
+  this->_centers = new Cluster*[_myInstance->numCenters()];
+  for (unsigned short count = 0 ; count < _myInstance->numCenters(); ++count){
+      this->_centers[count] = new Cluster(_myInstance);
+  }
   for (unsigned short count = 0; count < _myInstance->numPoints(); ++count){
-     unAssign(count);
+    this->_assigned[count] = -1;
   }
 }
 
@@ -46,4 +50,29 @@ double AlgorithmStruct::distance(unsigned short point, QList <int> list){
 	acum += _myInstance->distance(i, point);
     }
     return acum;
+}
+
+void AlgorithmStruct::assign(CCP::Point * point, int cluster, CCP::PointType asType){
+    assign(_myInstance->pointIndex(point), cluster, asType);
+}
+
+void AlgorithmStruct::assign(unsigned short point, int cluster, CCP::PointType asType){
+	if (assignedTo(point) != -1){
+	    unAssign(point);
+	}
+	this->_assigned[point] = cluster;
+	if (asType == CCP::Center){
+	    _centers[cluster]->setCenter(_myInstance->point(point));
+	}else{
+	    _centers[cluster]->addPoint(_myInstance->point(point));
+	}
+    }
+    
+void AlgorithmStruct::unAssign(unsigned short index){
+    if (pointType(index) == CCP::Center){
+	this->_centers[this->_assigned[index]]->setCenter(0);
+    }else{
+	this->_centers[this->_assigned[index]]->removePoint(_myInstance->point(index));
+    }
+    this->_assigned[index] = -1;
 }

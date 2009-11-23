@@ -27,10 +27,10 @@ using namespace CCP;
 
 
 CCP::Cluster** FarthestCluster::buildClusters(){
-    this->_centers = new Cluster*[_myInstance->numCenters()];
-    for (unsigned short count = 0 ; count < _myInstance->numCenters(); ++count){
-	this->_centers[count] = new Cluster(_myInstance);
-    }
+//     this->_centers = new Cluster*[_myInstance->numCenters()];
+//     for (unsigned short count = 0 ; count < _myInstance->numCenters(); ++count){
+// 	this->_centers[count] = new Cluster(_myInstance);
+//     }
     this->selectFirstCenters();
     this->findBasicClusters();
     this->findBestCenters();
@@ -50,10 +50,11 @@ void FarthestCluster::selectFirstCenters() {
             center2 = instance()->distancesMatrixes()->near( count, numPoints - 1 );
         }
     }
-    cluster(0)->setCenter( instance()->point( center1 ) );
+    assign(center1, 0,CCP::Center);
+//     cluster(0)->setCenter( instance()->point( center1 ) );
 //     pointType(center1) = CCP::Center;
-
-    cluster(1)->setCenter( instance()->point( center2 ) );
+    assign(center2, 1,CCP::Center);
+//     cluster(1)->setCenter( instance()->point( center2 ) );
 //     pointType(center2) = CCP::Center;
 
     int centersInserted = 2;
@@ -74,7 +75,8 @@ void FarthestCluster::selectFirstCenters() {
                 }
             }
         }
-        cluster(centersInserted)->setCenter( instance()->point( centerFound ) );
+	assign(centerFound, centersInserted, CCP::Center);
+//         cluster(centersInserted)->setCenter( instance()->point( centerFound ) );
 //         setPointType(centerFound, CCP::Center);
         ++centersInserted;
     }
@@ -108,8 +110,9 @@ void FarthestCluster::findBasicClusters() {
 	    if (clusterToAdd == instance()->numPoints()){
 	      throw QString ("There is no cluster with capacity to suporte a point");
 	    }
-	    tmpcluster = this->cluster(clusterToAdd);
-	    tmpcluster->addPoint(selectedPoint);
+	    assign(selectedPoint, clusterToAdd);
+// 	    tmpcluster = this->cluster(clusterToAdd);
+// 	    tmpcluster->addPoint(selectedPoint);
         }
     }
 }
@@ -125,9 +128,11 @@ void FarthestCluster::findBestCenters() {
       value = tmpcluster->totalDistance();
       newCenter = tmpcluster->getCenter();
       for (countPoints = 0; countPoints < tmpcluster->numPoints(); ++countPoints){
-	Point * candidacte = tmpcluster->takePoint(0);
-	tmpcluster->addPoint(tmpcluster->getCenter());
-	tmpcluster->setCenter(candidacte);
+	Point * candidacte = tmpcluster->getPoint(0);
+	assign(tmpcluster->getCenter(), count);
+	assign(candidacte, count, CCP::Center);
+// 	tmpcluster->addPoint(tmpcluster->getCenter());
+// 	tmpcluster->setCenter(candidacte);
 	double newValue = tmpcluster->totalDistance();
 	if (newValue < value){
 	    value = newValue;
@@ -135,9 +140,11 @@ void FarthestCluster::findBestCenters() {
 	}
       }
       if (newCenter != tmpcluster->getCenter()){
-	  tmpcluster->removePoint(newCenter);
-	  tmpcluster->addPoint(tmpcluster->getCenter());
-	  tmpcluster->setCenter(newCenter);
+	  assign(tmpcluster->getCenter(), count);
+	  assign(newCenter, count, CCP::Center);
+// 	  tmpcluster->removePoint(newCenter);
+// 	  tmpcluster->addPoint(tmpcluster->getCenter());
+// 	  tmpcluster->setCenter(newCenter);
       }
   }
 }
