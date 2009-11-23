@@ -2,11 +2,11 @@
 BuildItems=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x00)
 
 [CMake]
-BuildDirs[$e]=$HOME/workspace/CCP/build
+BuildDirs[$e]=$HOME/src/CCP/build
 CMakeDir=/usr/share/cmake-2.6/Modules
 Current CMake Binary=file:///usr/bin/cmake
-CurrentBuildDir=file:///home/joseane/workspace/CCP/build
-CurrentBuildType=Debug
+CurrentBuildDir=file:///home/wagner/src/CCP/build
+CurrentBuildType=debug
 CurrentInstallDir=file:///usr/local
 ProjectRootRelative=./
 
@@ -105,5 +105,5 @@ Try Setting Breakpoints On Loading Libraries=true
 VersionControlSupport=kdevgit
 
 [Veritas]
-executables=/home/joseane/workspace/CCP/build/tests/CCPTest,/home/joseane/workspace/CCP/build/tests/CCPModel,/home/joseane/workspace/CCP/build/tests/CCPDistance,/home/joseane/workspace/CCP/build/tests/CCPSolution,/home/joseane/workspace/CCP/build/tests/CCPRead
+executables=/home/wagner/src/CCP/build/tests/CCPTest,/home/wagner/src/CCP/build/tests/CCPModel,/home/wagner/src/CCP/build/tests/CCPDistance,/home/wagner/src/CCP/build/tests/CCPSolution,/home/wagner/src/CCP/build/tests/CCPRead
 framework=QTest

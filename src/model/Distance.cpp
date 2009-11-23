@@ -100,7 +100,7 @@ short unsigned int CCP::Distance::near ( unsigned short point, unsigned short ne
     
     for (i = nearest-1; i > 0; --i){
 	if (_near[point][i] != -1){
-	    init = i;
+	    init = i + 1;
 	    for (count = i; count > 0; --count){
 		visited[  _near[point][count]  ] = true;
 	    }
