@@ -117,34 +117,3 @@ void FarthestCluster::findBasicClusters() {
     }
 }
 
-void FarthestCluster::findBestCenters() {
-  Point * newCenter;
-  Cluster * tmpcluster;
-  unsigned short count, countPoints;
-  double value;
-  
-  for (count = 0; count < instance()->numCenters(); ++count){
-      tmpcluster = cluster(count);
-      value = tmpcluster->totalDistance();
-      newCenter = tmpcluster->getCenter();
-      for (countPoints = 0; countPoints < tmpcluster->numPoints(); ++countPoints){
-	Point * candidacte = tmpcluster->getPoint(0);
-	assign(tmpcluster->getCenter(), count);
-	assign(candidacte, count, CCP::Center);
-// 	tmpcluster->addPoint(tmpcluster->getCenter());
-// 	tmpcluster->setCenter(candidacte);
-	double newValue = tmpcluster->totalDistance();
-	if (newValue < value){
-	    value = newValue;
-	    newCenter = candidacte;
-	}
-      }
-      if (newCenter != tmpcluster->getCenter()){
-	  assign(tmpcluster->getCenter(), count);
-	  assign(newCenter, count, CCP::Center);
-// 	  tmpcluster->removePoint(newCenter);
-// 	  tmpcluster->addPoint(tmpcluster->getCenter());
-// 	  tmpcluster->setCenter(newCenter);
-      }
-  }
-}

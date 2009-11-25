@@ -26,6 +26,7 @@ class DensityCluster:public AlgorithmStruct{
 public:
   
     DensityCluster(CCP::Instance* inst);
+    ~DensityCluster();
     
     double pointDensity(unsigned short index){
 	return this->_pointsDensity[index];
@@ -50,14 +51,23 @@ public:
 	 @return Total distance from point to all list.
      */
 //      double distance(short unsigned int point, QList< int > list);
+
      void calculateDensity();
-     void calculateRegret();
-    
+     
+     void setNumIterations(int iter){_iterations = iter;}
+     int iterations(){return _iterations;}
+     
      CCP::Cluster ** buildClusters();
      
 private:
     double * _pointsDensity;
     double * _pointsRegret;
+    
+    int _iterations;
+    
+    void calculateRegret(short unsigned int point);
+    
+    void findBestCluster(short unsigned int clusters);
 };
 
 #endif // DENSITYCLUSTER_H

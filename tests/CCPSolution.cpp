@@ -94,6 +94,8 @@ void CCPSolution::buildDensity(){
     density.buildClusters();
     
 //     QFAIL("Not implemented yet");
+     QCOMPARE(density.cluster(0)->numPoints(), (unsigned short)2);
+     QCOMPARE(density.cluster(1)->numPoints(), (unsigned short)2);
      QVERIFY(qAbs(density.pointDensity(0)-(double)0.878683) < 0.00001); 
      QVERIFY(qAbs(density.pointDensity(1)-(double)0.878683) < 0.00001); 
     QVERIFY(qAbs(density.pointDensity(2)-(double)1.242647) < 0.00001); 
@@ -121,8 +123,6 @@ void CCPSolution::buildFile(){
   Distance * dist = new Distance(fileInst);
   DensityCluster  density(fileInst);
   density.buildClusters();
-  
-  
 }
 
 QTEST_MAIN(CCPSolution)

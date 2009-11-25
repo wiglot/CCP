@@ -27,9 +27,7 @@ class FarthestCluster:public AlgorithmStruct {
     void selectFirstCenters();
     void findBasicClusters();
     
-    /** @brief seek for wich is the best center of clusters.
-    */
-    void findBestCenters();
+    
   public:
      
     FarthestCluster(CCP::Instance* inst):AlgorithmStruct(inst){ }

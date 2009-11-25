@@ -55,12 +55,16 @@ public:
     
     void assign(unsigned short point, int cluster, CCP::PointType asType = CCP::Consumer);
     void assign(CCP::Point * point, int cluster, CCP::PointType asType = CCP::Consumer);
+    void unAssign(CCP::Point * point);
     void unAssign(unsigned short index);
     
     /** @brief calculate the distance from 'center' to all points on list 'points'.
     */
     double distance(unsigned short center, QList<int> points);
     
+    /** @brief seek for wich is the best center of clusters.
+    */
+    bool findBestCenters(short unsigned int numClusters = 0);
     
 };
 
