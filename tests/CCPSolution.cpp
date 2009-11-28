@@ -90,32 +90,33 @@ void CCPSolution::buildInitial()
 }
 void CCPSolution::buildDensity(){
     
-    DensityCluster  density(instance);
-    density.buildClusters();
+      DensityCluster  density(instance);
+      density.calculateDensity(); 
+      
+      QVERIFY(qAbs(density.pointDensity(0)-(double)0.878683) < 0.00001); 
+      QVERIFY(qAbs(density.pointDensity(1)-(double)0.878683) < 0.00001); 
+      QVERIFY(qAbs(density.pointDensity(2)-(double)1.242647) < 0.00001); 
+      QVERIFY(qAbs(density.pointDensity(3)-(double)1.242647) < 0.00001); 
+      QVERIFY(qAbs(density.pointDensity(4)-(double)0.878683) < 0.00001);
+      QVERIFY(qAbs(density.pointDensity(5)-(double)0.878683) < 0.00001);
+      
+      QCOMPARE(density.greatDensity(), (unsigned short)2);
+      QCOMPARE(density.greatDensity(1),(unsigned short) 3);
+      QCOMPARE(density.greatDensity(2),(unsigned short) 0);
+      
     
-//     QFAIL("Not implemented yet");
+     density.buildClusters();
+    
+     QCOMPARE(density.cluster(0)->getCenter(), instance->point(2));
      QCOMPARE(density.cluster(0)->numPoints(), (unsigned short)2);
+     QCOMPARE(density.cluster(0)->getPoint(0), instance->point(0));
+     QCOMPARE(density.cluster(0)->getPoint(1), instance->point(1));
+     
+     QCOMPARE(density.cluster(1)->getCenter(), instance->point(3));
      QCOMPARE(density.cluster(1)->numPoints(), (unsigned short)2);
-     QVERIFY(qAbs(density.pointDensity(0)-(double)0.878683) < 0.00001); 
-     QVERIFY(qAbs(density.pointDensity(1)-(double)0.878683) < 0.00001); 
-    QVERIFY(qAbs(density.pointDensity(2)-(double)1.242647) < 0.00001); 
-    QVERIFY(qAbs(density.pointDensity(3)-(double)1.242647) < 0.00001); 
-    QVERIFY(qAbs(density.pointDensity(4)-(double)0.878683) < 0.00001);
-    QVERIFY(qAbs(density.pointDensity(5)-(double)0.878683) < 0.00001);
-    
-    
-    QCOMPARE(density.greatDensity(), (unsigned short)2);
-    QCOMPARE(density.greatDensity(1),(unsigned short) 3);
-    QCOMPARE(density.greatDensity(2),(unsigned short) 0);
-    
-    QCOMPARE(density.greatRegret(), (unsigned short) 2);
-    QCOMPARE(density.greatRegret(1), (unsigned short) 3);
-    QCOMPARE(density.greatRegret(2), (unsigned short) 0);
-    QCOMPARE(density.greatRegret(3), (unsigned short) 1);
-    QCOMPARE(density.greatRegret(4), (unsigned short) 4);
-    QCOMPARE(density.greatRegret(5), (unsigned short) 5);
-    
-    
+     QCOMPARE(density.cluster(1)->getPoint(0), instance->point(4));
+     QCOMPARE(density.cluster(1)->getPoint(1), instance->point(5));
+
 }
 
 void CCPSolution::buildFile(){

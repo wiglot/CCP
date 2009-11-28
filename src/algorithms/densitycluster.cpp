@@ -124,14 +124,14 @@ void DensityCluster::findBestCluster(unsigned short clusters){
       double min = 1.0e10;
       
       for (i = 0; i < clusters; ++i){
-	    if ((cluster(i)->remainCapacity() + instance()->point(nextPoint)->demand()) <= instance()->capacity()){
+	    if (cluster(i)->remainCapacity() >= instance()->point(nextPoint)->demand()){
 		if (instance()->distance(cluster(i)->getCenter(), instance()->point(nextPoint)) < min){
 		    min = instance()->distance(cluster(i)->getCenter(), instance()->point(nextPoint));
 		    nearCenter = i;
 		}
 	    }
       }
-      nearCenter = 0;
+      
       assign(nextPoint, nearCenter);
       this->_pointsRegret[nextPoint] = -1.0;
       unAssgned.removeOne(nextPoint);
