@@ -35,6 +35,14 @@ CCP::Instance::~Instance(){
 /**
  * Methods
  */
+
+void CCP::Instance::setPoints (Point ** value, unsigned short numPoints) {
+      this->_points = value;
+      this->_numPoints = numPoints;
+      Distance * dist = new Distance(this);
+      
+}
+    
 double CCP::Instance::distance (short unsigned int p1, short unsigned int p2, double factor){
     return this->_distance->distance(p1, p2) * factor;
 }

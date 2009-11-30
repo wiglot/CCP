@@ -26,6 +26,7 @@
 #include "Cluster.h"
 #include "Point.h"
 #include "farthestcluster.h"
+#include <densitycluster.h>
 
 using namespace CCP;
 
@@ -82,24 +83,25 @@ void Solution::constructSolution(HeuristicType type) {
 //     for ( count = 0; count < _myInstance->numPoints(); ++count ) {
 //         _pointsType[count] = CCP::Consumer;//Everyone is consumer at begin...
 //     }
-    switch(type){
-      
-      case CCP::Density:
-
-	break;
-	
-      case CCP::Farthest :
+    if (_centers != 0){
+	delete [] _centers;
+    }
+    if (type == CCP::Farthest){
 	FarthestCluster far(_myInstance);
 	_centers = far.buildClusters();
 // 	selectFirstCenters();
 // 	findBasicClusters();	
 // 	findBestCenters();
-	break;
     }
-
+    if (type == CCP::Density){ 
+	DensityCluster density(_myInstance);
+	_centers = density.buildClusters();
+    }
 }
 
-
+Point * Solution::centerOfCluster(unsigned short index){
+      return this->cluster(index)->getCenter();
+}
 
 double Solution::getValue(){
   double acum = 0.0;
@@ -107,5 +109,4 @@ double Solution::getValue(){
       acum += _centers[i]->totalDistance();
   }
   return acum;
-  
 }

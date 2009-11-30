@@ -77,10 +77,7 @@ public:
     /**
      *
      */
-    void setPoints (Point ** value, unsigned short numPoints) {
-        _points = value;
-	this->_numPoints = numPoints;
-    }
+    void setPoints (Point ** value, unsigned short numPoints);
     /**
     * Overloaded function, same that instance::distancesMatrixes()->distance(p1, p2)
     */

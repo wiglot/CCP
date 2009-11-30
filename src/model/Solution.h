@@ -94,7 +94,7 @@ public:
      * @param index index of cluster in array. Shoud be less than number of centers.
      * @return Point considered as center os cluster.
     */
-    Point centerOfCluster(unsigned short index);
+    Point * centerOfCluster(unsigned short index);
     Instance * getInstance(){
       return _myInstance;
     }

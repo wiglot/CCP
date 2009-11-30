@@ -16,16 +16,47 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 */
-
-#include <QCoreApplication>
+#include <QDebug>
+#include <QApplication>
 #include "Instance.h"
 #include <readccp.h>
+#include "Solution.h"
+#include "gui/viewcluster.h"
 
 using namespace CCP;
 
 int main(int argc, char** argv)
 {
-    QCoreApplication app(argc, argv);
-    Instance * foo = readCCP::readSimpleTXT("../instances/instance1.txt");
+  
+  Instance * foo;
+  QApplication app(argc, argv);
+  if (argc > 1){
+      foo = readCCP::readLorenaEuclidian(argv[1]);
+  }else {
+	foo = readCCP::readSimpleTXT("../instances/instance1.txt");
+  }
+    
+  Solution * sol = new Solution(foo);
+  sol->constructSolution(CCP::Density);
+  
+  ViewCluster view;
+  view.setSolution(sol);
+  view.show();
+ 
+  return app.exec();
+
+//     Instance * foo;
+//     QCoreApplication app(argc, argv);
+//     if (argc > 1){
+// 	foo = readCCP::readLorenaEuclidian(argv[1]);
+//     }else {
+// 	foo = readCCP::readSimpleTXT("../instances/instance1.txt");
+//     }
+//     
+//     Solution * sol = new Solution(foo);
+//     sol->constructSolution(CCP::Density);
+//     for (unsigned short i = 0; i < foo->numCenters(); ++i){
+// 	  qDebug() << i+1 << " - " << foo->pointIndex(sol->centerOfCluster(i));
+//     }
 //     return app.exec();
 }
