@@ -40,7 +40,7 @@ public:
     /**
     * Empty Constructor
     */
-    Distance (Instance * inst);
+    Distance (CCP::Instance* inst);
     ~Distance();
     /**
     * Accessor Methods

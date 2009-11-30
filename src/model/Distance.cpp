@@ -25,7 +25,7 @@
 /**
  * Constructors/Destructors
  */
-CCP::Distance::Distance ( Instance * inst ) :
+CCP::Distance::Distance ( CCP::Instance* inst) :
         _instance ( inst ),
 	_numPoints ( inst->numPoints() )
 {
@@ -78,7 +78,7 @@ double CCP::Distance::distanceBetween ( unsigned short int point1, unsigned shor
 
 short unsigned int CCP::Distance::near ( unsigned short point, unsigned short nearest )
 {
-    bool * visited = new bool[_numPoints];
+    bool * visited; 
     unsigned short i, count, found;
     unsigned short init = 1;
     double min;
@@ -90,6 +90,7 @@ short unsigned int CCP::Distance::near ( unsigned short point, unsigned short ne
 	return _near[point][nearest];
     }
   
+    visited = new bool[_numPoints];
     for ( i = 0; i < _numPoints; ++i )
     {
         visited[i] = false;
@@ -124,5 +125,8 @@ short unsigned int CCP::Distance::near ( unsigned short point, unsigned short ne
 	_near[point][i] = found;
         visited[found] = true;
     }
+    
+    delete [] visited;
+    
     return _near[point][nearest];
 }

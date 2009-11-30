@@ -35,14 +35,19 @@ int main(int argc, char** argv)
   }else {
 	foo = readCCP::readSimpleTXT("../instances/instance1.txt");
   }
-    
+
+//   Distance * distance = new Distance(foo);
+ 
   Solution * sol = new Solution(foo);
   sol->constructSolution(CCP::Density);
   
   ViewCluster view;
   view.setSolution(sol);
   view.show();
- 
+  
+  delete sol;
+  delete foo;
+  
   return app.exec();
 
 //     Instance * foo;

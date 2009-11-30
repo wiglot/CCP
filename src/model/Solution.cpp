@@ -40,6 +40,10 @@ Solution::Solution( Instance * instance ) {
 }
 
 Solution::~Solution() {
+    for (unsigned short i = 0; i < _myInstance->numCenters(); ++i){
+	delete _centers[i];
+    }
+  
     delete [] _centers;
 //     delete [] _pointsType;
 }

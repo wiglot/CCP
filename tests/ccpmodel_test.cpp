@@ -39,6 +39,8 @@ void CCPModel_test::initTestCase()
     instance->setCapacity(6.0);
     Distance * distance = new Distance(instance);
     distance->distance(0,0);
+    
+    
 }
 
 void CCPModel_test::init()
@@ -59,8 +61,13 @@ void CCPModel_test::setPoints(){
     
     
     QCOMPARE(instance->numPoints(), (unsigned short)2);
+    
+    QCOMPARE(instance->pointIndex(instance->point(0)), (unsigned short)0);
+    QCOMPARE(instance->pointIndex(instance->point(1)), (unsigned short)1);
+    
     QCOMPARE(instance->point(0)->demand(),1.0);
     QCOMPARE(instance->point(1)->demand(),2.0);
+       
     
 }
 void CCPModel_test::simpleInstance()

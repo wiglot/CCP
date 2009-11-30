@@ -42,8 +42,8 @@ void CCPRead::simpleTXT(){
     Instance * inst = readCCP::readSimpleTXT("../../instances/instance1.txt");
     QVERIFY(inst != (Instance*) 0);
     QCOMPARE(inst->name(), QString("instance 1")); 
-    QCOMPARE(inst->capacity(), 5.0);
-    QCOMPARE(inst->numCenters(), (unsigned short)3);
+    QCOMPARE(inst->capacity(), 3.1);
+    QCOMPARE(inst->numCenters(), (unsigned short)2);
     QCOMPARE(inst->numPoints(), (unsigned short) 6);
     delete inst;
 }

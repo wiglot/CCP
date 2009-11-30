@@ -44,11 +44,11 @@ void CCP::Instance::setPoints (Point ** value, unsigned short numPoints) {
 }
     
 double CCP::Instance::distance (short unsigned int p1, short unsigned int p2, double factor){
-    return this->_distance->distance(p1, p2) * factor;
+      return this->_distance->distance(p1, p2) * factor;
 }
 
 double CCP::Instance::distance (Point * p1, Point * p2, double factor){
-    return this->distance(pointIndex(p1), pointIndex(p2), factor);
+      return this->distance(pointIndex(p1), pointIndex(p2), factor);
 }
 
 
@@ -58,4 +58,20 @@ double CCP::Instance::tight(){
       acum += _points[i]->demand();
    }
    return acum/this->capacity();
+}
+
+
+unsigned short CCP::Instance::pointIndex( Point* arg1 ){
+    
+  if (arg1->index() != -1){
+      return (unsigned short) arg1->index();
+  }
+  
+  for (unsigned short i = 0 ; i<_numPoints; ++i){
+      if (arg1 == _points[i]){
+	arg1->setIndex(i);
+	return i;
+      }
+  }
+  return _numPoints;
 }

@@ -133,15 +133,8 @@ public:
       _name = arg1;
     }
     QString name(){return _name;}
-    unsigned short pointIndex( Point* arg1 ){
-        
-      for (unsigned short i = 0 ; i<_numPoints; ++i){
-	  if (arg1 == _points[i]){
-	    return i;
-	  }
-      }
-      return _numPoints;
-    }
+    unsigned short pointIndex( Point* arg1 );
+    void arg( short unsigned int arg1 );
     /**
      * Private stuff
      */

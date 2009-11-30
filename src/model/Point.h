@@ -44,7 +44,7 @@ public:
      */
     Point ( );
     Point (double x, double y, double demand);
-    Point (Position pos, double demand): _pos(pos), _demand(demand){ }
+    Point (Position pos, double demand): _pos(pos), _demand(demand), m_index(-1){ }
     /**
      * Accessor Methods
      */
@@ -67,6 +67,14 @@ public:
     double demand(){
 	return _demand;
     }
+    
+    void setIndex(int new_index){
+	m_index = new_index;
+    }
+    
+    int index(){
+	return m_index;
+    }
 /**
  * Private stuff
  */
@@ -76,6 +84,7 @@ private:
      */
      CCP::Position _pos;
      double _demand;
+     int m_index;
 };
 } 
 #endif //POINT_H
