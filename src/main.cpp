@@ -17,6 +17,7 @@
 
 */
 #include <QDebug>
+#include <QTime>
 #include <QApplication>
 #include "Instance.h"
 #include <readccp.h>
@@ -39,17 +40,22 @@ int main(int argc, char** argv)
 //   Distance * distance = new Distance(foo);
  
   Solution * sol = new Solution(foo);
+  QTime time;
+  time.start();
   sol->constructSolution(CCP::Density);
-  
+//  sol->constructSolution();
+  qDebug() << "Build time: "<< time.elapsed()/1000.0;
+  qDebug() << "Value: " << sol->getValue();
+
   ViewCluster view;
   view.setSolution(sol);
   view.show();
   
-  delete sol;
-  delete foo;
-  
+ 
   return app.exec();
 
+
+ 
 //     Instance * foo;
 //     QCoreApplication app(argc, argv);
 //     if (argc > 1){

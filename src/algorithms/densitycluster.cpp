@@ -20,6 +20,7 @@
 #include "densitycluster.h"
 #include "Distance.h"
 
+#include <cmath>
 
 using namespace CCP;
 
@@ -51,7 +52,7 @@ DensityCluster::~DensityCluster() {
 
 CCP::Cluster ** DensityCluster::buildClusters(){
 
-    unsigned short numNeibor = instance()->numPoints() / instance()->numCenters();
+    unsigned short numNeibor = ceil( instance()->numPoints() / double(instance()->numCenters())) ;
 //   para k = 1 até p faça
 //   	Para todo ponto não atribuido
 //       	Calcule os vizinhos e a densidade
@@ -80,7 +81,20 @@ CCP::Cluster ** DensityCluster::buildClusters(){
 	    findBestCluster(count+1);
 	}
     }
+
+    for (unsigned short count = 0; count < _myInstance->numPoints(); ++count){
+	if (!isAssigned(count)){
+		assign(count, 0);	
+	}
+		
+    }
+
+
+
     findBestCluster(_myInstance->numCenters());
+
+
+
     return this->_centers;
     
 }
@@ -163,33 +177,40 @@ void DensityCluster::calculateRegret(unsigned short point){
     unsigned short count2;
     double distance1, distance2;
     unsigned short center1, center2;
-    Point * p = instance()->point(point);
-//     what hell is this!!
-//     for (count = 0; count < instance()->numCenters(); ++count){
-// 	tmpCenters[count] = this->greatDensity(count);
-//     }
+    unsigned short numClusters;
+    Point * p = instance()->point( point );
+
+    
     center1 = center2 = instance()->numPoints();
-	distance1 = 1.0e10;
-	distance2 = 1.0e10;
-	for (count2 = 0; count2 < instance()->numCenters(); ++count2){
-	      if (cluster(count2)->getCenter() != 0){
-		if (instance()->distance(p, cluster(count2)->getCenter()) < distance1){
-		    distance1 = instance()->distance(p, cluster(count2)->getCenter());
-		    center1 = count2;
-		}
-	      }
+    
+    for (numClusters = 0; numClusters < instance()->numCenters(); ++numClusters){
+	if ( cluster( numClusters )->getCenter() == 0 ) {
+	  break;
 	}
-	for (count2 = 0; count2 < instance()->numCenters(); ++count2){
-	      if (cluster(count2)->getCenter() != 0){
-		if (instance()->distance(p, cluster(count2)->getCenter()) < distance2 && count2 != center1){
-		    distance2 = instance()->distance(p, cluster(count2)->getCenter());
-		    center2 = count2;
-		}
-	      }
-	}
-	if (center1 < instance()->numPoints() && center2 < instance()->numPoints()){
-	  this->_pointsRegret[point] = distance2 - distance1;
-	}
+    }
+    
+    
+    distance1 = 1.0e10;
+    distance2 = 1.0e10;
+    for ( count2 = 0; count2 < numClusters; ++count2 ) {
+//         if ( cluster( count2 )->getCenter() != 0 ) {
+            if ( instance()->distance( p, cluster( count2 )->getCenter() ) < distance1 ) {
+                distance1 = instance()->distance( p, cluster( count2 )->getCenter() );
+                center1 = count2;
+            }
+//         }
+    }
+    for ( count2 = 0; count2 < numClusters; ++count2 ) {
+//         if ( cluster( count2 )->getCenter() != 0 ) {
+            if ( instance()->distance( p, cluster( count2 )->getCenter() ) < distance2 && count2 != center1 ) {
+                distance2 = instance()->distance( p, cluster( count2 )->getCenter() );
+                center2 = count2;
+            }
+//         }
+    }
+    if ( center1 < instance()->numPoints() && center2 < instance()->numPoints() ) {
+        this->_pointsRegret[point] = distance2 - distance1;
+    }
 //     }
 }
 
@@ -201,7 +222,7 @@ QList < int >  DensityCluster::findNeiborhood(unsigned short point, unsigned sho
     bool inserted;
     unsigned short p;
     Distance * distance = instance()->distancesMatrixes();
-    for (unsigned short i = 0; i < nNeibor; ++i){
+    for (unsigned short i = 0; i < nNeibor && tmp < instance()->numPoints(); ++i){
 	inserted = false;
 	do{
 	  

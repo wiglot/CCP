@@ -29,28 +29,54 @@ ViewCluster::ViewCluster(QWidget * parent)
     :QGraphicsView(parent)
 {
   QGraphicsScene * scene = new QGraphicsScene;
-  scene->setSceneRect(0, 0, 4000, 4000);        
+  scene->setSceneRect(0, 0, 400, 400);        
   setRenderHint(QPainter::Antialiasing);
   setScene(scene);
 }
 void ViewCluster::setSolution(CCP::Solution * sol){
     CCP::Point * tmpCenter = 0;
   
-    this->_sol = sol;
-    
+    this->_sol = sol; 
+
+    double maxX, maxY, minX, minY;
+
+    maxX = maxY = 0.0;    
     
     scene()->clear();
     CCP::Instance * inst = sol->getInstance();
+    minX = inst->point(0)->position().x();
+    minY = inst->point(0)->position().y();
+
+    for (unsigned short i = 0; i < inst->numPoints(); i++){
+	CCP::Point * p = inst->point(i);
+	if (minX > p->position().x())
+           minX = p->position().x();
+        else{
+		if (maxX < p->position().x())
+                    maxX = p->position().x();
+	}
+	if (minY > p->position().y())
+           minY = p->position().y();
+        else{
+		if (maxY < p->position().y())
+                    maxY = p->position().y();
+	}
+    }
+
+    this->scene( )->setSceneRect((int) -50,(int) -50,(int) maxX+50 - minX, (int)maxY+50 - minY);
+    this->fitInView(scene()->sceneRect(), Qt::KeepAspectRatio);
+
     for (unsigned short i = 0; i < inst->numCenters(); i++){
 	tmpCenter = sol->centerOfCluster(i);
-	scene()->addEllipse(tmpCenter->position().x(), tmpCenter->position().y(), 5, 5);
+	scene()->addEllipse(tmpCenter->position().x()-minX-3, tmpCenter->position().y()-minY-3, 6, 6);
 	for (unsigned short k = 0; k < sol->cluster(i)->numPoints(); ++k){
-	  scene()->addEllipse(sol->cluster(i)->getPoint(k)->position().x(),
-				sol->cluster(i)->getPoint(k)->position().y(), 2, 2);
-	  scene()->addLine(tmpCenter->position().x(),
-			   tmpCenter->position().y(),
-			    sol->cluster(i)->getPoint(k)->position().x(),
-			    sol->cluster(i)->getPoint(k)->position().y()
+	  scene()->addEllipse(sol->cluster(i)->getPoint(k)->position().x()-minX -1 ,
+				sol->cluster(i)->getPoint(k)->position().y() - minY -1 ,
+                                 2, 2);
+	  scene()->addLine(tmpCenter->position().x() -minX,
+			   tmpCenter->position().y() -minY,
+			    sol->cluster(i)->getPoint(k)->position().x() -minX,
+			    sol->cluster(i)->getPoint(k)->position().y() - minY
 			    );
 	}
     }

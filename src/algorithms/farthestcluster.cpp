@@ -94,11 +94,11 @@ void FarthestCluster::findBasicClusters() {
     for ( count2 = 0; count2 < instance()->numPoints(); ++count2 ) {
         if ( this->pointType(count2) == CCP::Consumer ) {
             selectedPoint = instance()->point( count2 );
-	    indicator = 200000.0;
+	    indicator = 3000000.0;
 	    clusterToAdd = instance()->numPoints();
             for ( count = 0; count < instance()->numCenters(); ++count ) {
                 tmpcluster = this->cluster(count);
-                if ( tmpcluster->remainCapacity() > selectedPoint->demand() ) {
+                if ( tmpcluster->remainCapacity() >= selectedPoint->demand() ) {
 		    double tmp = instance()->distance(selectedPoint, tmpcluster->getCenter(),
 							  selectedPoint->demand());
 		    if (tmp <= indicator){
