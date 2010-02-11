@@ -3,7 +3,7 @@ BuildItems=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x00)
 
 [CMake]
 BuildDirs[$e]=$HOME/src/CCP/build
-CMakeDir=/usr/share/cmake-2.8/Modules
+CMakeDir=/usr/share/cmake-2.6/Modules
 Current CMake Binary=file:///usr/bin/cmake
 CurrentBuildDir=file:///home/wagner/src/CCP/build
 CurrentBuildType=debug
@@ -11,7 +11,7 @@ CurrentInstallDir=file:///usr/local
 ProjectRootRelative=./
 
 [Launch]
-Launch Configurations=Launch Configuration 0,Launch Configuration 1,Launch Configuration 2
+Launch Configurations=Launch Configuration 0,Launch Configuration 1,Launch Configuration 2,Launch Configuration 3
 
 [Launch][Launch Configuration 0]
 Configured Launch Modes=execute
@@ -100,6 +100,48 @@ Remote GDB Run Script=
 Remote GDB Shell Script=
 Separate Terminal For Application IO=false
 Try Setting Breakpoints On Loading Libraries=true
+
+[Launch][Launch Configuration 3]
+Configured Launch Modes=execute
+Configured Launchers=nativeAppLauncher
+Name=CCP_MAIN
+Type=Native Application
+
+[Launch][Launch Configuration 3][Data]
+Arguments=
+Debugger Shell=
+Dependencies=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x00)
+Dependency Action=Nothing
+Display Demangle Names=true
+Display Static Members=true
+EnvironmentGroup=default
+Extra Synchronization Events=0
+Floating Toolbar=true
+Framestack Depth=12
+Free Block List Size=5000000
+Full Cache Simulation=false
+GDB Path=file:///usr/bin/gdb
+Leak Resolution Matching=1
+Leak Summary=2
+Limit Errors=false
+Maximum Framestack Size=2000000
+Project Target=CCP,src,CCP
+Remote GDB Config Script=
+Remote GDB Run Script=
+Remote GDB Shell Script=
+Separate Terminal For Application IO=false
+Separate Thread Reporting=false
+Show Reachable Blocks=true
+Simulate Hardware Prefetcher=false
+Try Setting Breakpoints On Loading Libraries=true
+Valgrind Arguments=
+Valgrind Executable=file:///usr/bin/valgrind
+Working Directory=file:///home/wagner/src/CCP
+isExecutable=false
+
+[MakeBuilder]
+Number Of Jobs=2
+Run Multiple Jobs=true
 
 [Project]
 VersionControlSupport=kdevgit

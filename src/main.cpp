@@ -34,7 +34,7 @@ int main(int argc, char** argv)
   if (argc > 1){
       foo = readCCP::readLorenaEuclidian(argv[1]);
   }else {
-	foo = readCCP::readSimpleTXT("../instances/instance1.txt");
+	foo = readCCP::readSimpleTXT("instances/instance1.txt");
   }
 
 //   Distance * distance = new Distance(foo);

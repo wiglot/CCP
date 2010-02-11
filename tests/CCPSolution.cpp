@@ -25,11 +25,52 @@
 #include "Cluster.h"
 #include "readccp.h"
 #include <QtTest/QTest>
+#include <QScopedArrayPointer>
+#include <QDebug>
 
 #include "../src/algorithms/densitycluster.h"
 
 using namespace CCP;
+static bool allInClusters(Solution * sol){
+  int numPoints = sol->instance()->numPoints();
+  int numCenters = sol->instance()->numCenters();
+  QScopedArrayPointer<bool> visited (new bool[numPoints]);
+  
+  bool notFailed = true;
+  
+  unsigned short i, j;
+  for (i =0; i < numPoints; ++i){
+      visited[i] = false;
+  }
+  for (i = 0; i < numCenters; ++i){
+      Cluster * cluster = sol->cluster(i);
+      if (visited[cluster->getCenter()->index()]){
+	  qDebug () << QString("Point %1 (as Center of cluster %2) is inserted twice (at least)")
+				      .arg(cluster->getCenter()->index())
+				      .arg(i);
+	  notFailed = false;
+      }
+      visited[cluster->getCenter()->index()] = true;
+      for (j = 0; j < cluster->numPoints(); ++j){
+	  if (visited[cluster->getPoint(j)->index()]){
+	      qDebug () << QString("Point %1 (as point of cluster %2) is inserted twice (at least)")
+				      .arg(cluster->getPoint(j)->index())
+				      .arg(i);
+		notFailed = false;
+	  }
+	  visited[cluster->getPoint(j)->index()] = true;
+      }
+  }
 
+  for (i =0; i < numPoints; ++i){
+      if (visited[i] == false){
+	qDebug() << QString ("Point %1 was not visited.").arg(i);
+	notFailed = false;
+      }
+  }
+  
+  return notFailed;
+}
 void CCPSolution::initTestCase()
 {
     this->instance = new Instance;
@@ -86,6 +127,7 @@ void CCPSolution::buildInitial()
     QCOMPARE(sol->pointType(5), CCP::Consumer);
     
     QVERIFY((sol->getValue() - 5.65685) < 0.00001);
+    QVERIFY(allInClusters(sol));
     
 }
 void CCPSolution::buildDensity(){
@@ -116,14 +158,19 @@ void CCPSolution::buildDensity(){
      QCOMPARE(density.cluster(1)->numPoints(), (unsigned short)2);
      QCOMPARE(density.cluster(1)->getPoint(0), instance->point(4));
      QCOMPARE(density.cluster(1)->getPoint(1), instance->point(5));
+     
+     
 
 }
 
 void CCPSolution::buildFile(){
   Instance * fileInst = readCCP::readLorenaEuclidian("../../instances/lorenaEuclidian.dat");
   Distance * dist = new Distance(fileInst);
-  DensityCluster  density(fileInst);
-  density.buildClusters();
+  Solution * sol = new Solution(fileInst);
+  sol->constructSolution(CCP::Density);
+  QVERIFY (allInClusters(sol));
+  //DensityCluster  density(fileInst);
+  //density.buildClusters();
 }
 
 QTEST_MAIN(CCPSolution)
