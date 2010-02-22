@@ -58,6 +58,8 @@ public:
     void unAssign(CCP::Point * point);
     void unAssign(unsigned short index);
     
+    void unAssignAllConsumers();
+    
     /** @brief calculate the distance from 'center' to all points on list 'points'.
     */
     double distance(unsigned short center, QList<int> points);
@@ -66,6 +68,8 @@ public:
     */
     bool findBestCenters(short unsigned int numClusters = 0);
     
+    
+    virtual CCP::Cluster** buildClusters() = 0;
 };
 
 #endif // ALGORITHMSTRUCT_H

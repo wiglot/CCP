@@ -80,6 +80,14 @@ void AlgorithmStruct::unAssign(unsigned short index){
     this->_assigned[index] = -1;
 }
 
+void AlgorithmSructure::unAssignAllConsumers(){
+    for (int i = 0; i < _myInstance->numPoints(); ++i){
+      if (pointType(i) == CCP::Consumer   and    isAssigned(i)){
+	  unAssign(i);
+      }
+    }
+}
+
 bool AlgorithmStruct::findBestCenters(unsigned short numClusters) {
   Point * newCenter;
   Cluster * tmpcluster;
