@@ -39,7 +39,7 @@ CCP::Instance::~Instance(){
 void CCP::Instance::setPoints (Point ** value, unsigned short numPoints) {
       this->_points = value;
       this->_numPoints = numPoints;
-      Distance * dist = new Distance(this);
+      new Distance(this);
       
 }
     

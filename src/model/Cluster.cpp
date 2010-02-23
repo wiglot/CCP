@@ -26,6 +26,7 @@
 CCP::Cluster::Cluster(Instance* inst): _instance(inst)
 { 
   this->center = 0;
+  points.clear();
 }
 
 CCP::Cluster::~Cluster(){ }

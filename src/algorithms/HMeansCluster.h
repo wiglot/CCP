@@ -33,6 +33,7 @@ class HMeansCluster : public AlgorithmStruct
     CCP::Cluster** buildClusters();
     void selectInitialCenters();
     
+    
 };
 
 #endif // HMEANS_H

@@ -27,6 +27,8 @@
 #include "Point.h"
 #include "farthestcluster.h"
 #include <densitycluster.h>
+#include <QDebug>
+#include <HMeansCluster.h>
 
 using namespace CCP;
 
@@ -40,11 +42,13 @@ Solution::Solution( Instance * instance ) {
 }
 
 Solution::~Solution() {
-    for (unsigned short i = 0; i < _myInstance->numCenters(); ++i){
-	delete _centers[i];
+    if (_centers != 0){
+      for (unsigned short i = 0; i < _myInstance->numCenters(); ++i){
+	  delete _centers[i];
+      }
+    
+      delete [] _centers;
     }
-  
-    delete [] _centers;
 //     delete [] _pointsType;
 }
 /**
@@ -90,17 +94,26 @@ void Solution::constructSolution(HeuristicType type) {
     if (_centers != 0){
 	delete [] _centers;
     }
-    if (type == CCP::Farthest){
-	FarthestCluster far(_myInstance);
-	_centers = far.buildClusters();
-// 	selectFirstCenters();
-// 	findBasicClusters();	
-// 	findBestCenters();
+    switch (type){
+      case Farthest: {
+	    FarthestCluster far(_myInstance);
+	    _centers = far.buildClusters();	 
+      }
+      break; 
+      case Density: {
+	    DensityCluster density(_myInstance);
+	    _centers = density.buildClusters();	
+      }
+	break; 
+      case HMeans: {
+	  HMeansCluster hmean(_myInstance);
+	  _centers = hmean.buildClusters();
+      }break;
+      case JMeans: {
+	  
+      }break;
     }
-    if (type == CCP::Density){ 
-	DensityCluster density(_myInstance);
-	_centers = density.buildClusters();
-    }
+   
 }
 
 Point * Solution::centerOfCluster(unsigned short index){
@@ -113,4 +126,56 @@ double Solution::getValue(){
       acum += _centers[i]->totalDistance();
   }
   return acum;
+}
+
+const bool Solution::isValid(){
+
+    if (_centers == 0){
+        return false;
+    }
+
+  int numPoints = instance()->numPoints();
+  int numCenters = instance()->numCenters();
+  QScopedArrayPointer<bool> visited (new bool[numPoints]);
+  
+  bool notFailed = true;
+  unsigned short i, j;
+  for (i =0; i < numPoints; ++i){
+      visited[i] = false;
+  }
+  for (i = 0; i < numCenters; ++i){
+      Cluster * clusterTMP = cluster(i);
+      if (visited[clusterTMP->getCenter()->index()]){
+	  qDebug () << QString("Point %1 (as Center of cluster %2) is inserted twice (at least)")
+                                      .arg(clusterTMP->getCenter()->index())
+				      .arg(i);
+	  notFailed = false;
+      }
+      visited[clusterTMP->getCenter()->index()] = true;
+
+      for (j = 0; j < clusterTMP->numPoints(); ++j){
+          Point* point = clusterTMP->getPoint(j);
+          if (visited[point->index()]){
+	      qDebug () << QString("Point %1 (as point of cluster %2) is inserted twice (at least)")
+                                      .arg(point->index())
+				      .arg(i);
+		notFailed = false;
+	  }
+
+          visited[point->index()] = true;
+      }
+      if (clusterTMP->remainCapacity() < 0.0){
+            qDebug() << QString("Over demand on cluster %1").arg(i);
+            notFailed = false;
+      }
+  }
+
+  for (i =0; i < numPoints; ++i){
+      if (visited[i] == false){
+	qDebug() << QString ("Point %1 was not visited.").arg(i);
+	notFailed = false;
+      }
+  }
+  
+  return notFailed;
 }

@@ -20,6 +20,7 @@
 #ifndef CLUSTER_H
 #define CLUSTER_H
 #include <qtextstream.h>
+#include <QList>
 
 namespace CCP{
   class Point;

@@ -39,6 +39,8 @@ private slots:
 
     void buildInitial();
     void buildDensity();
+    void buildHMeans();
+    void buildJMeans();
     void buildFile();
 
 };

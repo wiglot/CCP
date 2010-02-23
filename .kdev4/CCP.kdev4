@@ -90,16 +90,23 @@ Name=CCPSolution
 Type=Native Application
 
 [Launch][Launch Configuration 2][Data]
+Arguments=buildHMeans
 Debugger Shell=
+Dependencies=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x00)
+Dependency Action=Nothing
 Display Demangle Names=true
 Display Static Members=false
+EnvironmentGroup=default
 Floating Toolbar=false
 GDB Path=
+Project Target=CCP,tests,CCPSolution
 Remote GDB Config Script=
 Remote GDB Run Script=
 Remote GDB Shell Script=
 Separate Terminal For Application IO=false
 Try Setting Breakpoints On Loading Libraries=true
+Working Directory=
+isExecutable=false
 
 [Launch][Launch Configuration 3]
 Configured Launch Modes=execute
@@ -140,7 +147,7 @@ Working Directory=file:///home/wagner/src/CCP
 isExecutable=false
 
 [MakeBuilder]
-Number Of Jobs=2
+Number Of Jobs=4
 Run Multiple Jobs=true
 
 [Project]

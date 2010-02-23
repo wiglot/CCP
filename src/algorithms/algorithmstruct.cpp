@@ -34,6 +34,12 @@ AlgorithmStruct::AlgorithmStruct( Instance* inst ):
   for (unsigned short count = 0; count < _myInstance->numPoints(); ++count){
     this->_assigned[count] = -1;
   }
+
+  _iterations = 0;
+
+}
+int AlgorithmStruct::incIter(){
+    return ++_iterations;
 }
 
 CCP::PointType AlgorithmStruct::pointType(int index){
@@ -80,12 +86,33 @@ void AlgorithmStruct::unAssign(unsigned short index){
     this->_assigned[index] = -1;
 }
 
-void AlgorithmSructure::unAssignAllConsumers(){
+void AlgorithmStruct::unAssignAllConsumers(){
     for (int i = 0; i < _myInstance->numPoints(); ++i){
       if (pointType(i) == CCP::Consumer   and    isAssigned(i)){
 	  unAssign(i);
       }
     }
+}
+
+
+int AlgorithmStruct::findNearCenter(CCP::Point* point, QList< int > forbiden){
+  if (forbiden.count() == _myInstance->numCenters()){
+      return -1;
+  }
+  int ret = -1;
+  
+  qreal distance = 1000000.0; // 1M
+  for (int i = 0; i < _myInstance->numCenters(); ++i){
+    if (forbiden.contains(i)){
+	forbiden.removeOne(i);
+	continue;
+    }
+    if (distance > instance()->distance(point, _centers[i]->getCenter()) ){
+	distance = instance()->distance(point, _centers[i]->getCenter());
+	ret = i;
+    }
+  }
+  return ret;
 }
 
 bool AlgorithmStruct::findBestCenters(unsigned short numClusters) {
@@ -112,12 +139,15 @@ bool AlgorithmStruct::findBestCenters(unsigned short numClusters) {
 	if (newValue < value){
 	    value = newValue;
 	    newCenter = candidacte;
+            changed = true;
 	}
       }
+
+      //return to newCenter. (or old center if it not change)
       if (newCenter != tmpcluster->getCenter()){
 	  assign(tmpcluster->getCenter(), count);
 	  assign(newCenter, count, CCP::Center);
-	  changed = true;
+
 // 	  tmpcluster->removePoint(newCenter);
 // 	  tmpcluster->addPoint(tmpcluster->getCenter());
 // 	  tmpcluster->setCenter(newCenter);

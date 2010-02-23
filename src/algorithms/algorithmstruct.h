@@ -28,17 +28,23 @@
     
 */
 class AlgorithmStruct {
+
 protected:    
   CCP::Instance * _myInstance;
   int * _assigned;
   CCP::PointType * _pointType;
   CCP::Cluster ** _centers;
+  int _iterations;
 public:
     AlgorithmStruct(CCP::Instance * inst);
     ~AlgorithmStruct(){
 	delete [] _assigned;
     }
     
+    int incIter();
+
+    int iterations(){ return _iterations; }
+
     inline CCP::Instance * instance(){return _myInstance;}
     CCP::Cluster * cluster(int index){return _centers[index];}
     CCP::PointType pointType(int index);
@@ -60,6 +66,8 @@ public:
     
     void unAssignAllConsumers();
     
+
+
     /** @brief calculate the distance from 'center' to all points on list 'points'.
     */
     double distance(unsigned short center, QList<int> points);
@@ -68,6 +76,11 @@ public:
     */
     bool findBestCenters(short unsigned int numClusters = 0);
     
+    
+    /** @brief Find a center near of \point excluding centers in \forbiden
+    Return center(cluster) index or -1 if there is no centers was found. Capacity is not take in consideration here.
+    */
+    int findNearCenter(CCP::Point* point, QList< int > forbiden);
     
     virtual CCP::Cluster** buildClusters() = 0;
 };

@@ -31,46 +31,46 @@
 #include "../src/algorithms/densitycluster.h"
 
 using namespace CCP;
-static bool allInClusters(Solution * sol){
-  int numPoints = sol->instance()->numPoints();
-  int numCenters = sol->instance()->numCenters();
-  QScopedArrayPointer<bool> visited (new bool[numPoints]);
-  
-  bool notFailed = true;
-  
-  unsigned short i, j;
-  for (i =0; i < numPoints; ++i){
-      visited[i] = false;
-  }
-  for (i = 0; i < numCenters; ++i){
-      Cluster * cluster = sol->cluster(i);
-      if (visited[cluster->getCenter()->index()]){
-	  qDebug () << QString("Point %1 (as Center of cluster %2) is inserted twice (at least)")
-				      .arg(cluster->getCenter()->index())
-				      .arg(i);
-	  notFailed = false;
-      }
-      visited[cluster->getCenter()->index()] = true;
-      for (j = 0; j < cluster->numPoints(); ++j){
-	  if (visited[cluster->getPoint(j)->index()]){
-	      qDebug () << QString("Point %1 (as point of cluster %2) is inserted twice (at least)")
-				      .arg(cluster->getPoint(j)->index())
-				      .arg(i);
-		notFailed = false;
-	  }
-	  visited[cluster->getPoint(j)->index()] = true;
-      }
-  }
-
-  for (i =0; i < numPoints; ++i){
-      if (visited[i] == false){
-	qDebug() << QString ("Point %1 was not visited.").arg(i);
-	notFailed = false;
-      }
-  }
-  
-  return notFailed;
-}
+//static bool allInClusters(Solution * sol){
+//  int numPoints = sol->instance()->numPoints();
+//  int numCenters = sol->instance()->numCenters();
+//  QScopedArrayPointer<bool> visited (new bool[numPoints]);
+//
+//  bool notFailed = true;
+//
+//  unsigned short i, j;
+//  for (i =0; i < numPoints; ++i){
+//      visited[i] = false;
+//  }
+//  for (i = 0; i < numCenters; ++i){
+//      Cluster * cluster = sol->cluster(i);
+//      if (visited[cluster->getCenter()->index()]){
+//	  qDebug () << QString("Point %1 (as Center of cluster %2) is inserted twice (at least)")
+//				      .arg(cluster->getCenter()->index())
+//				      .arg(i);
+//	  notFailed = false;
+//      }
+//      visited[cluster->getCenter()->index()] = true;
+//      for (j = 0; j < cluster->numPoints(); ++j){
+//	  if (visited[cluster->getPoint(j)->index()]){
+//	      qDebug () << QString("Point %1 (as point of cluster %2) is inserted twice (at least)")
+//				      .arg(cluster->getPoint(j)->index())
+//				      .arg(i);
+//		notFailed = false;
+//	  }
+//	  visited[cluster->getPoint(j)->index()] = true;
+//      }
+//  }
+//
+//  for (i =0; i < numPoints; ++i){
+//      if (visited[i] == false){
+//	qDebug() << QString ("Point %1 was not visited.").arg(i);
+//	notFailed = false;
+//      }
+//  }
+//
+//  return notFailed;
+//}
 void CCPSolution::initTestCase()
 {
     this->instance = new Instance;
@@ -127,7 +127,7 @@ void CCPSolution::buildInitial()
     QCOMPARE(sol->pointType(5), CCP::Consumer);
     
     QVERIFY((sol->getValue() - 5.65685) < 0.00001);
-    QVERIFY(allInClusters(sol));
+    QVERIFY(sol->isValid());
     
 }
 void CCPSolution::buildDensity(){
@@ -163,12 +163,55 @@ void CCPSolution::buildDensity(){
 
 }
 
+void CCPSolution::buildHMeans(){
+    QScopedPointer<Solution> sol (new Solution(instance));
+    sol->constructSolution(HMeans);
+    Cluster * cluster;
+
+    cluster = sol->cluster(0);
+    QCOMPARE(cluster->numPoints(), (unsigned short) 2);
+    QCOMPARE(cluster->getPoint(0), instance->point(0));
+    QCOMPARE(cluster->getPoint(1), instance->point(1));
+    QCOMPARE(cluster->totalDistance(), instance->distance(2,1) + instance->distance(0,2));
+
+    cluster = sol->cluster(1);
+    QCOMPARE(cluster->numPoints(), (unsigned short) 2);
+    QCOMPARE(cluster->getPoint(0), instance->point(4));
+    QCOMPARE(cluster->getPoint(1), instance->point(5));
+    QCOMPARE(cluster->totalDistance(), instance->distance(4,3) + instance->distance(3,5));
+
+    QCOMPARE(sol->pointType(0), CCP::Consumer);
+
+    QCOMPARE(sol->pointType(1), CCP::Consumer);
+    QCOMPARE(sol->pointType(2), CCP::Center);
+
+    QCOMPARE(sol->pointType(3), CCP::Center);
+    QCOMPARE(sol->pointType(4), CCP::Consumer);
+    QCOMPARE(sol->pointType(5), CCP::Consumer);
+
+    QVERIFY((sol->getValue() - 5.65685) < 0.00001);
+    QVERIFY(sol->isValid());
+}
+void CCPSolution::buildJMeans(){
+    QScopedPointer<Solution> sol (new Solution(instance));
+    sol->constructSolution(JMeans);
+    
+    QFAIL ("Not implemented yet.");
+    
+}
 void CCPSolution::buildFile(){
   Instance * fileInst = readCCP::readLorenaEuclidian("../../instances/lorenaEuclidian.dat");
-  Distance * dist = new Distance(fileInst);
+  new Distance(fileInst);
+  
   Solution * sol = new Solution(fileInst);
-  sol->constructSolution(CCP::Density);
-  QVERIFY (allInClusters(sol));
+  sol->constructSolution(Farthest);
+  QVERIFY (sol->isValid());
+  sol->constructSolution(Density);
+  QVERIFY (sol->isValid());
+  sol->constructSolution(HMeans);
+  QVERIFY (sol->isValid());
+  sol->constructSolution(JMeans);
+  QVERIFY (sol->isValid());
   //DensityCluster  density(fileInst);
   //density.buildClusters();
 }

@@ -38,7 +38,9 @@ enum PointType {
 
 enum HeuristicType {
   Density,
-  Farthest
+  Farthest,
+  HMeans,
+  JMeans
 };
 /**
  * Class Solution
@@ -100,6 +102,12 @@ public:
     }
     double getValue();
     void setPointType( Point* arg1, PointType arg2 );
+    
+    /** @brief Return if the Solution is valid or not.
+	This method check if all points are assigned to only on cluster, all cluster have a center and the center is not an consumer point too.
+	Is checked also the capacity of clusters.
+	*/
+	const bool isValid();
 /**
  * Private stuff
  */

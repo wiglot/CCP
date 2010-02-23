@@ -40,22 +40,26 @@ CCP::Cluster** HMeansCluster::buildClusters()
     bool changed = true;
     
     while (changed){
+
+        if (incIter() > 1000){
+            return _centers;
+        }
 	//Remove all points
 	unAssignAllConsumers();
 	
 	//re-assign points to nearst center...
-	for (int i = 0; i < instance()->numPoints; ++i){
+	for (int i = 0; i < instance()->numPoints(); ++i){
 	    if (!isAssigned(i)){
 	      int cen = -1;
 	      QList<int> forbiden;
 	      do{
-		cen = findNearCenter(instance()->point(i), forbiden)
-		if (cen = -1){
+		cen = findNearCenter(instance()->point(i), forbiden);
+		if (cen == -1){
 		    //Cant find any center. Do something
 		    break;
 		}
 		if (_centers[cen]->remainCapacity() >= instance()->point(i)->demand() ){
-		    assign(cen, i); 
+                    assign(i,cen);
 		    break;
 		}
 		forbiden << cen;
@@ -73,7 +77,7 @@ CCP::Cluster** HMeansCluster::buildClusters()
 
 
 void HMeansCluster::selectInitialCenters(){
-  qsrand(QTime::msec());
+  qsrand(QTime().msec());
   int i;
   
   for (i = 0; i < instance()->numCenters(); ++i){
