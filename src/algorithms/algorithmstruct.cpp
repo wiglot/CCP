@@ -24,18 +24,18 @@ using namespace CCP;
 
 
 AlgorithmStruct::AlgorithmStruct( Instance* inst ):
-  _myInstance(inst)
+        _myInstance(inst)
 {
-  _assigned = new int[_myInstance->numPoints()];
-  this->_centers = new Cluster*[_myInstance->numCenters()];
-  for (unsigned short count = 0 ; count < _myInstance->numCenters(); ++count){
-      this->_centers[count] = new Cluster(_myInstance);
-  }
-  for (unsigned short count = 0; count < _myInstance->numPoints(); ++count){
-    this->_assigned[count] = -1;
-  }
+    _assigned = new int[_myInstance->numPoints()];
+    this->_centers = new Cluster*[_myInstance->numCenters()];
+    for (unsigned short count = 0 ; count < _myInstance->numCenters(); ++count){
+        this->_centers[count] = new Cluster(_myInstance);
+    }
+    for (unsigned short count = 0; count < _myInstance->numPoints(); ++count){
+        this->_assigned[count] = -1;
+    }
 
-  _iterations = 0;
+    _iterations = 0;
 
 }
 int AlgorithmStruct::incIter(){
@@ -63,16 +63,20 @@ void AlgorithmStruct::assign(CCP::Point * point, int cluster, CCP::PointType asT
 }
 
 void AlgorithmStruct::assign(unsigned short point, int cluster, CCP::PointType asType){
-	if (assignedTo(point) != -1){
-	    unAssign(point);
-	}
-	this->_assigned[point] = cluster;
-	if (asType == CCP::Center){
-	    _centers[cluster]->setCenter(_myInstance->point(point));
-	}else{
-	    _centers[cluster]->addPoint(_myInstance->point(point));
-	}
+    if (assignedTo(point) != -1){
+        unAssign(point);
     }
+    this->_assigned[point] = cluster;
+    if (asType == CCP::Center){
+        if (_centers[cluster]->getCenter() != 0){
+            unAssign(_centers[cluster]->getCenter());
+        }
+        _centers[cluster]->setCenter(_myInstance->point(point));
+    }else{
+        _centers[cluster]->addPoint(_myInstance->point(point));
+    }
+}
+
 void AlgorithmStruct::unAssign(CCP::Point * point){
     unAssign(_myInstance->pointIndex(point));
 }
@@ -88,70 +92,92 @@ void AlgorithmStruct::unAssign(unsigned short index){
 
 void AlgorithmStruct::unAssignAllConsumers(){
     for (int i = 0; i < _myInstance->numPoints(); ++i){
-      if (pointType(i) == CCP::Consumer   and    isAssigned(i)){
-	  unAssign(i);
-      }
+        if (pointType(i) == CCP::Consumer   and    isAssigned(i)){
+            unAssign(i);
+        }
     }
 }
 
 
 int AlgorithmStruct::findNearCenter(CCP::Point* point, QList< int > forbiden){
-  if (forbiden.count() == _myInstance->numCenters()){
-      return -1;
-  }
-  int ret = -1;
-  
-  qreal distance = 1000000.0; // 1M
-  for (int i = 0; i < _myInstance->numCenters(); ++i){
-    if (forbiden.contains(i)){
-	forbiden.removeOne(i);
-	continue;
+    if (forbiden.count() == _myInstance->numCenters()){
+        return -1;
     }
-    if (distance > instance()->distance(point, _centers[i]->getCenter()) ){
-	distance = instance()->distance(point, _centers[i]->getCenter());
-	ret = i;
+    int ret = -1;
+
+    qreal distance = 1000000.0; // 1M
+    for (int i = 0; i < _myInstance->numCenters(); ++i){
+        if (forbiden.contains(i)){
+            forbiden.removeOne(i);
+            continue;
+        }
+        if (distance > instance()->distance(point, _centers[i]->getCenter()) ){
+            distance = instance()->distance(point, _centers[i]->getCenter());
+            ret = i;
+        }
     }
-  }
-  return ret;
+    return ret;
+}
+
+void AlgorithmStruct::assignToNearest(){
+    int numPoints = instance()->numPoints();
+    for (int i = 0; i < numPoints; ++i){
+        if (!isAssigned(i)){
+            int cen = -1;
+            QList<int> forbiden;
+            do{
+                cen = findNearCenter(_myInstance->point(i), forbiden);
+                if (cen == -1){
+                    //Cant find any center. Do something
+                    break;
+                }
+                if (_centers[cen]->remainCapacity() >= instance()->point(i)->demand() ){
+                    assign(i,cen);
+                    break;
+                }
+                forbiden << cen;
+            }while(1);
+        }
+    }
 }
 
 bool AlgorithmStruct::findBestCenters(unsigned short numClusters) {
-  Point * newCenter;
-  Cluster * tmpcluster;
-  unsigned short count, countPoints;
-  double value;
-  bool changed = false;
-  
-  if (numClusters == 0)
-      numClusters = instance()->numCenters();
-  
-  for (count = 0; count < numClusters; ++count){
-      tmpcluster = cluster(count);
-      value = tmpcluster->totalDistance();
-      newCenter = tmpcluster->getCenter();
-      for (countPoints = 0; countPoints < tmpcluster->numPoints(); ++countPoints){
-	Point * candidacte = tmpcluster->getPoint(0);
-	assign(tmpcluster->getCenter(), count);
-	assign(candidacte, count, CCP::Center);
-// 	tmpcluster->addPoint(tmpcluster->getCenter());
-// 	tmpcluster->setCenter(candidacte);
-	double newValue = tmpcluster->totalDistance();
-	if (newValue < value){
-	    value = newValue;
-	    newCenter = candidacte;
-            changed = true;
-	}
-      }
+    Point * newCenter;
+    Cluster * tmpcluster;
+    unsigned short count, countPoints;
+    double value;
+    bool changed = false;
 
-      //return to newCenter. (or old center if it not change)
-      if (newCenter != tmpcluster->getCenter()){
-	  assign(tmpcluster->getCenter(), count);
-	  assign(newCenter, count, CCP::Center);
+    if (numClusters == 0)
+        numClusters = instance()->numCenters();
 
-// 	  tmpcluster->removePoint(newCenter);
-// 	  tmpcluster->addPoint(tmpcluster->getCenter());
-// 	  tmpcluster->setCenter(newCenter);
-      }
-  }
-  return changed;
+    for (count = 0; count < numClusters; ++count){
+        tmpcluster = cluster(count);
+        value = tmpcluster->totalDistance();
+        newCenter = tmpcluster->getCenter();
+        for (countPoints = 0; countPoints < tmpcluster->numPoints(); ++countPoints){
+            Point * candidacte = tmpcluster->getPoint(0);
+            assign(tmpcluster->getCenter(), count);
+            assign(candidacte, count, CCP::Center);
+            // 	tmpcluster->addPoint(tmpcluster->getCenter());
+            // 	tmpcluster->setCenter(candidacte);
+            double newValue = tmpcluster->totalDistance();
+            if (newValue < value){
+                value = newValue;
+                newCenter = candidacte;
+                changed = true;
+            }
+        }
+
+        //return to newCenter. (or old center if it not change)
+        if (newCenter != tmpcluster->getCenter()){
+            assign(tmpcluster->getCenter(), count);
+            assign(newCenter, count, CCP::Center);
+
+            // 	  tmpcluster->removePoint(newCenter);
+            // 	  tmpcluster->addPoint(tmpcluster->getCenter());
+            // 	  tmpcluster->setCenter(newCenter);
+        }
+    }
+    return changed;
 }

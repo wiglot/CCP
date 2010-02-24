@@ -29,6 +29,7 @@
 #include <densitycluster.h>
 #include <QDebug>
 #include <HMeansCluster.h>
+#include <JMeansCluster.h>
 
 using namespace CCP;
 
@@ -65,15 +66,7 @@ void Solution::setInstance( Instance * inst ) {
     if ( _centers != 0 ) {
         delete [] _centers;
     }
-    _centers = 0;/*new Cluster*[inst->numCenters()];
-    for (unsigned short count = 0 ; count < inst->numCenters(); ++count){
-	_centers[count] = new Cluster(this);
-    }
-    if ( _pointsType != 0 ) {
-        delete [] _pointsType;
-    }
-    _pointsType = new PointType[inst->numPoints()];
-    */
+    _centers = 0;
 
 }
 
@@ -110,7 +103,8 @@ void Solution::constructSolution(HeuristicType type) {
 	  _centers = hmean.buildClusters();
       }break;
       case JMeans: {
-	  
+              JMeansCluster jmean(_myInstance);
+              _centers = jmean.buildClusters();
       }break;
     }
    

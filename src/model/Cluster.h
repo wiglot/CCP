@@ -27,6 +27,35 @@ namespace CCP{
   class Instance;
 
 
+class InterchangeResult{
+  private:
+      bool _valid;
+      double _change;
+      Point* _origP,* _destP;
+      class Cluster* _origC,* _destC;
+
+  public:
+      InterchangeResult(Point * origPoint, Cluster * origCluster,
+                        Point * destPoint, Cluster * destCluster)
+      {
+          _valid = false;
+          _change = 0.0;
+          _origP = origPoint;
+          _destP = destPoint;
+          _destC = destCluster;
+          _origC = origCluster;
+
+      }
+      ~InterchangeResult(){ }
+      inline const bool isValid(){ return _valid;}
+      inline double changeInValue(){return _change;}
+
+      void valid(const bool v = true){ _valid = v;}
+      void valueChange(double c){_change = c;}
+      bool undo();
+  };
+
+
 class Cluster {
 private:
       Point * center;
@@ -52,6 +81,24 @@ private:
     double totalDistance();
     short unsigned int numPoints();
     
+    /** @brief Interchage points between Clusters.
+    *   To make the interchange, is checked if dest support the origPoint.
+    *   At end return if interchange change was done or not.
+    *   \param origPoint Point to be moved to \Cluster dest.
+    *   \param dest Other cluster to receive origPoint.
+    *   \return total change in values of distances.
+    */
+    InterchangeResult interchange(Point* origPoint, Cluster* dest);
+
+    /** @brief Interchage points between Clusters.
+    *   To make the interchange, is checked if both suport news points after remove originPoint an retPoint.
+    *   At end return changes at distances values.
+    *   \param origPoint Point to be moved to \Cluster dest.
+    *   \param retPoint Point to be inserted in this cluster.
+    *   \param dest Other cluster to receive origPoint.
+    *   \return total change in values of distances.
+    */
+    InterchangeResult interchange(Point* origPoint, Point* retPoint,Cluster* dest);
     
 };
 }

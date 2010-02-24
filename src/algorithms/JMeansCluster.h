@@ -30,6 +30,14 @@ class JMeansCluster : public AlgorithmStruct
     ~JMeansCluster();
     
     CCP::Cluster** buildClusters();
+
+    QList <qreal> findMeans();
+
+    QList <int> findUnoccupied(QList <qreal> tolerances);
+
+    void selectInitialCenters();
+
+
 };
 
 #endif // JMEANSCLUSTER_H

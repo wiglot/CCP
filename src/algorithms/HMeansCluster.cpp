@@ -48,24 +48,7 @@ CCP::Cluster** HMeansCluster::buildClusters()
 	unAssignAllConsumers();
 	
 	//re-assign points to nearst center...
-	for (int i = 0; i < instance()->numPoints(); ++i){
-	    if (!isAssigned(i)){
-	      int cen = -1;
-	      QList<int> forbiden;
-	      do{
-		cen = findNearCenter(instance()->point(i), forbiden);
-		if (cen == -1){
-		    //Cant find any center. Do something
-		    break;
-		}
-		if (_centers[cen]->remainCapacity() >= instance()->point(i)->demand() ){
-                    assign(i,cen);
-		    break;
-		}
-		forbiden << cen;
-	      }while(1);
-	    }
-	}
+        assignToNearest();
 	
 	//Try find bests centers
 	changed = findBestCenters();

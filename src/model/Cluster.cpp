@@ -23,21 +23,37 @@
 #include "Point.h"
 #include <QList>
 
-CCP::Cluster::Cluster(Instance* inst): _instance(inst)
-{ 
+using namespace CCP;
+
+
+bool InterchangeResult::undo(){
+    if (_valid){
+        _valid = false;
+        if (_destP == 0){
+            return _destC->interchange(_origP, _origC).isValid();
+        }else{
+            return _destC->interchange(_destP, _origP, _origC).isValid();
+        }
+    }
+    return false;
+}
+
+
+Cluster::Cluster(Instance* inst): _instance(inst)
+{
   this->center = 0;
   points.clear();
 }
 
-CCP::Cluster::~Cluster(){ }
+Cluster::~Cluster(){ }
 
-void CCP::Cluster::addPoint(CCP::Point* p){
-//     _instance->setPointType(p, CCP::Consumer);
-    
+void Cluster::addPoint(Point* p){
+//     _instance->setPointType(p, Consumer);
+
     points.append(p);
 }
 
-double CCP::Cluster::actualDemand(){
+double Cluster::actualDemand(){
   double totalDemand = 0;
     foreach(Point * i, points){
       totalDemand += i->demand();
@@ -46,48 +62,88 @@ double CCP::Cluster::actualDemand(){
     return totalDemand;
 }
 
-double CCP::Cluster::remainCapacity(){
+double Cluster::remainCapacity(){
   return (_instance->capacity() - actualDemand());
 }
 
-void CCP::Cluster::removePoint(Point * p){
+void Cluster::removePoint(Point * p){
   for (int i = 0; i < points.size(); ++i){
     if (p == points[i]){
-	points.removeAt(i);
-	return;
+        points.removeAt(i);
+        return;
     }
   }
 }
 
-void CCP::Cluster::setCenter(Point * center){
+void Cluster::setCenter(Point * center){
 //       if (this->center != 0){
 // 	 removePoint(center);
 //       }
-      //_instance->setPointType(center, CCP::Center);
+      //_instance->setPointType(center, Center);
       this->center = center;
 //       addPoint(center);
     }
 
-double CCP::Cluster::totalDistance(){
+double Cluster::totalDistance(){
   double total = 0.0;
 //   Instance * inst = this->_instance->getInstance();
-  
+
   for (int i = 0; i< points.size(); ++i){
      total += _instance->distance(center, getPoint(i));
   }
   return total;
 }
 
-CCP::Point * CCP::Cluster::getPoint(unsigned short index){
+Point * Cluster::getPoint(unsigned short index){
     return points.at(index);
 }
 
-CCP::Point * CCP::Cluster::takePoint( unsigned short  arg1 ){
+Point * Cluster::takePoint( unsigned short  arg1 ){
   Point* candidacte = getPoint(arg1);
   removePoint(candidacte);
   return candidacte;
 }
 
-unsigned short int CCP::Cluster::numPoints(){
+unsigned short int Cluster::numPoints(){
     return points.size();
+}
+
+InterchangeResult Cluster::interchange(Point* origPoint, Cluster* dest){
+    InterchangeResult result(origPoint, this, 0, dest);
+    if (center != origPoint){
+        if (dest->remainCapacity() > origPoint->demand()){
+            double newDistance = _instance->distance(origPoint, dest->getCenter());
+            double oldDistance = _instance->distance(origPoint, center);
+
+            removePoint(origPoint);
+            dest->addPoint(origPoint);
+
+            result.valueChange(newDistance - oldDistance );
+            result.valid();
+        }
+    }
+    return result;
+}
+
+InterchangeResult Cluster::interchange(Point* origPoint, Point* destPoint, Cluster* dest){
+    InterchangeResult result(origPoint, this, destPoint, dest);
+    if (center != origPoint && destPoint != dest->getCenter()){
+        if ((dest->remainCapacity()-destPoint->demand()) > origPoint->demand()){
+            if ((remainCapacity()-origPoint->demand()) > destPoint->demand()){
+                double newDistance = _instance->distance(origPoint, dest->getCenter()) +
+                                     _instance->distance(destPoint, center);
+
+                double oldDistance = _instance->distance(origPoint, center) +
+                                     _instance->distance(destPoint, dest->getCenter());
+
+                removePoint(origPoint);
+                dest->removePoint(destPoint);
+                addPoint(destPoint);
+                dest->addPoint(origPoint);
+                result.valueChange(newDistance - oldDistance);
+                result.valid();
+            }
+        }
+    }
+    return result;
 }

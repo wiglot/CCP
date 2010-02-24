@@ -81,6 +81,11 @@ public:
     Return center(cluster) index or -1 if there is no centers was found. Capacity is not take in consideration here.
     */
     int findNearCenter(CCP::Point* point, QList< int > forbiden);
+
+    /** @brief Assign all not yet assigned points to near center.
+
+    */
+    void assignToNearest();
     
     virtual CCP::Cluster** buildClusters() = 0;
 };
