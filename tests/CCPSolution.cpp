@@ -58,6 +58,7 @@ void CCPSolution::cleanup()
 
 void CCPSolution::cleanupTestCase()
 {
+    delete instance;
 }
 
 void CCPSolution::buildInitial()
@@ -161,26 +162,29 @@ void CCPSolution::buildJMeans(){
 
     cluster = sol->cluster(0);
     QCOMPARE(cluster->numPoints(), (unsigned short) 2);
-    QCOMPARE(cluster->getPoint(0), instance->point(0));
-    QCOMPARE(cluster->getPoint(1), instance->point(1));
-    QCOMPARE(cluster->totalDistance(), instance->distance(2,1) + instance->distance(0,2));
+//    QCOMPARE(cluster->getPoint(0), instance->point(0));
+//    QCOMPARE(cluster->getPoint(1), instance->point(1));
+    QCOMPARE(cluster->totalDistance(), instance->distance(cluster->getPoint(0),cluster->getCenter())
+             + instance->distance(cluster->getPoint(1),cluster->getCenter()));
 
     cluster = sol->cluster(1);
     QCOMPARE(cluster->numPoints(), (unsigned short) 2);
-    QCOMPARE(cluster->getPoint(0), instance->point(4));
-    QCOMPARE(cluster->getPoint(1), instance->point(5));
-    QCOMPARE(cluster->totalDistance(), instance->distance(4,3) + instance->distance(3,5));
+//    QCOMPARE(cluster->getPoint(0), instance->point(4));
+//    QCOMPARE(cluster->getPoint(1), instance->point(5));
+    QCOMPARE(cluster->totalDistance(), instance->distance(cluster->getPoint(0),cluster->getCenter())
+             + instance->distance(cluster->getPoint(1),cluster->getCenter()));
 
-    QCOMPARE(sol->pointType(0), CCP::Consumer);
-
-    QCOMPARE(sol->pointType(1), CCP::Consumer);
-    QCOMPARE(sol->pointType(2), CCP::Center);
-
-    QCOMPARE(sol->pointType(3), CCP::Center);
-    QCOMPARE(sol->pointType(4), CCP::Consumer);
-    QCOMPARE(sol->pointType(5), CCP::Consumer);
-
-    QVERIFY((sol->getValue() - 5.65685) < 0.00001);
+    //This method uses randon, so cannot predict the future :)
+//    QCOMPARE(sol->pointType(0), CCP::Consumer);
+//
+//    QCOMPARE(sol->pointType(1), CCP::Consumer);
+//    QCOMPARE(sol->pointType(2), CCP::Center);
+//
+//    QCOMPARE(sol->pointType(3), CCP::Center);
+//    QCOMPARE(sol->pointType(4), CCP::Consumer);
+//    QCOMPARE(sol->pointType(5), CCP::Consumer);
+//
+//    QVERIFY((sol->getValue() - 5.65685) < 0.00001);
     QVERIFY(sol->isValid());
     
 }
@@ -191,11 +195,11 @@ void CCPSolution::buildFile(){
   Solution * sol = new Solution(fileInst);
   sol->constructSolution(Farthest);
   QVERIFY (sol->isValid());
-  sol->constructSolution(Density);
-  QVERIFY (sol->isValid());
   sol->constructSolution(HMeans);
   QVERIFY (sol->isValid());
   sol->constructSolution(JMeans);
+  QVERIFY (sol->isValid());
+  sol->constructSolution(Density);
   QVERIFY (sol->isValid());
   //DensityCluster  density(fileInst);
   //density.buildClusters();

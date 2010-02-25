@@ -31,9 +31,9 @@ class JMeansCluster : public AlgorithmStruct
     
     CCP::Cluster** buildClusters();
 
-    QList <qreal> findMeans();
+    void findMeans(double * vect);
 
-    QList <int> findUnoccupied(QList <qreal> tolerances);
+    QList <int> findUnoccupied(double * tolerances);
 
     void selectInitialCenters();
 

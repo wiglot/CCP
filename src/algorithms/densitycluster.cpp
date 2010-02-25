@@ -21,7 +21,7 @@
 #include "Distance.h"
 
 #include <cmath>
-
+#include <QDebug>
 using namespace CCP;
 
 
@@ -73,8 +73,13 @@ CCP::Cluster ** DensityCluster::buildClusters(){
 		
 	foreach(int actual, neibor){
 	    if (_myInstance->point(actual) != cluster(count)->getCenter()){
-	      assign(actual, count);
-	      this->_pointsDensity[actual] = 0.0; 
+                if (cluster(count)->remainCapacity() >= _myInstance->point(actual)->demand()){
+                    assign(actual, count);
+                    this->_pointsDensity[actual] = 0.0;
+                }else{
+                    qDebug() << "Can't assign point" << actual << _myInstance->point(actual)->demand();
+                }
+
 	    }
 	}
 	if (count > 0){
@@ -82,12 +87,13 @@ CCP::Cluster ** DensityCluster::buildClusters(){
 	}
     }
 
-    for (unsigned short count = 0; count < _myInstance->numPoints(); ++count){
-	if (!isAssigned(count)){
-		assign(count, 0);	
-	}
-		
-    }
+    assignToNearest();
+//    for (unsigned short count = 0; count < _myInstance->numPoints(); ++count){
+//	if (!isAssigned(count)){
+//		assign(count, 0);
+//	}
+//
+//    }
 
 
 
@@ -102,7 +108,7 @@ CCP::Cluster ** DensityCluster::buildClusters(){
 void DensityCluster::findBestCluster(unsigned short clusters){
  unsigned short iter = 0, i, j;
  bool change = true;
- unsigned short nearCenter, nextPoint;
+ int nearCenter, nextPoint;
  
  while (iter < _iterations && change){
     change = false;
@@ -136,7 +142,8 @@ void DensityCluster::findBestCluster(unsigned short clusters){
       //Find the near center
       
       double min = 1.0e10;
-      
+      nearCenter = -1;
+
       for (i = 0; i < clusters; ++i){
 	    if (cluster(i)->remainCapacity() >= instance()->point(nextPoint)->demand()){
 		if (instance()->distance(cluster(i)->getCenter(), instance()->point(nextPoint)) < min){
@@ -145,9 +152,13 @@ void DensityCluster::findBestCluster(unsigned short clusters){
 		}
 	    }
       }
-      
-      assign(nextPoint, nearCenter);
-      this->_pointsRegret[nextPoint] = -1.0;
+      if (nearCenter != -1){
+          assign(nextPoint, nearCenter);
+          this->_pointsRegret[nextPoint] = -1.0;
+
+      }else{
+          qDebug() << "Cannot insert point:" << nextPoint << "demand:" << instance()->point(nextPoint)->demand();
+      }
       unAssgned.removeOne(nextPoint);
     }
     //	ca
@@ -193,23 +204,28 @@ void DensityCluster::calculateRegret(unsigned short point){
     distance1 = 1.0e10;
     distance2 = 1.0e10;
     for ( count2 = 0; count2 < numClusters; ++count2 ) {
-//         if ( cluster( count2 )->getCenter() != 0 ) {
-            if ( instance()->distance( p, cluster( count2 )->getCenter() ) < distance1 ) {
-                distance1 = instance()->distance( p, cluster( count2 )->getCenter() );
-                center1 = count2;
-            }
-//         }
+  //      if (cluster(count2)->remainCapacity() >= p->demand()){
+  //          if ( cluster( count2 )->getCenter() != 0 ) {
+                if ( instance()->distance( p, cluster( count2 )->getCenter() ) < distance1 ) {
+                    distance1 = instance()->distance( p, cluster( count2 )->getCenter() );
+                    center1 = count2;
+                }
+ //           }
+  //      }
     }
     for ( count2 = 0; count2 < numClusters; ++count2 ) {
-//         if ( cluster( count2 )->getCenter() != 0 ) {
+  //       if ( cluster( count2 )->remainCapacity() >= p->demand() ) {
             if ( instance()->distance( p, cluster( count2 )->getCenter() ) < distance2 && count2 != center1 ) {
                 distance2 = instance()->distance( p, cluster( count2 )->getCenter() );
                 center2 = count2;
             }
-//         }
+   //      }
     }
     if ( center1 < instance()->numPoints() && center2 < instance()->numPoints() ) {
         this->_pointsRegret[point] = distance2 - distance1;
+    }else{
+        qDebug() << "can't calculate Regret of point "<< p->index() << p->demand();
+
     }
 //     }
 }
@@ -228,7 +244,7 @@ QList < int >  DensityCluster::findNeiborhood(unsigned short point, unsigned sho
 	  
 	  p = distance->near(point, tmp);
 	  if (! isAssigned(p)){
-	    if ((instance()->point(p)->demand()+acumDemand) < instance()->capacity()) {
+            if ((instance()->point(p)->demand()+acumDemand) <= instance()->capacity()) {
 		acumDemand += instance()->point(p)->demand();
 		list.append(p);
 		inserted = true;

@@ -22,6 +22,7 @@
 #include "Solution.h"
 #include "Point.h"
 #include <QList>
+#include <QDebug>
 
 using namespace CCP;
 
@@ -32,7 +33,7 @@ bool InterchangeResult::undo(){
         if (_destP == 0){
             return _destC->interchange(_origP, _origC).isValid();
         }else{
-            return _destC->interchange(_destP, _origP, _origC).isValid();
+            return _destC->interchange(_origP,_destP, _origC).isValid();
         }
     }
     return false;
@@ -49,7 +50,9 @@ Cluster::~Cluster(){ }
 
 void Cluster::addPoint(Point* p){
 //     _instance->setPointType(p, Consumer);
-
+    if (remainCapacity() < p->demand()){
+        qDebug() << "Over capacity inserting Point:" << p->index();
+    }
     points.append(p);
 }
 
@@ -58,7 +61,9 @@ double Cluster::actualDemand(){
     foreach(Point * i, points){
       totalDemand += i->demand();
     }
-    totalDemand += this->center->demand();
+    if (center != 0){
+        totalDemand += this->center->demand();
+    }
     return totalDemand;
 }
 
@@ -111,7 +116,7 @@ unsigned short int Cluster::numPoints(){
 InterchangeResult Cluster::interchange(Point* origPoint, Cluster* dest){
     InterchangeResult result(origPoint, this, 0, dest);
     if (center != origPoint){
-        if (dest->remainCapacity() > origPoint->demand()){
+        if (dest->remainCapacity() >= origPoint->demand()){
             double newDistance = _instance->distance(origPoint, dest->getCenter());
             double oldDistance = _instance->distance(origPoint, center);
 
@@ -128,8 +133,8 @@ InterchangeResult Cluster::interchange(Point* origPoint, Cluster* dest){
 InterchangeResult Cluster::interchange(Point* origPoint, Point* destPoint, Cluster* dest){
     InterchangeResult result(origPoint, this, destPoint, dest);
     if (center != origPoint && destPoint != dest->getCenter()){
-        if ((dest->remainCapacity()-destPoint->demand()) > origPoint->demand()){
-            if ((remainCapacity()-origPoint->demand()) > destPoint->demand()){
+        if ((dest->remainCapacity()+destPoint->demand()) >= origPoint->demand()){
+            if ((remainCapacity()+origPoint->demand()) >= destPoint->demand()){
                 double newDistance = _instance->distance(origPoint, dest->getCenter()) +
                                      _instance->distance(destPoint, center);
 
@@ -142,7 +147,11 @@ InterchangeResult Cluster::interchange(Point* origPoint, Point* destPoint, Clust
                 dest->addPoint(origPoint);
                 result.valueChange(newDistance - oldDistance);
                 result.valid();
+            }else{
+                qDebug() << "can't Insterchange:" << (remainCapacity()+origPoint->demand()) << destPoint->demand();
             }
+        }else{
+            qDebug() << "can't Insterchange:" << (dest->remainCapacity()+destPoint->demand()) << origPoint->demand();
         }
     }
     return result;

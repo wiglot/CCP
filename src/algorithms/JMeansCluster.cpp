@@ -41,8 +41,9 @@ Cluster** JMeansCluster::buildClusters()
     qreal fTmp;
     int delC; //Cluster to delete
     int newC; //point to become center.
+    QScopedPointer<double>means (new double[_myInstance->numCenters()]);
     QList <int> unoccupied;
-    QList <qreal> means;
+//    QList <double> means;
 
     selectInitialCenters();
 
@@ -58,8 +59,8 @@ Cluster** JMeansCluster::buildClusters()
             fOpt = fTmp;
         }
 
-        means = findMeans();
-        unoccupied = findUnoccupied(means);
+        findMeans(means.data());
+        unoccupied = findUnoccupied(means.data());
 
         qreal fIni = fOpt;
         delC = -1;
@@ -89,26 +90,24 @@ Cluster** JMeansCluster::buildClusters()
         }
         if (delC != -1 && newC != -1){
             assign(newC, delC, Center);
-            assignToNearest();
-
         }
-
+        assignToNearest();
     }
     return _centers;
 }
 
-QList <qreal> JMeansCluster::findMeans(){
+void JMeansCluster::findMeans(double * vect){
     int c;
-    QList<qreal> ret;
+//    QList<double> ret;
+    double v = 0.0;
     for (c = 0; c < _myInstance->numCenters(); ++c){
         Cluster * cluster= _centers[c];
-        ret.append(cluster->totalDistance()/cluster->numPoints());
-
+        v = cluster->totalDistance()/cluster->numPoints();
+        vect[c] = v;
     }
-    return ret;
 }
 
-QList <int> JMeansCluster::findUnoccupied(QList <qreal> tolerances){
+QList <int> JMeansCluster::findUnoccupied(double *tolerances){
     QList <int> ret;
     int count;
 

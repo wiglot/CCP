@@ -82,12 +82,14 @@ void AlgorithmStruct::unAssign(CCP::Point * point){
 }
 
 void AlgorithmStruct::unAssign(unsigned short index){
-    if (pointType(index) == CCP::Center){
-	this->_centers[this->_assigned[index]]->setCenter(0);
-    }else{
-	this->_centers[this->_assigned[index]]->removePoint(_myInstance->point(index));
+    if (assignedTo(index) != -1){
+        if (pointType(index) == CCP::Center){
+            this->_centers[this->_assigned[index]]->setCenter(0);
+        }else{
+            this->_centers[this->_assigned[index]]->removePoint(_myInstance->point(index));
+        }
+        this->_assigned[index] = -1;
     }
-    this->_assigned[index] = -1;
 }
 
 void AlgorithmStruct::unAssignAllConsumers(){
@@ -157,8 +159,10 @@ bool AlgorithmStruct::findBestCenters(unsigned short numClusters) {
         newCenter = tmpcluster->getCenter();
         for (countPoints = 0; countPoints < tmpcluster->numPoints(); ++countPoints){
             Point * candidacte = tmpcluster->getPoint(0);
-            assign(tmpcluster->getCenter(), count);
+            Point *tmpP = tmpcluster->getCenter();
             assign(candidacte, count, CCP::Center);
+            assign(tmpP, count);
+
             // 	tmpcluster->addPoint(tmpcluster->getCenter());
             // 	tmpcluster->setCenter(candidacte);
             double newValue = tmpcluster->totalDistance();
