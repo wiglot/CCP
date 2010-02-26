@@ -128,7 +128,7 @@ QList <int> JMeansCluster::findUnoccupied(double *tolerances){
 }
 
 void JMeansCluster::selectInitialCenters(){
-    qsrand(QTime().msec());
+    qsrand(QTime::currentTime().msec());
     int i;
 
     for (i = 0; i < instance()->numCenters(); ++i){

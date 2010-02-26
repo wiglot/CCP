@@ -55,9 +55,10 @@ void ViewCluster::setInstance(CCP::Instance *inst){
     }
     for (unsigned short i = 0; i < inst->numPoints(); i++){
         CCP::Point * p = inst->point(i);
-        scene()->addEllipse(p->position().x() - minX -2 ,
-                            p->position().y() - minY -2 ,
+        scene()->addEllipse(p->position().x() - 2 ,
+                            p->position().y() - 2 ,
                             4, 4);
+        qDebug() << p->position().x() - minX -2 << p->position().y() - minY -2 ;
     }
 
     qDebug() << minX-10 << minY-10 << maxX+10 << maxY+10;
@@ -72,25 +73,29 @@ void ViewCluster::setInstance(CCP::Instance *inst){
 void ViewCluster::setSolution(CCP::Solution * sol){
     CCP::Point * tmpCenter = 0;
     _sol = sol;
+    if (!sol->isValid()){
+        setInstance(_instance);
+        return;
+    }
     scene()->clear();
     qreal ellipseSize = (qMin(_instanceSize.width(), _instanceSize.height())/_instance->numPoints());
-
+    this->fitInView(scene()->sceneRect(), Qt::KeepAspectRatio);
 
     for (unsigned short i = 0; i < _instance->numCenters(); i++){
         tmpCenter = _sol->centerOfCluster(i);
-        scene()->addEllipse(tmpCenter->position().x()-_instanceSize.left()-ellipseSize*0.5,
-                                        tmpCenter->position().y()-_instanceSize.top()-ellipseSize*0.5,
+        scene()->addEllipse(tmpCenter->position().x() - ellipseSize*0.5,
+                                        tmpCenter->position().y() - ellipseSize*0.5,
                                         ellipseSize, ellipseSize, QPen(QBrush(Qt::blue), 2));
         for (unsigned short k = 0; k < _sol->cluster(i)->numPoints(); ++k){
-            scene()->addEllipse(_sol->cluster(i)->getPoint(k)->position().x()-_instanceSize.left() - ellipseSize*0.35 ,
-                                            _sol->cluster(i)->getPoint(k)->position().y() - _instanceSize.top() -ellipseSize*0.35 ,
+            scene()->addEllipse(_sol->cluster(i)->getPoint(k)->position().x() - ellipseSize*0.35 ,
+                                            _sol->cluster(i)->getPoint(k)->position().y() -  ellipseSize*0.35 ,
                                             ellipseSize*0.7, ellipseSize*0.7,
                                             QPen(QBrush(Qt::black), 2));
-            scene()->addLine(tmpCenter->position().x() -_instanceSize.left(),
-                                         tmpCenter->position().y() -_instanceSize.top(),
-                                         _sol->cluster(i)->getPoint(k)->position().x() -_instanceSize.left(),
-                                         _sol->cluster(i)->getPoint(k)->position().y() - _instanceSize.top()
-                                         );
+            scene()->addLine(tmpCenter->position().x() ,
+                             tmpCenter->position().y() ,
+                             _sol->cluster(i)->getPoint(k)->position().x() ,
+                             _sol->cluster(i)->getPoint(k)->position().y()
+                             );
 	}
     }
 }

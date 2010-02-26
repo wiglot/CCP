@@ -5,6 +5,7 @@
 #include <QDebug>
 #include <QTime>
 #include <QDockWidget>
+#include <QTextEdit>
 #include <Instance.h>
 #include <Solution.h>
 #include <readccp.h>
@@ -19,17 +20,26 @@ MainWindow::MainWindow(QWidget *parent) :
     setCentralWidget(new ViewCluster(this));
     _solution = 0;
     _instance = 0;
+
     RunData * run = new RunData(this);
-    QDockWidget *dockWidget = new QDockWidget(tr("Dock Widget"), this);
-    dockWidget->setAllowedAreas(Qt::BottomDockWidgetArea|
-                                Qt::RightDockWidgetArea);
+    QDockWidget *dockWidget = new QDockWidget(tr("Results"), this);
+    dockWidget->setAllowedAreas(Qt::RightDockWidgetArea);
     dockWidget->setWidget(run);
-    addDockWidget(Qt::BottomDockWidgetArea, dockWidget);
+    addDockWidget(Qt::RightDockWidgetArea, dockWidget);
+
+    QTextEdit *text = new QTextEdit(this);
+    text->setReadOnly(true);
+    QDockWidget *TXTdockWidget = new QDockWidget(tr("Text results"), this);
+    TXTdockWidget->setAllowedAreas(Qt::BottomDockWidgetArea);
+    TXTdockWidget->setWidget(text);
+    addDockWidget(Qt::BottomDockWidgetArea, TXTdockWidget);
 
     connect (this, SIGNAL(newInstance(CCP::Instance*)), centralWidget(), SLOT(setInstance(CCP::Instance*)));
     connect (this, SIGNAL(newSolution(CCP::Solution*)), centralWidget(), SLOT(setSolution(CCP::Solution*)));
 
     connect (this, SIGNAL(newSolution(CCP::Solution*)), run, SLOT(setData(CCP::Solution*)));
+    connect (this, SIGNAL(textResult(QString)), text, SLOT(insertPlainText(QString)));
+    connect (this, SIGNAL(newInstance(CCP::Instance*)), text, SLOT(clear()));
 }
 
 MainWindow::~MainWindow()
@@ -59,32 +69,34 @@ void MainWindow::setupAction(){
     menu = menuBar()->addMenu(tr("Algorithms"));
     act = menu->addAction("far",this,SLOT(runAlgorithm()));
     act->setData(CCP::Farthest);
-    act->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_F));
+    act->setShortcut(QKeySequence(Qt::Key_F));
     act = menu->addAction("Density",this,SLOT(runAlgorithm()));
     act->setData(CCP::Density);
-    act->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_D));
+    act->setShortcut(QKeySequence(Qt::Key_D));
     act = menu->addAction("JMeans",this,SLOT(runAlgorithm()));
     act->setData(CCP::JMeans);
-    act->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_J));
+    act->setShortcut(QKeySequence(Qt::Key_J));
     act = menu->addAction("HMeans",this,SLOT(runAlgorithm()));
     act->setData(CCP::HMeans);
-    act->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_H));
+    act->setShortcut(QKeySequence(Qt::Key_H));
 }
 
 void MainWindow::openFile(){
     QFileDialog f(this);
-    if (_instance){
-        delete _instance;
-    }
+
     f.setFilters(QStringList() << "Dat type (*.dat)"<<"Text files (*.txt)");
     if(f.exec()){
+        if (f.selectedFiles().count() == 0){
+            return;
+        }
+        if (_instance){
+            delete _instance;
+        }
         QString filename = f.selectedFiles().at(0);
-        QString filter = f.selectedFilter();
-        qDebug() << filename << filter;
-        if (filter == "Dat type (*.dat)"){
+        if (filename.endsWith(".dat")){
             _instance = readCCP::readLorenaEuclidian(filename);
 
-        }else if (filter == "Text files (*.txt)"){
+        }else if (filename.endsWith(".txt")){
             _instance = readCCP::readSimpleTXT(filename);
 
         }
@@ -95,23 +107,7 @@ void MainWindow::openFile(){
         _solution = 0;
         emit newInstance(_instance);
 
-//    Instance * foo;
-//    QApplication app(argc, argv);
-//    if (argc > 1){
-//        foo = readCCP::readLorenaEuclidian(argv[1]);
-//    }else {
-//          foo = readCCP::readSimpleTXT("instances/instance1.txt");
-//    }
-//
-//  //   Distance * distance = new Distance(foo);
-//
-//    Solution * sol = new Solution(foo);
-//    QTime time;
-//    time.start();
-//    sol->constructSolution(CCP::Density);
-//  //  sol->constructSolution();
-//    qDebug() << "Build time: "<< time.elapsed()/1000.0;
-//    qDebug() << "Value: " << sol->getValue();
+
     }
 }
 
@@ -146,9 +142,16 @@ void MainWindow::runAlgorithm(){
         qDebug() << _solution->isValid();
         if (! _solution->isValid()){
             statusBar()->showMessage("Invalid  solution. ", 2000);
+        }else{
+            QString result = _solution->algorithmName() + ",\t";
+            result += QString::number(_solution->getValue()) + ",\t";
+            result += QString::number(_solution->timeTaken()) + ",\t";
+            result += QString::number(_solution->iterations()) + ",\n";
+            emit textResult(result);
+            qDebug() << time.elapsed()/1000.0;
+            qDebug() << "Value: " << _solution->getValue();
         }
-        qDebug() << time.elapsed()/1000.0;
-        qDebug() << "Value: " << _solution->getValue();
+
         emit newSolution(_solution);
     }
 }

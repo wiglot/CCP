@@ -20,6 +20,7 @@ This program is free software: you can redistribute it and/or modify
 
 #include "HMeansCluster.h"
 #include <QTime>
+#include <QDebug>
 
 
 HMeansCluster::HMeansCluster(CCP::Instance* inst): AlgorithmStruct(inst)
@@ -60,7 +61,7 @@ CCP::Cluster** HMeansCluster::buildClusters()
 
 
 void HMeansCluster::selectInitialCenters(){
-  qsrand(QTime().msec());
+  qsrand(QTime::currentTime().msec());
   int i;
   
   for (i = 0; i < instance()->numCenters(); ++i){
@@ -68,6 +69,7 @@ void HMeansCluster::selectInitialCenters(){
     do{
       gen = qrand() % instance()->numPoints();
     }while (isAssigned(gen));
+    qDebug() << gen;
     assign(gen,i,CCP::Center);
   }
 }

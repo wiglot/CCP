@@ -24,6 +24,7 @@ protected:
 signals:
     void newInstance(CCP::Instance * ins);
     void newSolution(CCP::Solution * sol);
+    void textResult(QString result);
 private:
     void setupAction();
     Ui::MainWindow *ui;
