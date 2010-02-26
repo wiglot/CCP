@@ -25,6 +25,7 @@
  */
 #include "Point.h"
 #include <QList>
+#include <QString>
 
 namespace CCP {
   class Point;
@@ -90,6 +91,15 @@ public:
 	return _centers[index];
     }
     
+    /** return name of algorithm used.*/
+    QString algorithmName(){ return _myAlgorithmName;}
+
+    /** Return time taken to perform selected algorithm (in seconds).*/
+    double timeTaken(){return _myTime;}
+
+    /** Return iterations taken to perform algorithm. */
+    long iterations(){return _myIterations;}
+
     /**
      * @brief Return the point thats represent the center of cluster at index.
      * Use this method is same that does Solution::cluster(index)->centerPoint();
@@ -98,7 +108,7 @@ public:
     */
     Point * centerOfCluster(unsigned short index);
     Instance * getInstance(){
-      return _myInstance;
+        return _myInstance;
     }
     double getValue();
     void setPointType( Point* arg1, PointType arg2 );
@@ -107,7 +117,7 @@ public:
 	This method check if all points are assigned to only on cluster, all cluster have a center and the center is not an consumer point too.
 	Is checked also the capacity of clusters.
 	*/
-	const bool isValid();
+    const bool isValid();
 /**
  * Private stuff
  */
@@ -115,6 +125,9 @@ private:
     /**
      * Fields
      */
+     long _myIterations;
+     double _myTime;
+     QString _myAlgorithmName;
 
      Instance * _myInstance;
 //      PointType * _pointsType;

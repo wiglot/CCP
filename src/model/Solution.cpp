@@ -28,6 +28,7 @@
 #include "farthestcluster.h"
 #include <densitycluster.h>
 #include <QDebug>
+#include <QTime>
 #include <HMeansCluster.h>
 #include <JMeansCluster.h>
 
@@ -40,6 +41,9 @@ Solution::Solution( Instance * instance ) {
     _centers = 0;
     _myInstance = 0;
     setInstance( instance );
+    _myIterations = 0;
+    _myTime = 0.0;
+    _myAlgorithmName = "";
 }
 
 Solution::~Solution() {
@@ -87,26 +91,39 @@ void Solution::constructSolution(HeuristicType type) {
     if (_centers != 0){
 	delete [] _centers;
     }
+    QTime count;
+    count.start();
     switch (type){
       case Farthest: {
 	    FarthestCluster far(_myInstance);
-	    _centers = far.buildClusters();	 
+            _centers = far.buildClusters();
+            _myAlgorithmName = "Farthest";
+            _myIterations = far.iterations();
       }
       break; 
       case Density: {
 	    DensityCluster density(_myInstance);
 	    _centers = density.buildClusters();	
+            _myAlgorithmName = "Density";
+            _myIterations = density.iterations();
       }
 	break; 
       case HMeans: {
 	  HMeansCluster hmean(_myInstance);
 	  _centers = hmean.buildClusters();
+          _myAlgorithmName = "HMeans";
+          _myIterations = hmean.iterations();
       }break;
       case JMeans: {
               JMeansCluster jmean(_myInstance);
               _centers = jmean.buildClusters();
+              _myAlgorithmName = "JMeans";
+              _myIterations = jmean.iterations();
       }break;
     }
+
+    _myTime = count.elapsed()/1000.0;
+
    
 }
 

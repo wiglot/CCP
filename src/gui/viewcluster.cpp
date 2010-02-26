@@ -23,61 +23,80 @@
 #include "Instance.h"
 #include "Cluster.h"
 #include "Point.h"
+#include <QRectF>
+#include <QDebug>
 
 
 ViewCluster::ViewCluster(QWidget * parent)
     :QGraphicsView(parent)
 {
-  QGraphicsScene * scene = new QGraphicsScene;
-  scene->setSceneRect(0, 0, 400, 400);        
-  setRenderHint(QPainter::Antialiasing);
-  setScene(scene);
+    QGraphicsScene * scene = new QGraphicsScene;
+    scene->setSceneRect(0, 0, 400, 400);
+    setRenderHint(QPainter::Antialiasing);
+    setScene(scene);
 }
-void ViewCluster::setSolution(CCP::Solution * sol){
-    CCP::Point * tmpCenter = 0;
-  
-    this->_sol = sol; 
-
+void ViewCluster::setInstance(CCP::Instance *inst){
     double maxX, maxY, minX, minY;
+    clearSolution();
+    this->scene()->clear();
 
-    maxX = maxY = 0.0;    
-    
-    scene()->clear();
-    CCP::Instance * inst = sol->getInstance();
-    minX = inst->point(0)->position().x();
-    minY = inst->point(0)->position().y();
+    if (inst == 0){
+        return;
+    }
+    minY = minX = 1e10;
 
     for (unsigned short i = 0; i < inst->numPoints(); i++){
-	CCP::Point * p = inst->point(i);
-	if (minX > p->position().x())
-           minX = p->position().x();
-        else{
-		if (maxX < p->position().x())
-                    maxX = p->position().x();
-	}
-	if (minY > p->position().y())
-           minY = p->position().y();
-        else{
-		if (maxY < p->position().y())
-                    maxY = p->position().y();
-	}
+        CCP::Point * p = inst->point(i);
+        minX = qMin(minX, p->position().x());
+        minY = qMin(minY, p->position().y());
+        maxX = qMax(maxX, p->position().x());
+        maxY = qMax(maxY, p->position().y());
+
+    }
+    for (unsigned short i = 0; i < inst->numPoints(); i++){
+        CCP::Point * p = inst->point(i);
+        scene()->addEllipse(p->position().x() - minX -2 ,
+                            p->position().y() - minY -2 ,
+                            4, 4);
     }
 
-    this->scene( )->setSceneRect((int) -50,(int) -50,(int) maxX+50 - minX, (int)maxY+50 - minY);
+    qDebug() << minX-10 << minY-10 << maxX+10 << maxY+10;
+    _instance = inst;
+    _instanceSize.setCoords(minX-10, minY-10, maxX+10, maxY+10);
+
+    this->scene( )->setSceneRect(_instanceSize);
     this->fitInView(scene()->sceneRect(), Qt::KeepAspectRatio);
 
-    for (unsigned short i = 0; i < inst->numCenters(); i++){
-	tmpCenter = sol->centerOfCluster(i);
-	scene()->addEllipse(tmpCenter->position().x()-minX-3, tmpCenter->position().y()-minY-3, 6, 6);
-	for (unsigned short k = 0; k < sol->cluster(i)->numPoints(); ++k){
-	  scene()->addEllipse(sol->cluster(i)->getPoint(k)->position().x()-minX -1 ,
-				sol->cluster(i)->getPoint(k)->position().y() - minY -1 ,
-                                 2, 2);
-	  scene()->addLine(tmpCenter->position().x() -minX,
-			   tmpCenter->position().y() -minY,
-			    sol->cluster(i)->getPoint(k)->position().x() -minX,
-			    sol->cluster(i)->getPoint(k)->position().y() - minY
-			    );
+}
+
+void ViewCluster::setSolution(CCP::Solution * sol){
+    CCP::Point * tmpCenter = 0;
+    _sol = sol;
+    scene()->clear();
+    qreal ellipseSize = (qMin(_instanceSize.width(), _instanceSize.height())/_instance->numPoints());
+
+
+    for (unsigned short i = 0; i < _instance->numCenters(); i++){
+        tmpCenter = _sol->centerOfCluster(i);
+        scene()->addEllipse(tmpCenter->position().x()-_instanceSize.left()-ellipseSize*0.5,
+                                        tmpCenter->position().y()-_instanceSize.top()-ellipseSize*0.5,
+                                        ellipseSize, ellipseSize, QPen(QBrush(Qt::blue), 2));
+        for (unsigned short k = 0; k < _sol->cluster(i)->numPoints(); ++k){
+            scene()->addEllipse(_sol->cluster(i)->getPoint(k)->position().x()-_instanceSize.left() - ellipseSize*0.35 ,
+                                            _sol->cluster(i)->getPoint(k)->position().y() - _instanceSize.top() -ellipseSize*0.35 ,
+                                            ellipseSize*0.7, ellipseSize*0.7,
+                                            QPen(QBrush(Qt::black), 2));
+            scene()->addLine(tmpCenter->position().x() -_instanceSize.left(),
+                                         tmpCenter->position().y() -_instanceSize.top(),
+                                         _sol->cluster(i)->getPoint(k)->position().x() -_instanceSize.left(),
+                                         _sol->cluster(i)->getPoint(k)->position().y() - _instanceSize.top()
+                                         );
 	}
+    }
+}
+
+void ViewCluster::clearSolution(){
+    foreach (QGraphicsItem* item, _solItens){
+        scene()->removeItem(item);
     }
 }

@@ -27,11 +27,17 @@
 class ViewCluster: public QGraphicsView {
     Q_OBJECT;
     CCP::Solution* _sol;
+    CCP::Instance* _instance;
+    QRectF _instanceSize;
+
+    QList <QGraphicsItem*> _solItens;
+    void clearSolution();
   public:
     ViewCluster(QWidget * parent = 0);
-    
+
+public slots:
+    void setInstance (CCP::Instance * inst);
     void setSolution(CCP::Solution * sol);
-    
     
     
 };

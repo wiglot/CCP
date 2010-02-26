@@ -22,33 +22,18 @@
 #include "Instance.h"
 #include <readccp.h>
 #include "Solution.h"
-#include "gui/viewcluster.h"
+#include "gui/MainWindow.h"
 
 using namespace CCP;
 
 int main(int argc, char** argv)
 {
-  
-  Instance * foo;
-  QApplication app(argc, argv);
-  if (argc > 1){
-      foo = readCCP::readLorenaEuclidian(argv[1]);
-  }else {
-	foo = readCCP::readSimpleTXT("instances/instance1.txt");
-  }
 
-//   Distance * distance = new Distance(foo);
- 
-  Solution * sol = new Solution(foo);
-  QTime time;
-  time.start();
-  sol->constructSolution(CCP::Density);
-//  sol->constructSolution();
-  qDebug() << "Build time: "<< time.elapsed()/1000.0;
-  qDebug() << "Value: " << sol->getValue();
+    QApplication app(argc, argv);
 
-  ViewCluster view;
-  view.setSolution(sol);
+
+  MainWindow view;
+//  view.setSolution(sol);
   view.show();
   
  
