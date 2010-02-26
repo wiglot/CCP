@@ -24,8 +24,11 @@
  * Namespace
  */
 #include "Point.h"
+#include <QObject>
 #include <QList>
 #include <QString>
+#include <QMutex>
+#include <QThread>
 
 namespace CCP {
   class Point;
@@ -46,10 +49,14 @@ enum HeuristicType {
 /**
  * Class Solution
  */
-class Solution {
+class Solution:public QThread {
+    Q_OBJECT
 /**
  * Public stuff
  */
+public slots:
+    void run();
+
 public:
     /**
      * Constructors
@@ -82,11 +89,15 @@ public:
 //     void setPointsType (PointType * value ) {
 //         _pointsType = value;
 //     }
+
     
-    void constructSolution(HeuristicType type = CCP::Farthest);
+    void constructSolution(HeuristicType type);
     
-    
-    
+
+
+    void setAlgorithmToUse(HeuristicType type);
+
+
     Cluster * cluster(unsigned short index){
 	return _centers[index];
     }
@@ -118,6 +129,17 @@ public:
 	Is checked also the capacity of clusters.
 	*/
     const bool isValid();
+
+    const bool isRunnig(){
+        if (_lock.tryLock()){
+            _lock.unlock();
+            return false;
+        }
+        return true;
+    }
+
+signals:
+    void finished();
 /**
  * Private stuff
  */
@@ -133,7 +155,10 @@ private:
 //      PointType * _pointsType;
      Cluster ** _centers;
      
-     
+     HeuristicType _type;
+
+
+     QMutex _lock;
      /** some only private use methods
      */
 

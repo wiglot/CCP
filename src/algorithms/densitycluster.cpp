@@ -62,12 +62,14 @@ CCP::Cluster ** DensityCluster::buildClusters(){
 //   	if k >= 2
 //       	Find_Best_Clusters(Centros, Pontos_Atribuidos)
 //   Find_Best_Clusters(Centros, Todos_Pontos)
+
     for (unsigned short count = 0; count < _myInstance->numCenters(); count++){
+        emit complete(int(((count+1)/_myInstance->numCenters())*100));
 	this->calculateDensity();
 	unsigned short tmp = this->greatDensity();
 	
 	QList <int> neibor = this->findNeiborhood(tmp, numNeibor);
-	
+
 	assign(tmp, count, CCP::Center);
 	this->_pointsDensity[tmp] = 0.0; 
 		

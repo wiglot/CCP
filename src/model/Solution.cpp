@@ -29,6 +29,8 @@
 #include <densitycluster.h>
 #include <QDebug>
 #include <QTime>
+#include <QMutex>
+#include <QProgressDialog>
 #include <HMeansCluster.h>
 #include <JMeansCluster.h>
 
@@ -84,18 +86,33 @@ PointType Solution::pointType (unsigned short index){
   
 }
 
+void Solution::setAlgorithmToUse(HeuristicType type){
+    _type = type;
+}
 void Solution::constructSolution(HeuristicType type) {
+    setAlgorithmToUse(type);
+    run();
+}
+
+void Solution::run() {
 //     for ( count = 0; count < _myInstance->numPoints(); ++count ) {
 //         _pointsType[count] = CCP::Consumer;//Everyone is consumer at begin...
 //     }
+    if (!_lock.tryLock()){
+        return;
+    }
+//    QProgressDialog dialog ("Progress of algorithm", "cancel", 0,100);
+//
+//    dialog.setWindowModality(Qt::WindowModal);
     if (_centers != 0){
 	delete [] _centers;
     }
     QTime count;
     count.start();
-    switch (type){
+    switch (_type){
       case Farthest: {
 	    FarthestCluster far(_myInstance);
+//            connect (&far, SIGNAL(complete(int)), &dialog, SLOT(setValue(int)));
             _centers = far.buildClusters();
             _myAlgorithmName = "Farthest";
             _myIterations = far.iterations();
@@ -103,6 +120,7 @@ void Solution::constructSolution(HeuristicType type) {
       break; 
       case Density: {
 	    DensityCluster density(_myInstance);
+//            connect (&density, SIGNAL(complete(int)), &dialog, SLOT(setValue(int)));
 	    _centers = density.buildClusters();	
             _myAlgorithmName = "Density";
             _myIterations = density.iterations();
@@ -110,12 +128,14 @@ void Solution::constructSolution(HeuristicType type) {
 	break; 
       case HMeans: {
 	  HMeansCluster hmean(_myInstance);
+//          connect (&hmean, SIGNAL(complete(int)), &dialog, SLOT(setValue(int)));
 	  _centers = hmean.buildClusters();
           _myAlgorithmName = "HMeans";
           _myIterations = hmean.iterations();
       }break;
       case JMeans: {
               JMeansCluster jmean(_myInstance);
+//              connect (&jmean, SIGNAL(complete(int)), &dialog, SLOT(setValue(int)));
               _centers = jmean.buildClusters();
               _myAlgorithmName = "JMeans";
               _myIterations = jmean.iterations();
@@ -123,8 +143,10 @@ void Solution::constructSolution(HeuristicType type) {
     }
 
     _myTime = count.elapsed()/1000.0;
-
+//    dialog.setValue(100);
+    _lock.unlock();
    
+    emit finished();
 }
 
 Point * Solution::centerOfCluster(unsigned short index){

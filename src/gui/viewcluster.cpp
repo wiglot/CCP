@@ -58,10 +58,8 @@ void ViewCluster::setInstance(CCP::Instance *inst){
         scene()->addEllipse(p->position().x() - 2 ,
                             p->position().y() - 2 ,
                             4, 4);
-        qDebug() << p->position().x() - minX -2 << p->position().y() - minY -2 ;
     }
 
-    qDebug() << minX-10 << minY-10 << maxX+10 << maxY+10;
     _instance = inst;
     _instanceSize.setCoords(minX-10, minY-10, maxX+10, maxY+10);
 

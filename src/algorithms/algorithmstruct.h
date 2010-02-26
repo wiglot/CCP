@@ -20,6 +20,7 @@
 #ifndef ALGORITHMSTRUCT_H
 #define ALGORITHMSTRUCT_H
 #include <QList>
+#include <QObject>
 #include "../model/Instance.h"
 #include "../model/Solution.h"
 #include "../model/Cluster.h"
@@ -27,14 +28,17 @@
     @brief A helper class that take care of know if a point is assigned or not, and some operations needed by various methods.
     
 */
-class AlgorithmStruct {
-
+class AlgorithmStruct:public QObject {
+Q_OBJECT
 protected:    
   CCP::Instance * _myInstance;
   int * _assigned;
   CCP::PointType * _pointType;
   CCP::Cluster ** _centers;
   int _iterations;
+
+signals:
+  void complete(int percentage);
 public:
     AlgorithmStruct(CCP::Instance * inst);
     ~AlgorithmStruct(){

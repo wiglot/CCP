@@ -4,8 +4,10 @@
 #include <QFileDialog>
 #include <QDebug>
 #include <QTime>
+#include <QTimer>
 #include <QDockWidget>
 #include <QTextEdit>
+#include <QProgressDialog>
 #include <Instance.h>
 #include <Solution.h>
 #include <readccp.h>
@@ -89,6 +91,9 @@ void MainWindow::openFile(){
         if (f.selectedFiles().count() == 0){
             return;
         }
+        if (_solution){
+            delete _solution;
+        }
         if (_instance){
             delete _instance;
         }
@@ -101,9 +106,7 @@ void MainWindow::openFile(){
 
         }
         new CCP::Distance(_instance);
-        if (_solution){
-            delete _solution;
-        }
+
         _solution = 0;
         emit newInstance(_instance);
 
@@ -115,45 +118,51 @@ void MainWindow::runAlgorithm(){
     QAction * act = qobject_cast<QAction*>(sender());
     if (_solution == 0){
         _solution = new CCP::Solution(_instance);
+        connect(_solution, SIGNAL(finished()),this,SLOT(finishedAlgorithm()));
+    }
+    if (_solution->isRunnig()){
+        statusBar()->showMessage("Allready running a algorithm.", 1000);
+        return;
     }
     if (act){
-        QTime time;
-        time.start();
+
+
+        CCP::HeuristicType type;
         switch(act->data().toInt()){
         case CCP::HMeans:
-            _solution->constructSolution(CCP::HMeans);
-            setWindowTitle("HMeans");
+            type = CCP::HMeans;
+             setWindowTitle("HMeans");
                 break;
         case CCP::JMeans:
-            _solution->constructSolution(CCP::JMeans);
+                type = CCP::JMeans;
             setWindowTitle("JMeans");
             break;
 
         case CCP::Farthest:
-            _solution->constructSolution(CCP::Farthest);
+            type = CCP::Farthest;
             setWindowTitle("Farthest");
             break;
 
         case CCP::Density:
-            _solution->constructSolution(CCP::Density);
+            type = CCP::Density;
             setWindowTitle("Density");
             break;
         }
-        qDebug() << _solution->isValid();
-        if (! _solution->isValid()){
-            statusBar()->showMessage("Invalid  solution. ", 2000);
-        }else{
-            QString result = _solution->algorithmName() + ",\t";
-            result += QString::number(_solution->getValue()) + ",\t";
-            result += QString::number(_solution->timeTaken()) + ",\t";
-            result += QString::number(_solution->iterations()) + ",\n";
-            emit textResult(result);
-            qDebug() << time.elapsed()/1000.0;
-            qDebug() << "Value: " << _solution->getValue();
-        }
-
-        emit newSolution(_solution);
+        _solution->setAlgorithmToUse(type);
+        _solution->start();
     }
 }
 
+void MainWindow::finishedAlgorithm(){
+    if (! _solution->isValid()){
+        statusBar()->showMessage("Invalid  solution. ", 2000);
+    }else{
+        QString result = _solution->algorithmName() + ",\t";
+        result += QString::number(_solution->getValue()) + ",\t";
+        result += QString::number(_solution->timeTaken()) + ",\t";
+        result += QString::number(_solution->iterations()) + ",\n";
+        emit textResult(result);
+    }
+    emit newSolution(_solution);
+}
 
