@@ -12,10 +12,11 @@
 #include <Solution.h>
 #include <readccp.h>
 #include "RunData.h"
+#include "RunBatch.h"
 
 MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::MainWindow)
+        QMainWindow(parent),
+        ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
     setupAction();
@@ -36,8 +37,13 @@ MainWindow::MainWindow(QWidget *parent) :
     TXTdockWidget->setWidget(text);
     addDockWidget(Qt::BottomDockWidgetArea, TXTdockWidget);
 
+    RunBatch * runWidget = new RunBatch(this);
+    addDockWidget(Qt::RightDockWidgetArea, runWidget);
+
     connect (this, SIGNAL(newInstance(CCP::Instance*)), centralWidget(), SLOT(setInstance(CCP::Instance*)));
     connect (this, SIGNAL(newSolution(CCP::Solution*)), centralWidget(), SLOT(setSolution(CCP::Solution*)));
+
+    connect (runWidget, SIGNAL(runAlgorithm(CCP::HeuristicType)), this, SLOT(runAlgorithm(CCP::HeuristicType)));
 
     connect (this, SIGNAL(newSolution(CCP::Solution*)), run, SLOT(setData(CCP::Solution*)));
     connect (this, SIGNAL(textResult(QString)), text, SLOT(insertPlainText(QString)));
@@ -114,7 +120,8 @@ void MainWindow::openFile(){
     }
 }
 
-void MainWindow::runAlgorithm(){
+void MainWindow::runAlgorithm( CCP::HeuristicType inType){
+    CCP::HeuristicType type;
     QAction * act = qobject_cast<QAction*>(sender());
     if (_solution == 0){
         _solution = new CCP::Solution(_instance);
@@ -125,33 +132,53 @@ void MainWindow::runAlgorithm(){
         return;
     }
     if (act){
-
-
-        CCP::HeuristicType type;
         switch(act->data().toInt()){
         case CCP::HMeans:
             type = CCP::HMeans;
-             setWindowTitle("HMeans");
-                break;
+            //            setWindowTitle("HMeans");
+            break;
         case CCP::JMeans:
-                type = CCP::JMeans;
-            setWindowTitle("JMeans");
+            type = CCP::JMeans;
+            //            setWindowTitle("JMeans");
             break;
 
         case CCP::Farthest:
             type = CCP::Farthest;
-            setWindowTitle("Farthest");
+            //            setWindowTitle("Farthest");
             break;
 
         case CCP::Density:
             type = CCP::Density;
-            setWindowTitle("Density");
+            //            setWindowTitle("Density");
             break;
         }
-        _solution->setAlgorithmToUse(type);
-        _solution->start();
+    }else{
+        type = inType;
     }
+    switch(type){
+    case CCP::HMeans:
+        //            type = CCP::HMeans;
+        setWindowTitle("HMeans");
+        break;
+    case CCP::JMeans:
+        //                type = CCP::JMeans;
+        setWindowTitle("JMeans");
+        break;
+
+    case CCP::Farthest:
+        //            type = CCP::Farthest;
+        setWindowTitle("Farthest");
+        break;
+
+    case CCP::Density:
+        //            type = CCP::Density;
+        setWindowTitle("Density");
+        break;
+    }
+    _solution->setAlgorithmToUse(type);
+    _solution->run();
 }
+
 
 void MainWindow::finishedAlgorithm(){
     if (! _solution->isValid()){

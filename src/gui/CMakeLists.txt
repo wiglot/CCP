@@ -2,9 +2,9 @@
 
 include_directories(${QT_INCLUDES} ${CMAKE_CURRENT_BINARY_DIR} ../model ../io)
 
-set(SRC_view viewcluster.cpp MainWindow.cpp RunData.cpp)
-set(SRC_view_H viewcluster.h MainWindow.h RunData.h)
-set (SRC_View_UIS MainWindow.ui RunData.ui)
+set(SRC_view viewcluster.cpp MainWindow.cpp RunData.cpp RunBatch.cpp)
+set(SRC_view_H viewcluster.h MainWindow.h RunData.h RunBatch.h)
+set (SRC_View_UIS MainWindow.ui RunData.ui RunBatch.ui)
 
 qt4_automoc(${SRC_view})
 QT4_WRAP_CPP(MOC_CPP ${SRC_view_H})

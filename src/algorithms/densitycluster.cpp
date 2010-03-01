@@ -67,7 +67,7 @@ CCP::Cluster ** DensityCluster::buildClusters(){
         emit complete(int(((count+1)/_myInstance->numCenters())*100));
 	this->calculateDensity();
 	unsigned short tmp = this->greatDensity();
-	
+        // TMP value is overbounding num points
 	QList <int> neibor = this->findNeiborhood(tmp, numNeibor);
 
 	assign(tmp, count, CCP::Center);
@@ -243,7 +243,7 @@ QList < int >  DensityCluster::findNeiborhood(unsigned short point, unsigned sho
     for (unsigned short i = 0; i < nNeibor && tmp < instance()->numPoints(); ++i){
 	inserted = false;
 	do{
-	  
+          /** BUG Visited point 2000, but only have 422 */
 	  p = distance->near(point, tmp);
 	  if (! isAssigned(p)){
             if ((instance()->point(p)->demand()+acumDemand) <= instance()->capacity()) {
@@ -317,6 +317,7 @@ unsigned short DensityCluster::greatDensity(unsigned short big){
         visited[found] = true;
     }
     delete [] visited;
+    //could be return found initialized. in case of all points have density == 0.0
     return found;
   
 }
