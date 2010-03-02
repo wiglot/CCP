@@ -10,6 +10,7 @@
 #include <QProgressDialog>
 #include <Instance.h>
 #include <Solution.h>
+#include <SolutionRunner.h>
 #include <readccp.h>
 #include "RunData.h"
 #include "RunBatch.h"
@@ -42,6 +43,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect (this, SIGNAL(newInstance(CCP::Instance*)), centralWidget(), SLOT(setInstance(CCP::Instance*)));
     connect (this, SIGNAL(newSolution(CCP::Solution*)), centralWidget(), SLOT(setSolution(CCP::Solution*)));
+
+    connect (SolutionRunner::New(), SIGNAL(finished(CCP::Solution*)), this, SLOT(finishedAlgorithm(CCP::Solution*)));
 
     connect (runWidget, SIGNAL(runAlgorithm(CCP::HeuristicType)), this, SLOT(runAlgorithm(CCP::HeuristicType)));
 
@@ -125,12 +128,12 @@ void MainWindow::runAlgorithm( CCP::HeuristicType inType){
     QAction * act = qobject_cast<QAction*>(sender());
     if (_solution == 0){
         _solution = new CCP::Solution(_instance);
-        connect(_solution, SIGNAL(finished()),this,SLOT(finishedAlgorithm()));
+//        connect(_solution, SIGNAL(finished()),this,SLOT(finishedAlgorithm()));
     }
-    if (_solution->isRunnig()){
-        statusBar()->showMessage("Allready running a algorithm.", 1000);
-        return;
-    }
+//    if (_solution->isRunnig()){
+//        statusBar()->showMessage("Allready running a algorithm.", 1000);
+//        return;
+//    }
     if (act){
         switch(act->data().toInt()){
         case CCP::HMeans:
@@ -175,21 +178,22 @@ void MainWindow::runAlgorithm( CCP::HeuristicType inType){
         setWindowTitle("Density");
         break;
     }
-    _solution->setAlgorithmToUse(type);
-    _solution->run();
+    SolutionRunner::queue(_instance, type);
+    //_solution->setAlgorithmToUse(type);
+    //_solution->run();
 }
 
 
-void MainWindow::finishedAlgorithm(){
-    if (! _solution->isValid()){
+void MainWindow::finishedAlgorithm(CCP::Solution * sol){
+    if (! sol->isValid()){
         statusBar()->showMessage("Invalid  solution. ", 2000);
     }else{
-        QString result = _solution->algorithmName() + ",\t";
-        result += QString::number(_solution->getValue()) + ",\t";
-        result += QString::number(_solution->timeTaken()) + ",\t";
-        result += QString::number(_solution->iterations()) + ",\n";
+        QString result = sol->algorithmName() + ",\t";
+        result += QString::number(sol->getValue()) + ",\t";
+        result += QString::number(sol->timeTaken()) + ",\t";
+        result += QString::number(sol->iterations()) + ",\n";
         emit textResult(result);
     }
-    emit newSolution(_solution);
+    emit newSolution(sol);
 }
 

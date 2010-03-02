@@ -113,6 +113,14 @@ unsigned short int Cluster::numPoints(){
     return points.size();
 }
 
+const Cluster Cluster::operator=(const Cluster &other){
+    this->center = other.center;
+    this->points = other.points;
+    this->_instance = other._instance;
+
+    return *this;
+}
+
 InterchangeResult Cluster::interchange(Point* origPoint, Cluster* dest){
     InterchangeResult result(origPoint, this, 0, dest);
     if (center != origPoint){

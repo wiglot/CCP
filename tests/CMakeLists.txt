@@ -45,3 +45,17 @@ add_executable(CCPCluster ${ClusterTest})
 add_test(CCPCluster CCPCluster)
 
 target_link_libraries(CCPCluster ${QT_QTTEST_LIBRARY} CCPModelLib CCPAlgorithms)
+
+
+
+########## CCPSolutionImprovement_Test #############
+set(SolutionImprovementTest CCPSolutionImprovement_Test.cpp)
+
+qt4_automoc (${SolutionImprovementTest})
+
+add_executable(CCPSolutionImprovement ${SolutionImprovementTest})
+
+add_test(CCPSolutionImprovement CCPSolutionImprovement)
+
+target_link_libraries(CCPSolutionImprovement ${QT_QTTEST_LIBRARY} CCPModelLib CCPAlgorithms)
+

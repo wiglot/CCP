@@ -49,13 +49,14 @@ enum HeuristicType {
 /**
  * Class Solution
  */
-class Solution:public QThread {
-    Q_OBJECT
+class Solution{
+//    :public QObject {
+//    Q_OBJECT
 /**
  * Public stuff
  */
-public slots:
-    void run();
+//public slots:
+
 
 public:
     /**
@@ -98,6 +99,9 @@ public:
     void setAlgorithmToUse(HeuristicType type);
 
 
+    void run();
+
+
     Cluster * cluster(unsigned short index){
 	return _centers[index];
     }
@@ -138,8 +142,10 @@ public:
         return true;
     }
 
-signals:
-    void finished();
+//     Solution & operator=(const Solution & other);
+
+//signals:
+//    void finished();
 /**
  * Private stuff
  */

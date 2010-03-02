@@ -2,9 +2,9 @@
 include_directories(${QT_INCLUDES} ${CMAKE_CURRENT_BINARY_DIR} ../algorithms)
 
 
-set (Model_CCP Cluster.cpp Distance.cpp Instance.cpp Point.cpp Position.cpp Solution.cpp)
+set (Model_CCP Cluster.cpp Distance.cpp Instance.cpp Point.cpp Position.cpp Solution.cpp SolutionImprovement.cpp SolutionRunner.cpp)
 
-set (Model_H Solution.h)
+set (Model_H Solution.h SolutionRunner.h)
 
 qt4_automoc(${Model_CCP})
 QT4_WRAP_CPP(MOC_CPP ${Model_H})

@@ -27,7 +27,7 @@ signals:
     void textResult(QString result);
 
 private slots:
-    void finishedAlgorithm();
+    void finishedAlgorithm(CCP::Solution * sol);
 private:
     void setupAction();
     Ui::MainWindow *ui;

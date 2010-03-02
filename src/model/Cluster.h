@@ -80,6 +80,8 @@ private:
     Point * takePoint( unsigned short  arg1 );
     double totalDistance();
     short unsigned int numPoints();
+
+    const Cluster operator=(const Cluster &other);
     
     /** @brief Interchage points between Clusters.
     *   To make the interchange, is checked if dest support the origPoint.

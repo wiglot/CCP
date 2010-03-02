@@ -98,9 +98,9 @@ void Solution::run() {
 //     for ( count = 0; count < _myInstance->numPoints(); ++count ) {
 //         _pointsType[count] = CCP::Consumer;//Everyone is consumer at begin...
 //     }
-    if (!_lock.tryLock()){
-        return;
-    }
+//    if (!_lock.tryLock()){
+//        return;
+//    }
 //    QProgressDialog dialog ("Progress of algorithm", "cancel", 0,100);
 //
 //    dialog.setWindowModality(Qt::WindowModal);
@@ -144,9 +144,9 @@ void Solution::run() {
 
     _myTime = count.elapsed()/1000.0;
 //    dialog.setValue(100);
-    _lock.unlock();
+//    _lock.unlock();
    
-    emit finished();
+//    emit finished();
 }
 
 Point * Solution::centerOfCluster(unsigned short index){
@@ -212,3 +212,20 @@ const bool Solution::isValid(){
   
   return notFailed;
 }
+
+//Solution &Solution::operator=(const Solution & other){
+//    _myInstance = other._myInstance;
+//    if (other._centers){
+//        _centers = new Cluster*[_myInstance->numCenters()];
+//        for (int i = 0; i < _myInstance->numCenters(); ++i){
+//            _centers[i] = new Cluster(_myInstance);
+//            *_centers[i] = *other._centers[i];
+//        }
+//        this->_myAlgorithmName = other._myAlgorithmName;
+//        _myIterations = other._myIterations;
+//        _myTime = other._myTime;
+//    }
+//
+//    return *this;
+//}
+
