@@ -8,9 +8,11 @@
 #include <QDockWidget>
 #include <QTextEdit>
 #include <QProgressDialog>
+#include <QTableView>
 #include <Instance.h>
 #include <Solution.h>
 #include <SolutionRunner.h>
+#include "SolutionPool.h"
 #include <readccp.h>
 #include "RunData.h"
 #include "RunBatch.h"
@@ -31,6 +33,15 @@ MainWindow::MainWindow(QWidget *parent) :
     dockWidget->setWidget(run);
     addDockWidget(Qt::RightDockWidgetArea, dockWidget);
 
+    SolutionPool * pool = new SolutionPool(QList<CCP::Solution*>(), this);
+    QTableView *table = new QTableView(this);
+    table->setModel(pool);
+    
+    QDockWidget *TabledockWidget = new QDockWidget(tr("Text results"), this);
+    TabledockWidget->setAllowedAreas(Qt::BottomDockWidgetArea);
+    TabledockWidget->setWidget(table);
+    addDockWidget(Qt::BottomDockWidgetArea, TabledockWidget);
+    
     QTextEdit *text = new QTextEdit(this);
     text->setReadOnly(true);
     QDockWidget *TXTdockWidget = new QDockWidget(tr("Text results"), this);
@@ -45,6 +56,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect (this, SIGNAL(newSolution(CCP::Solution*)), centralWidget(), SLOT(setSolution(CCP::Solution*)));
 
     connect (SolutionRunner::New(), SIGNAL(finished(CCP::Solution*)), this, SLOT(finishedAlgorithm(CCP::Solution*)));
+    connect (SolutionRunner::New(), SIGNAL(finished(CCP::Solution*)), pool, SLOT(newSolution(CCP::Solution*)));
 
     connect (runWidget, SIGNAL(runAlgorithm(CCP::HeuristicType)), this, SLOT(runAlgorithm(CCP::HeuristicType)));
 
