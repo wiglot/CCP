@@ -26,6 +26,8 @@ public:
 
 public slots:
     void newSolution(CCP::Solution * sol);
+
+    void clear();
 };
 
 #endif // SOLUTIONPOOL_H

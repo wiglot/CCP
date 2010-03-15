@@ -54,6 +54,7 @@ MainWindow::MainWindow(QWidget *parent) :
     addDockWidget(Qt::RightDockWidgetArea, runWidget);
 
     connect (this, SIGNAL(newInstance(CCP::Instance*)), centralWidget(), SLOT(setInstance(CCP::Instance*)));
+    connect (this, SIGNAL(closing()), pool, SLOT(clear()));
 
     connect (SolutionRunner::New(), SIGNAL(finished(CCP::Solution*)), centralWidget(), SLOT(setSolution(CCP::Solution*)));
     connect (SolutionRunner::New(), SIGNAL(finished(CCP::Solution*)), pool, SLOT(newSolution(CCP::Solution*)));
@@ -118,33 +119,40 @@ void MainWindow::setupAction(){
 
 }
 
+void MainWindow::closeInstance(){
+    _solution = 0;
+
+    if (_instance){
+        emit closing();
+        delete _instance;
+        _instance = 0;
+    }
+
+
+}
+
 void MainWindow::openFile(){
     QFileDialog f(this);
-
+    CCP::Instance * inst;
     f.setFilters(QStringList() << "Dat type (*.dat)"<<"Text files (*.txt)");
     if(f.exec()){
         if (f.selectedFiles().count() == 0){
             return;
         }
-        if (_solution){
-            delete _solution;
-        }
-        if (_instance){
-            delete _instance;
-        }
+        closeInstance();
+
         QString filename = f.selectedFiles().at(0);
         if (filename.endsWith(".dat")){
-            _instance = readCCP::readLorenaEuclidian(filename);
+            inst = readCCP::readLorenaEuclidian(filename);
 
         }else if (filename.endsWith(".txt")){
-            _instance = readCCP::readSimpleTXT(filename);
+            inst = readCCP::readSimpleTXT(filename);
 
         }
-        new CCP::Distance(_instance);
+        new CCP::Distance(inst);
+        emit newInstance(inst);
 
-        _solution = 0;
-        emit newInstance(_instance);
-
+        _instance = inst;
 
     }
 }

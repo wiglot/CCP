@@ -26,9 +26,12 @@ signals:
     void newSolution(CCP::Solution * sol);
     void textResult(QString result);
 
+    void closing();
+
 private slots:
     void finishedAlgorithm(CCP::Solution * sol);
     void improveSolution();
+    void closeInstance();
 private:
     void setupAction();
     Ui::MainWindow *ui;

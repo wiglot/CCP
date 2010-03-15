@@ -60,3 +60,13 @@ void SolutionPool::newSolution(Solution* sol){
     endInsertRows();
     
 }
+
+void SolutionPool::clear(){
+    beginRemoveRows(QModelIndex(),0, rowCount() - 1);
+    foreach(Solution * sol, _solutions){
+        delete sol;
+    }
+    _solutions.clear();
+    endRemoveRows();
+
+}
