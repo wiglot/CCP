@@ -30,15 +30,40 @@ using namespace CCP;
 bool InterchangeResult::undo(){
     if (_valid){
         _valid = false;
+        _canRedo = true;
         if (_destP == 0){
             return _destC->shift(_origP, _origC).isValid();
         }else{
-            return _destC->shift(_origP,_destP, _origC).isValid();
+            return _destC->interchange(_origP,_destP, _origC).isValid();
         }
     }
     return false;
 }
 
+bool InterchangeResult::redo(){
+    if (_canRedo){
+
+        _valid = true;
+        _canRedo = false;
+        if (_destP == 0){
+            return _origC->shift(_origP, _destC).isValid();
+        } else {
+            return _origC->interchange(_origP, _destP, _destC).isValid();
+        }
+        return true;
+    }
+    return false;
+
+}
+//const InterchangeResult & operator=(const InterchangeResult & other){
+//    _valid = other._valid;
+//    _canRedo = other._canRedo;
+//    _change = _CHAR_TRAITS_H;
+//    _origP = origPoint;
+//    _destP = destPoint;
+//    _destC = destCluster;
+//    _origC = origCluster;
+//}
 
 Cluster::Cluster(Instance* inst): _instance(inst)
 {
@@ -140,7 +165,7 @@ InterchangeResult Cluster::shift(Point* origPoint, Cluster* dest){
     return result;
 }
 
-InterchangeResult Cluster::shift(Point* origPoint, Point* destPoint, Cluster* dest){
+InterchangeResult Cluster::interchange(Point* origPoint, Point* destPoint, Cluster* dest){
     InterchangeResult result(origPoint, this, destPoint, dest);
     if (center != origPoint && destPoint != dest->getCenter()){
         if ((dest->remainCapacity()+destPoint->demand()) >= origPoint->demand()){

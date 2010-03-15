@@ -139,7 +139,7 @@ void CCPCluster_Test::interchangeDouble(){
     Point * p1 = _instance->point(0);
     Point * p2 = _instance->point(4);
 
-    InterchangeResult result = sol.cluster(0)->shift(p1,p2, sol.cluster(1));
+    InterchangeResult result = sol.cluster(0)->interchange(p1,p2, sol.cluster(1));
     QVERIFY(result.isValid());
     QVERIFY(sol.isValid());
     QCOMPARE(int(sol.cluster(0)->numPoints()), 2);
@@ -166,7 +166,7 @@ void CCPCluster_Test::invalidInterchangeDouble(){
 
     Point * p2 = _instance->point(4);
 
-    InterchangeResult result = sol.cluster(0)->shift(p1,p2, sol.cluster(1));
+    InterchangeResult result = sol.cluster(0)->interchange(p1,p2, sol.cluster(1));
     QVERIFY( ! result.isValid());
     QVERIFY(sol.isValid());
     QCOMPARE(int(sol.cluster(0)->numPoints()), 2);
@@ -190,7 +190,7 @@ void CCPCluster_Test::interchangeDoubleUndo(){
     Point * p1 = _instance->point(0);
     Point * p2 = _instance->point(4);
 
-    InterchangeResult result = sol.cluster(0)->shift(p1,p2, sol.cluster(1));
+    InterchangeResult result = sol.cluster(0)->interchange(p1,p2, sol.cluster(1));
     QVERIFY(result.isValid());
     QVERIFY(sol.isValid());
     QCOMPARE(int(sol.cluster(0)->numPoints()), 2);
@@ -219,7 +219,7 @@ void CCPCluster_Test::invalidInterchangeDoubleUndo(){
     Point * p1 = _instance->point(0);
     Point * p2 = _instance->point(4);
 
-    InterchangeResult result = sol.cluster(0)->shift(p1,p2, sol.cluster(1));
+    InterchangeResult result = sol.cluster(0)->interchange(p1,p2, sol.cluster(1));
     QVERIFY(result.isValid());
     QVERIFY(sol.isValid());
     QCOMPARE(int(sol.cluster(0)->numPoints()), 2);

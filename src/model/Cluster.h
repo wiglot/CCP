@@ -30,6 +30,7 @@ namespace CCP{
 class InterchangeResult{
   private:
       bool _valid;
+      bool _canRedo;
       double _change;
       Point* _origP,* _destP;
       class Cluster* _origC,* _destC;
@@ -39,6 +40,7 @@ class InterchangeResult{
                         Point * destPoint, Cluster * destCluster)
       {
           _valid = false;
+          _canRedo = false;
           _change = 0.0;
           _origP = origPoint;
           _destP = destPoint;
@@ -53,6 +55,7 @@ class InterchangeResult{
       void valid(const bool v = true){ _valid = v;}
       void valueChange(double c){_change = c;}
       bool undo();
+      bool redo();
   };
 
 
@@ -100,7 +103,7 @@ private:
     *   \param dest Other cluster to receive origPoint.
     *   \return total change in values of distances.
     */
-    InterchangeResult shift(Point* origPoint, Point* retPoint,Cluster* dest);
+    InterchangeResult interchange(Point* origPoint, Point* retPoint,Cluster* dest);
     
 };
 }
