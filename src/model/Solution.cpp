@@ -213,19 +213,19 @@ const bool Solution::isValid(){
   return notFailed;
 }
 
-//Solution &Solution::operator=(const Solution & other){
-//    _myInstance = other._myInstance;
-//    if (other._centers){
-//        _centers = new Cluster*[_myInstance->numCenters()];
-//        for (int i = 0; i < _myInstance->numCenters(); ++i){
-//            _centers[i] = new Cluster(_myInstance);
-//            *_centers[i] = *other._centers[i];
-//        }
-//        this->_myAlgorithmName = other._myAlgorithmName;
-//        _myIterations = other._myIterations;
-//        _myTime = other._myTime;
-//    }
-//
-//    return *this;
-//}
+const Solution& Solution::operator=(const Solution & other){
+    _myInstance = other._myInstance;
+    if (other._centers){
+        _centers = new Cluster*[_myInstance->numCenters()];
+        for (int i = 0; i < _myInstance->numCenters(); ++i){
+            _centers[i] = new Cluster(_myInstance);
+            *_centers[i] = *other._centers[i];
+        }
+        this->_myAlgorithmName = other._myAlgorithmName;
+        _myIterations = other._myIterations;
+        _myTime = other._myTime;
+    }
+
+    return *this;
+}
 

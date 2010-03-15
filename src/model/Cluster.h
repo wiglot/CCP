@@ -90,7 +90,7 @@ private:
     *   \param dest Other cluster to receive origPoint.
     *   \return total change in values of distances.
     */
-    InterchangeResult interchange(Point* origPoint, Cluster* dest);
+    InterchangeResult shift(Point* origPoint, Cluster* dest);
 
     /** @brief Interchage points between Clusters.
     *   To make the interchange, is checked if both suport news points after remove originPoint an retPoint.
@@ -100,7 +100,7 @@ private:
     *   \param dest Other cluster to receive origPoint.
     *   \return total change in values of distances.
     */
-    InterchangeResult interchange(Point* origPoint, Point* retPoint,Cluster* dest);
+    InterchangeResult shift(Point* origPoint, Point* retPoint,Cluster* dest);
     
 };
 }

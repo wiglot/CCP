@@ -134,15 +134,15 @@ public:
 	*/
     const bool isValid();
 
-    const bool isRunnig(){
-        if (_lock.tryLock()){
-            _lock.unlock();
-            return false;
-        }
-        return true;
-    }
+//    const bool isRunnig(){
+//        if (_lock.tryLock()){
+//            _lock.unlock();
+//            return false;
+//        }
+//        return true;
+//    }
 
-//     Solution & operator=(const Solution & other);
+     const Solution & operator=(const Solution & other);
 
 //signals:
 //    void finished();
@@ -164,7 +164,7 @@ private:
      HeuristicType _type;
 
 
-     QMutex _lock;
+//     QMutex _lock;
      /** some only private use methods
      */
 

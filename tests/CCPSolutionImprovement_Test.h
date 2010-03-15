@@ -13,7 +13,14 @@ private slots:
     void initTestCase();
     void cleanupTestCase();
     void cleanup();
-    void hillClimb1();
+    void hillClimbShift1();
+    void hillClimbInterchange1();
+
+    void SAShift1();
+
+    void SAInterchange1();
+
+
 };
 
 #endif // CCPSOLUTIONIMPROVEMENT_TEST_H

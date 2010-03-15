@@ -31,9 +31,9 @@ bool InterchangeResult::undo(){
     if (_valid){
         _valid = false;
         if (_destP == 0){
-            return _destC->interchange(_origP, _origC).isValid();
+            return _destC->shift(_origP, _origC).isValid();
         }else{
-            return _destC->interchange(_origP,_destP, _origC).isValid();
+            return _destC->shift(_origP,_destP, _origC).isValid();
         }
     }
     return false;
@@ -115,13 +115,15 @@ unsigned short int Cluster::numPoints(){
 
 const Cluster Cluster::operator=(const Cluster &other){
     this->center = other.center;
-    this->points = other.points;
+    foreach (Point * p, other.points){
+        this->points.append(p);// = other.points;
+    }
     this->_instance = other._instance;
 
     return *this;
 }
 
-InterchangeResult Cluster::interchange(Point* origPoint, Cluster* dest){
+InterchangeResult Cluster::shift(Point* origPoint, Cluster* dest){
     InterchangeResult result(origPoint, this, 0, dest);
     if (center != origPoint){
         if (dest->remainCapacity() >= origPoint->demand()){
@@ -138,7 +140,7 @@ InterchangeResult Cluster::interchange(Point* origPoint, Cluster* dest){
     return result;
 }
 
-InterchangeResult Cluster::interchange(Point* origPoint, Point* destPoint, Cluster* dest){
+InterchangeResult Cluster::shift(Point* origPoint, Point* destPoint, Cluster* dest){
     InterchangeResult result(origPoint, this, destPoint, dest);
     if (center != origPoint && destPoint != dest->getCenter()){
         if ((dest->remainCapacity()+destPoint->demand()) >= origPoint->demand()){
