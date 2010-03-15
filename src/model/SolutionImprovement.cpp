@@ -16,9 +16,10 @@ Solution  SolutionImprovement::hillClimbShift( Solution & sol){
     bestSol = sol;
     double bestValue = sol.getValue();
     bool foundBetter = false;
-
+    int count = 0;
 
     do{
+        ++count;
         Solution* tmpSol = new Solution(inst);
         *tmpSol = bestSol;
 
@@ -57,6 +58,7 @@ Solution  SolutionImprovement::hillClimbShift( Solution & sol){
         delete tmpSol;
 
     }while (foundBetter);
+    bestSol.setIterations(count);
     return bestSol;
 }
 
@@ -85,4 +87,19 @@ Solution  SolutionImprovement::SAInterchange(Solution & sol){
     bestSol = sol;
 
     return bestSol;
+}
+
+
+CCP::Solution SolutionImprovement::improve(CCP::Solution & sol, const ImprovementHeuristic type){
+    switch (type){
+    case CCP::HillClimbShift:
+        return hillClimbShift(sol);
+    case CCP::HillClimbInterchange:
+        return hillClimbInterchange(sol);
+    case CCP::SAShift:
+        return SAShift(sol);
+    case CCP::SAInterchange:
+        return SAInterchange(sol);
+    }
+
 }

@@ -5,7 +5,7 @@ using namespace CCP;
 SolutionRunner * SolutionRunner::inst = 0;
 
 SolutionRunner::SolutionRunner(QObject *parent) :
-    QThread(parent)
+        QThread(parent)
 {
 
 }
@@ -21,7 +21,7 @@ CCP::Solution * SolutionRunner::next(){
     Solution * sol = 0;
     readQueue.lock();
     if (solQueue.count() > 0){
-      sol = solQueue.dequeue();
+        sol = solQueue.dequeue();
     }
     readQueue.unlock();
     return sol;
@@ -45,12 +45,35 @@ void SolutionRunner::queue(Instance *instance, HeuristicType type){
     SolutionRunner::New()->insert(sol);
 }
 
+void SolutionRunner::queue(CCP::Solution *sol, CCP::ImprovementHeuristic type){
+    sol->setImprovement(type);
+    SolutionRunner::New()->insert(sol);
+}
+
 void SolutionRunner::run(){
     Solution * sol = next();
     while (sol){
-        sol->run();
-        emit finished(sol);
+        if (sol->isImprovement()){
+            Solution * improved = new Solution(sol->getInstance());
+            *improved = sol->improve();
+            if (improved->isValid()){
+                emit finished(improved);
+
+            }else{
+                emit finished(0);
+                delete improved;
+            }
+        }else{
+            sol->run();
+            if (sol->isValid()){
+                emit finished(sol);
+            }else{
+                emit finished(0);
+                delete sol;
+            }
+        }
         sol = next();
+
     }
     running.unlock();
 }

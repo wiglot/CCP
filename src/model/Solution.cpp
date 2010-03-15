@@ -46,6 +46,7 @@ Solution::Solution( Instance * instance ) {
     _myIterations = 0;
     _myTime = 0.0;
     _myAlgorithmName = "";
+    toImprove = false;
 }
 
 Solution::~Solution() {
@@ -229,3 +230,16 @@ const Solution& Solution::operator=(const Solution & other){
     return *this;
 }
 
+Solution Solution::improve(){
+    if (toImprove){
+        return SolutionImprovement::improve(*this, improveType);
+    }
+    return Solution(_myInstance);
+}
+
+void Solution::setImprovement(ImprovementHeuristic type){
+    if (isValid()){
+        toImprove = true;
+        improveType = type;
+    }
+}

@@ -29,6 +29,7 @@ signals:
 
 public slots:
     static void queue(CCP::Instance *instance, CCP::HeuristicType type);
+    static void queue(CCP::Solution *sol, CCP::ImprovementHeuristic type);
     static SolutionRunner * New();
 };
 

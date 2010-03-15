@@ -69,7 +69,6 @@ void HMeansCluster::selectInitialCenters(){
     do{
       gen = qrand() % instance()->numPoints();
     }while (isAssigned(gen));
-    qDebug() << gen;
     assign(gen,i,CCP::Center);
   }
 }

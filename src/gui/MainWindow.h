@@ -28,6 +28,7 @@ signals:
 
 private slots:
     void finishedAlgorithm(CCP::Solution * sol);
+    void improveSolution();
 private:
     void setupAction();
     Ui::MainWindow *ui;

@@ -1,11 +1,18 @@
 #ifndef SOLUTIONIMPROVEMENT_H
 #define SOLUTIONIMPROVEMENT_H
 
-#include "Solution.h"
+//#include "Solution.h"
 
 namespace CCP{
 
+    class Solution;
 
+    enum ImprovementHeuristic {
+        HillClimbShift,
+        HillClimbInterchange,
+        SAShift,
+        SAInterchange
+    };
 
 class SolutionImprovement
 {
@@ -18,6 +25,8 @@ public:
 
     static CCP::Solution  SAShift(CCP::Solution & sol);
     static CCP::Solution  SAInterchange(CCP::Solution & sol);
+
+    static CCP::Solution improve(CCP::Solution & sol, const ImprovementHeuristic type);
 };
 }
 #endif // SOLUTIONIMPROVEMENT_H

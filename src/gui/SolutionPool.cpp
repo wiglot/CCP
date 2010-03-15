@@ -52,6 +52,9 @@ QVariant SolutionPool::headerData(int section, Qt::Orientation orientation, int 
 
 
 void SolutionPool::newSolution(Solution* sol){
+    if (sol == 0){
+        return;
+    }
     beginInsertRows(QModelIndex(), rowCount()-1, rowCount()-1);
     _solutions.append(sol);
     endInsertRows();

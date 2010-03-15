@@ -69,12 +69,15 @@ void ViewCluster::setInstance(CCP::Instance *inst){
 }
 
 void ViewCluster::setSolution(CCP::Solution * sol){
-    CCP::Point * tmpCenter = 0;
-    _sol = sol;
-    if (!sol->isValid()){
+
+    if (sol == 0){
         setInstance(_instance);
         return;
     }
+
+    CCP::Point * tmpCenter = 0;
+    _sol = sol;
+
     scene()->clear();
     qreal ellipseSize = (qMin(_instanceSize.width(), _instanceSize.height())/_instance->numPoints());
     this->fitInView(scene()->sceneRect(), Qt::KeepAspectRatio);

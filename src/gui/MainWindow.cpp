@@ -16,6 +16,7 @@
 #include <readccp.h>
 #include "RunData.h"
 #include "RunBatch.h"
+#include <SolutionImprovement.h>
 
 MainWindow::MainWindow(QWidget *parent) :
         QMainWindow(parent),
@@ -53,10 +54,11 @@ MainWindow::MainWindow(QWidget *parent) :
     addDockWidget(Qt::RightDockWidgetArea, runWidget);
 
     connect (this, SIGNAL(newInstance(CCP::Instance*)), centralWidget(), SLOT(setInstance(CCP::Instance*)));
-    connect (this, SIGNAL(newSolution(CCP::Solution*)), centralWidget(), SLOT(setSolution(CCP::Solution*)));
+
+    connect (SolutionRunner::New(), SIGNAL(finished(CCP::Solution*)), centralWidget(), SLOT(setSolution(CCP::Solution*)));
+    connect (SolutionRunner::New(), SIGNAL(finished(CCP::Solution*)), pool, SLOT(newSolution(CCP::Solution*)));
 
     connect (SolutionRunner::New(), SIGNAL(finished(CCP::Solution*)), this, SLOT(finishedAlgorithm(CCP::Solution*)));
-    connect (SolutionRunner::New(), SIGNAL(finished(CCP::Solution*)), pool, SLOT(newSolution(CCP::Solution*)));
 
     connect (runWidget, SIGNAL(runAlgorithm(CCP::HeuristicType)), this, SLOT(runAlgorithm(CCP::HeuristicType)));
 
@@ -90,7 +92,7 @@ void MainWindow::setupAction(){
     act->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Q));
 
     menu = menuBar()->addMenu(tr("Algorithms"));
-    act = menu->addAction("far",this,SLOT(runAlgorithm()));
+    act = menu->addAction("Farthest",this,SLOT(runAlgorithm()));
     act->setData(CCP::Farthest);
     act->setShortcut(QKeySequence(Qt::Key_F));
     act = menu->addAction("Density",this,SLOT(runAlgorithm()));
@@ -102,6 +104,18 @@ void MainWindow::setupAction(){
     act = menu->addAction("HMeans",this,SLOT(runAlgorithm()));
     act->setData(CCP::HMeans);
     act->setShortcut(QKeySequence(Qt::Key_H));
+
+    menu = menuBar()->addMenu(tr("Improvments"));
+    act = menu->addAction("Hill Climb whit Shift",this, SLOT(improveSolution()));
+    act->setData(CCP::HillClimbShift);
+    act = menu->addAction("Hill Climb whit Interchange",this, SLOT(improveSolution()));
+    act->setData(CCP::HillClimbInterchange);
+    act = menu->addAction("SA whit Shift",this, SLOT(improveSolution()));
+    act->setData(CCP::SAShift);
+    act = menu->addAction("SA whit Interchange",this, SLOT(improveSolution()));
+    act->setData(CCP::SAInterchange);
+
+
 }
 
 void MainWindow::openFile(){
@@ -138,74 +152,70 @@ void MainWindow::openFile(){
 void MainWindow::runAlgorithm( CCP::HeuristicType inType){
     CCP::HeuristicType type;
     QAction * act = qobject_cast<QAction*>(sender());
-    if (_solution == 0){
-        _solution = new CCP::Solution(_instance);
-//        connect(_solution, SIGNAL(finished()),this,SLOT(finishedAlgorithm()));
-    }
-//    if (_solution->isRunnig()){
-//        statusBar()->showMessage("Allready running a algorithm.", 1000);
-//        return;
-//    }
+
     if (act){
+
         switch(act->data().toInt()){
         case CCP::HMeans:
             type = CCP::HMeans;
-            //            setWindowTitle("HMeans");
             break;
         case CCP::JMeans:
             type = CCP::JMeans;
-            //            setWindowTitle("JMeans");
             break;
 
         case CCP::Farthest:
             type = CCP::Farthest;
-            //            setWindowTitle("Farthest");
             break;
 
         case CCP::Density:
             type = CCP::Density;
-            //            setWindowTitle("Density");
             break;
         }
     }else{
         type = inType;
     }
-    switch(type){
-    case CCP::HMeans:
-        //            type = CCP::HMeans;
-        setWindowTitle("HMeans");
-        break;
-    case CCP::JMeans:
-        //                type = CCP::JMeans;
-        setWindowTitle("JMeans");
-        break;
-
-    case CCP::Farthest:
-        //            type = CCP::Farthest;
-        setWindowTitle("Farthest");
-        break;
-
-    case CCP::Density:
-        //            type = CCP::Density;
-        setWindowTitle("Density");
-        break;
-    }
     SolutionRunner::queue(_instance, type);
-    //_solution->setAlgorithmToUse(type);
-    //_solution->run();
 }
 
+void MainWindow::improveSolution(){
+    if (_solution == 0){
+        return;
+    }
+    QAction * act = qobject_cast<QAction*>(sender());
+    if (act){
+        switch(act->data().toInt()){
+        case CCP::HillClimbShift:
+            SolutionRunner::queue(_solution, CCP::HillClimbShift);
+            break;
+        case CCP::HillClimbInterchange:
+            SolutionRunner::queue(_solution, CCP::HillClimbInterchange);
+            break;
+
+        case CCP::SAInterchange:
+            SolutionRunner::queue(_solution, CCP::SAInterchange);
+            break;
+
+        case CCP::SAShift:
+            SolutionRunner::queue(_solution, CCP::SAShift);
+            break;
+        }
+    }
+
+}
 
 void MainWindow::finishedAlgorithm(CCP::Solution * sol){
-    if (! sol->isValid()){
+    if (sol == 0){
         statusBar()->showMessage("Invalid  solution. ", 2000);
     }else{
+        _solution = sol;
         QString result = sol->algorithmName() + ",\t";
         result += QString::number(sol->getValue()) + ",\t";
         result += QString::number(sol->timeTaken()) + ",\t";
         result += QString::number(sol->iterations()) + ",\n";
         emit textResult(result);
+
+        setWindowTitle(sol->algorithmName());
+        emit newSolution(sol);
     }
-    emit newSolution(sol);
 }
 

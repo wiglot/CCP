@@ -24,153 +24,149 @@
  * Namespace
  */
 #include "Point.h"
-#include <QObject>
 #include <QList>
 #include <QString>
-#include <QMutex>
-#include <QThread>
+
+#include "SolutionImprovement.h"
+
 
 namespace CCP {
-  class Point;
-class Instance; 
-class Cluster;
+    class Point;
+    class Instance;
+    class Cluster;
 
-enum PointType {
-  Center,
-  Consumer
-};
+    enum PointType {
+        Center,
+        Consumer
+    };
 
-enum HeuristicType {
-  Density,
-  Farthest,
-  HMeans,
-  JMeans
-};
-/**
+    enum HeuristicType {
+        Density,
+        Farthest,
+        HMeans,
+        JMeans
+    };
+
+
+    /**
  * Class Solution
  */
-class Solution{
-//    :public QObject {
-//    Q_OBJECT
-/**
+    class Solution{
+        //    :public QObject {
+        //    Q_OBJECT
+        /**
  * Public stuff
  */
-//public slots:
+        //public slots:
 
 
-public:
-    /**
+    public:
+        /**
      * Constructors
      */
-    /**
+        /**
      * Empty Constructor
      */
-    Solution ( Instance * instance);
-    
-    ~Solution();
-    /**
+        Solution ( Instance * instance);
+
+        ~Solution();
+        /**
      * Accessor Methods
      */
-    /** 
+        /**
     */
-    void setInstance (Instance * inst);
-    
-    /**
+        void setInstance (Instance * inst);
+
+        /**
     *
     */
-    Instance * instance(){
-      return _myInstance;
-    }
-    /**
+        Instance * instance(){
+            return _myInstance;
+        }
+        /**
      * 
      */
-    PointType pointType (unsigned short index);
+        PointType pointType (unsigned short index);
 
 
-//     void setPointsType (PointType * value ) {
-//         _pointsType = value;
-//     }
-
-    
-    void constructSolution(HeuristicType type);
-    
+        //     void setPointsType (PointType * value ) {
+        //         _pointsType = value;
+        //     }
 
 
-    void setAlgorithmToUse(HeuristicType type);
+        void constructSolution(HeuristicType type);
 
 
-    void run();
+
+        void setAlgorithmToUse(HeuristicType type);
 
 
-    Cluster * cluster(unsigned short index){
-	return _centers[index];
-    }
-    
-    /** return name of algorithm used.*/
-    QString algorithmName(){ return _myAlgorithmName;}
+        void run();
 
-    /** Return time taken to perform selected algorithm (in seconds).*/
-    double timeTaken(){return _myTime;}
 
-    /** Return iterations taken to perform algorithm. */
-    long iterations(){return _myIterations;}
+        Cluster * cluster(unsigned short index){
+            return _centers[index];
+        }
 
-    /**
+        /** return name of algorithm used.*/
+        QString algorithmName(){ return _myAlgorithmName;}
+
+        /** Return time taken to perform selected algorithm (in seconds).*/
+        double timeTaken(){return _myTime;}
+
+        /** Return iterations taken to perform algorithm. */
+        long iterations(){return _myIterations;}
+
+        void setIterations(long iter) {_myIterations = iter;}
+
+        /**
      * @brief Return the point thats represent the center of cluster at index.
      * Use this method is same that does Solution::cluster(index)->centerPoint();
      * @param index index of cluster in array. Shoud be less than number of centers.
      * @return Point considered as center os cluster.
     */
-    Point * centerOfCluster(unsigned short index);
-    Instance * getInstance(){
-        return _myInstance;
-    }
-    double getValue();
-    void setPointType( Point* arg1, PointType arg2 );
-    
-    /** @brief Return if the Solution is valid or not.
+        Point * centerOfCluster(unsigned short index);
+        Instance * getInstance(){
+            return _myInstance;
+        }
+        double getValue();
+        void setPointType( Point* arg1, PointType arg2 );
+
+        /** @brief Return if the Solution is valid or not.
 	This method check if all points are assigned to only on cluster, all cluster have a center and the center is not an consumer point too.
 	Is checked also the capacity of clusters.
 	*/
-    const bool isValid();
+        const bool isValid();
 
-//    const bool isRunnig(){
-//        if (_lock.tryLock()){
-//            _lock.unlock();
-//            return false;
-//        }
-//        return true;
-//    }
+        bool isImprovement() const { return toImprove;}
 
-     const Solution & operator=(const Solution & other);
+        Solution improve();
 
-//signals:
-//    void finished();
-/**
+        void setImprovement(ImprovementHeuristic type);
+
+        const Solution & operator=(const Solution & other);
+
+        /**
  * Private stuff
  */
-private:
-    /**
+    private:
+        /**
      * Fields
      */
-     long _myIterations;
-     double _myTime;
-     QString _myAlgorithmName;
+        long _myIterations;
+        double _myTime;
+        QString _myAlgorithmName;
 
-     Instance * _myInstance;
-//      PointType * _pointsType;
-     Cluster ** _centers;
-     
-     HeuristicType _type;
+        Instance * _myInstance;
 
+        Cluster ** _centers;
 
-//     QMutex _lock;
-     /** some only private use methods
-     */
+        HeuristicType _type;
 
-     
-    
-};
+        bool toImprove;
+
+        ImprovementHeuristic improveType;
+    };
 } 
 #endif //SOLUTION_H
 
