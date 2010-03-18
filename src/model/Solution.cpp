@@ -47,6 +47,7 @@ Solution::Solution( Instance * instance ) {
     _myTime = 0.0;
     _myAlgorithmName = "";
     toImprove = false;
+    _parent = 0;
 }
 
 Solution::~Solution() {
@@ -226,6 +227,8 @@ const Solution& Solution::operator=(const Solution & other){
         _myIterations = other._myIterations;
         _myTime = other._myTime;
     }
+    toImprove = other.toImprove;
+    _parent = other._parent;
 
     return *this;
 }
