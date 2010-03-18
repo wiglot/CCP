@@ -142,6 +142,8 @@ namespace CCP {
 
         Solution improve();
 
+        Solution * solutionParent() { return _parent;}
+
         void setImprovement(ImprovementHeuristic type);
 
         const Solution & operator=(const Solution & other);
@@ -166,6 +168,8 @@ namespace CCP {
         bool toImprove;
 
         ImprovementHeuristic improveType;
+
+        Solution * _parent;
     };
 } 
 #endif //SOLUTION_H

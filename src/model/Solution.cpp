@@ -231,9 +231,15 @@ const Solution& Solution::operator=(const Solution & other){
 }
 
 Solution Solution::improve(){
+    Solution sol(_myInstance);
     if (toImprove){
-        return SolutionImprovement::improve(*this, improveType);
+         sol = SolutionImprovement::improve(*this, improveType);
+         sol._parent = this;
+         sol.toImprove = true;
+         toImprove = false;
     }
+
+
     return Solution(_myInstance);
 }
 

@@ -8,7 +8,7 @@
 #include <QDockWidget>
 #include <QTextEdit>
 #include <QProgressDialog>
-#include <QTableView>
+#include <QTreeView>
 #include <Instance.h>
 #include <Solution.h>
 #include <SolutionRunner.h>
@@ -34,8 +34,8 @@ MainWindow::MainWindow(QWidget *parent) :
     dockWidget->setWidget(run);
     addDockWidget(Qt::RightDockWidgetArea, dockWidget);
 
-    SolutionPool * pool = new SolutionPool(QList<CCP::Solution*>(), this);
-    QTableView *table = new QTableView(this);
+    SolutionTreeModel * pool = new SolutionTreeModel(this);
+    QTreeView *table = new QTreeView(this);
     table->setModel(pool);
     
     QDockWidget *TabledockWidget = new QDockWidget(tr("Text results"), this);
