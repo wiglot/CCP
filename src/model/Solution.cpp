@@ -240,7 +240,7 @@ Solution Solution::improve(){
     }
 
 
-    return Solution(_myInstance);
+    return sol;
 }
 
 void Solution::setImprovement(ImprovementHeuristic type){
