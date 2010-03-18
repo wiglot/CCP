@@ -182,12 +182,12 @@ InterchangeResult Cluster::interchange(Point* origPoint, Point* destPoint, Clust
                 dest->addPoint(origPoint);
                 result.valueChange(newDistance - oldDistance);
                 result.valid();
-            }else{
+            }/*else{
                 qDebug() << "can't Insterchange:" << (remainCapacity()+origPoint->demand()) << destPoint->demand();
-            }
-        }else{
+            }*/
+        }/*else{
             qDebug() << "can't Insterchange:" << (dest->remainCapacity()+destPoint->demand()) << origPoint->demand();
-        }
+        }*/
     }
     return result;
 }

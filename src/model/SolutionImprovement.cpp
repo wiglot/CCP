@@ -150,10 +150,19 @@ CCP::Solution SolutionImprovement::improve(CCP::Solution & sol, const Improvemen
         return hillClimbShift(sol);
     case CCP::HillClimbInterchange:
         return hillClimbInterchange(sol);
-    case CCP::SAShift:
+    case CCP::SimulatedAnnelingShift:
         return SAShift(sol);
-    case CCP::SAInterchange:
+    case CCP::SimulatedAnnelingInterchange:
         return SAInterchange(sol);
     }
 
+}
+
+QString SolutionImprovement::text(ImprovementHeuristic type){
+    switch (type){
+    case HillClimbShift: return QString("Hill Climb with Shift");
+    case HillClimbInterchange: return QString("Hill Climb with Interchange");
+    case SimulatedAnnelingShift: return QString("SA with Shift");
+    case SimulatedAnnelingInterchange: return QString("SA with Interchange");
+    }
 }

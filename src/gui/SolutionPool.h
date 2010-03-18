@@ -24,7 +24,7 @@ public:
     SolutionItem * parent();
 
     CCP::Solution * solution(){return _solution;}
-
+    SolutionItem* findSolution(CCP::Solution * sol);
 private:
     SolutionItem * _parent;
     CCP::Solution * _solution;
@@ -54,7 +54,11 @@ public:
 public slots:
     void newSolution(CCP::Solution * sol);
 
+    void selectedItem(QModelIndex index);
+
     void clear();
+signals:
+    void selectedSolution(CCP::Solution * sol);
 
 private:
 

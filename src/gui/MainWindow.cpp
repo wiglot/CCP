@@ -56,7 +56,10 @@ MainWindow::MainWindow(QWidget *parent) :
     connect (this, SIGNAL(newInstance(CCP::Instance*)), centralWidget(), SLOT(setInstance(CCP::Instance*)));
     connect (this, SIGNAL(closing()), pool, SLOT(clear()));
 
-    connect (SolutionRunner::New(), SIGNAL(finished(CCP::Solution*)), centralWidget(), SLOT(setSolution(CCP::Solution*)));
+    connect(table, SIGNAL(clicked(QModelIndex)), pool, SLOT(selectedItem(QModelIndex)));
+    connect (pool, SIGNAL(selectedSolution(CCP::Solution*)), this, SLOT(showSolution(CCP::Solution*)));
+
+    connect (this, SIGNAL(newSolution(CCP::Solution*)), centralWidget(), SLOT(setSolution(CCP::Solution*)));
     connect (SolutionRunner::New(), SIGNAL(finished(CCP::Solution*)), pool, SLOT(newSolution(CCP::Solution*)));
 
     connect (SolutionRunner::New(), SIGNAL(finished(CCP::Solution*)), this, SLOT(finishedAlgorithm(CCP::Solution*)));
@@ -112,9 +115,9 @@ void MainWindow::setupAction(){
     act = menu->addAction("Hill Climb whit Interchange",this, SLOT(improveSolution()));
     act->setData(CCP::HillClimbInterchange);
     act = menu->addAction("SA whit Shift",this, SLOT(improveSolution()));
-    act->setData(CCP::SAShift);
+    act->setData(CCP::SimulatedAnnelingShift);
     act = menu->addAction("SA whit Interchange",this, SLOT(improveSolution()));
-    act->setData(CCP::SAInterchange);
+    act->setData(CCP::SimulatedAnnelingInterchange);
 
 
 }
@@ -199,12 +202,12 @@ void MainWindow::improveSolution(){
             SolutionRunner::queue(_solution, CCP::HillClimbInterchange);
             break;
 
-        case CCP::SAInterchange:
-            SolutionRunner::queue(_solution, CCP::SAInterchange);
+        case CCP::SimulatedAnnelingInterchange:
+            SolutionRunner::queue(_solution, CCP::SimulatedAnnelingInterchange);
             break;
 
-        case CCP::SAShift:
-            SolutionRunner::queue(_solution, CCP::SAShift);
+        case CCP::SimulatedAnnelingShift:
+            SolutionRunner::queue(_solution, CCP::SimulatedAnnelingShift);
             break;
         }
     }
@@ -222,8 +225,14 @@ void MainWindow::finishedAlgorithm(CCP::Solution * sol){
         result += QString::number(sol->iterations()) + ",\n";
         emit textResult(result);
 
-        setWindowTitle(sol->algorithmName());
-        emit newSolution(sol);
+        showSolution(sol);
     }
 }
 
+void MainWindow::showSolution(CCP::Solution* sol){
+    if (sol==0)
+        return;
+    _solution = sol;
+    setWindowTitle(sol->algorithmName());
+    emit newSolution(sol);
+}

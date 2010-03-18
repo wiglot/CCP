@@ -235,11 +235,16 @@ const Solution& Solution::operator=(const Solution & other){
 
 Solution Solution::improve(){
     Solution sol(_myInstance);
+
     if (toImprove){
+        QTime count;
+        count.start();
          sol = SolutionImprovement::improve(*this, improveType);
          sol._parent = this;
          sol.toImprove = true;
          toImprove = false;
+         sol._myTime = count.elapsed()/1000.0;
+         sol._myAlgorithmName = SolutionImprovement::text(improveType);
     }
 
 

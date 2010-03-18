@@ -45,6 +45,19 @@ SolutionItem * SolutionItem::parent(){
     return _parent;
 }
 
+SolutionItem * SolutionItem::findSolution(Solution * sol){
+    if (_solution == sol){
+        return this;
+    }
+    foreach (SolutionItem * item, _childs){
+        SolutionItem * finded = item->findSolution(sol);
+        if (finded != 0){
+            return finded;
+        }
+    }
+    return 0;
+}
+
 
 
 SolutionTreeModel::SolutionTreeModel(QObject *parent):QAbstractItemModel(parent){
@@ -57,14 +70,14 @@ SolutionTreeModel::~SolutionTreeModel(){
 
 QVariant SolutionTreeModel::data(const QModelIndex &index, int role) const{
     if (!index.isValid())
-             return QVariant();
+        return QVariant();
 
-         if (role != Qt::DisplayRole)
-             return QVariant();
+    if (role != Qt::DisplayRole)
+        return QVariant();
 
-         SolutionItem *item = static_cast<SolutionItem*>(index.internalPointer());
+    SolutionItem *item = static_cast<SolutionItem*>(index.internalPointer());
 
-         return item->data(index.column());
+    return item->data(index.column());
 
 }
 Qt::ItemFlags SolutionTreeModel::flags(const QModelIndex &index) const{
@@ -133,17 +146,16 @@ int SolutionTreeModel::columnCount(const QModelIndex &parent) const{
 
 void SolutionTreeModel::newSolution(CCP::Solution * sol){
     SolutionItem * item = 0;
-if ( sol == 0)
-    return;
+    if ( sol == 0)
+        return;
     if (sol->isImprovement()){
-        for (int i = 0; i < rootItem->childCount(); ++i){
-            if (rootItem->child(i)->solution() == sol->solutionParent()){
-                item = new SolutionItem(rootItem->child(i), sol);
-                rootItem->child(i)->appendChild(item);
-                beginInsertRows( QModelIndex (), item->row(), item->row());
-                endInsertRows();
-                return;
-            }
+        SolutionItem *parentItem = rootItem->findSolution(sol->solutionParent());
+        if (parentItem){
+            item = new SolutionItem(parentItem, sol);
+            parentItem->appendChild(item);
+            beginInsertRows( QModelIndex(), item->row(), item->row());
+            endInsertRows();
+            return;
         }
     }else{
         item = new SolutionItem(rootItem, sol);
@@ -157,9 +169,18 @@ if ( sol == 0)
 }
 
 void SolutionTreeModel::clear(){
+    beginRemoveRows(QModelIndex(),0,rowCount()-1);
+    emit selectedSolution(0);
+    delete rootItem;
+    rootItem = new SolutionItem(0, 0);
+    endRemoveRows();
 
 }
 
+void SolutionTreeModel::selectedItem(QModelIndex index){
+    SolutionItem * item = static_cast<SolutionItem*>(index.internalPointer());
+    emit selectedSolution(item->solution());
+}
 
 //int SolutionTreeModel::rowCount(const QModelIndex &/*parent*/) const
 //{
