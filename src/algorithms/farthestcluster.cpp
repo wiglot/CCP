@@ -68,25 +68,37 @@ void FarthestCluster::selectFirstCenters() {
 
     while ( instance()->numCenters() > centersInserted ) {
 
+        /** BUG when insert 5 itens, distances has 0 itens...*/
          int insertedCenter = distances.value(distances.keys().last());
          assign(distances.value(distances.keys().last()), centersInserted++, CCP::Center);
          distances.remove(distances.keys().last());
 
-         QMultiHash <long, int>::iterator iter = distances.begin();
-         QMultiHash <long, int>:: iterator endIter = distances.end();
-        while (distances.begin() != endIter){
-            qreal distance = distances.begin().key();
-//            for ( int count2 = 0; count2 < centersInserted; ++count2 ) {
-                distance *= instance()->distance(
-                                distances.begin().value(),
-                                insertedCenter
-                            );
-//            }
-            distances.insert(distance,distances.begin().value());
-//            ++iter;
-            distances.remove(distances.begin().key(),distances.begin().value());
+         QList <long> keys = distances.keys();
+         foreach (long key, keys){
+             qreal distance = key;
+             distance *= instance()->distance(  distances.value(key),
+                                                insertedCenter
+                                             );
+             distances.insert(distance, distances.value(key));
 
-        }
+             distances.remove(key, distances.value(key));
+         }
+
+//         QMultiHash <long, int>::iterator iter = distances.begin();
+//         QMultiHash <long, int>:: iterator endIter = distances.end();
+//        while (distances.begin() != endIter){
+//            qreal distance = distances.begin().key();
+////            for ( int count2 = 0; count2 < centersInserted; ++count2 ) {
+//                distance *= instance()->distance(
+//                                distances.begin().value(),
+//                                insertedCenter
+//                            );
+////            }
+//            distances.insert(distance,distances.begin().value());
+////            ++iter;
+//            distances.remove(distances.begin().key(),distances.begin().value());
+//
+//        }
         distances.remove(0);
 
 //        for ( count = 0; count < numPoints; ++count ) {
