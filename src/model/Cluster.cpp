@@ -22,6 +22,7 @@
 #include "Solution.h"
 #include "Point.h"
 #include <QList>
+//#include <QMultiMap>
 #include <QDebug>
 
 using namespace CCP;
@@ -68,6 +69,8 @@ bool InterchangeResult::redo(){
 Cluster::Cluster(Instance* inst): _instance(inst)
 {
   this->center = 0;
+  _distance = 0.0;
+  _demand = 0.0;
   points.clear();
 }
 
@@ -79,17 +82,20 @@ void Cluster::addPoint(Point* p){
         qDebug() << "Over capacity inserting Point:" << p->index();
     }
     points.append(p);
+    _demand += p->demand();
+    if (center != 0)
+        _distance += _instance->distance(p, center);
 }
 
 double Cluster::actualDemand(){
-  double totalDemand = 0;
-    foreach(Point * i, points){
-      totalDemand += i->demand();
-    }
-    if (center != 0){
-        totalDemand += this->center->demand();
-    }
-    return totalDemand;
+//  double totalDemand = 0;
+//    foreach(Point * i, points){
+//      totalDemand += i->demand();
+//    }
+//    if (center != 0){
+//        totalDemand += this->center->demand();
+//    }
+    return _demand;
 }
 
 double Cluster::remainCapacity(){
@@ -97,31 +103,39 @@ double Cluster::remainCapacity(){
 }
 
 void Cluster::removePoint(Point * p){
-  for (int i = 0; i < points.size(); ++i){
-    if (p == points[i]){
-        points.removeAt(i);
-        return;
-    }
-  }
+    points.removeOne(p);
+    _demand -= p->demand();
+    if (center != 0)
+        _distance -= _instance->distance(p, center);
+//  for (int i = 0; i < points.size(); ++i){
+//    if (p == points[i]){
+//        points.removeAt(i);
+//        return;
+//    }
+//  }
 }
 
-void Cluster::setCenter(Point * center){
-//       if (this->center != 0){
-// 	 removePoint(center);
-//       }
+void Cluster::setCenter(Point * c){
+       if (this->center != 0){
+           _demand -= center->demand();
+       }
       //_instance->setPointType(center, Center);
-      this->center = center;
-//       addPoint(center);
+      this->center = c;
+
+      if (center == 0) {
+          return ;
+      }
+
+      _demand += center->demand();
+
+      _distance = 0.0;
+      foreach (Point *p, points){
+          _distance += _instance->distance(p, center);
+      }
     }
 
 double Cluster::totalDistance(){
-  double total = 0.0;
-//   Instance * inst = this->_instance->getInstance();
-
-  for (int i = 0; i< points.size(); ++i){
-     total += _instance->distance(center, getPoint(i));
-  }
-  return total;
+  return _distance;
 }
 
 Point * Cluster::getPoint(unsigned short index){
@@ -139,14 +153,78 @@ unsigned short int Cluster::numPoints(){
 }
 
 const Cluster Cluster::operator=(const Cluster &other){
-    this->center = other.center;
-    foreach (Point * p, other.points){
-        this->points.append(p);// = other.points;
-    }
     this->_instance = other._instance;
+
+    this->setCenter(other.center);
+    foreach (Point * p, other.points){
+        this->addPoint(p);// = other.points;
+    }
 
     return *this;
 }
+
+bool Cluster::findBestCenter(){
+    double x = 0.0, y = 0.0;
+    CCP::Position centroid;
+    int count;
+
+    foreach (CCP::Point * p, points){
+        x += p->position().x();
+        y += p->position().y();
+    }
+
+    if (center != 0){
+        x += center->position().x();
+        y += center->position().y();
+
+        centroid.setX( x/ (points.count() + 1.0) );
+        centroid.setY( y/ (points.count() + 1.0) );
+    }else{ //Don't have a center yet.
+        centroid.setX( x/ (points.count()) );
+        centroid.setY( y/ (points.count()) );
+    }
+    QMultiMap <double, int> distances;
+    foreach (CCP::Point * p, points){
+        distances.insert(p->position().distance(centroid), points.indexOf(p));
+    }
+    if (center != 0){
+        distances.insert(center->position().distance(centroid), -1);
+    }
+    QMultiMap <double, int> betterCenters;
+
+    /** seek only for 50% of points */
+    for (count = 0; count < (points.count()/2 ); ++count){
+        int index = distances.value(distances.keys().at(count));
+        double acum = 0.0;
+        foreach (CCP::Point *p, points){
+            if (index == -1){
+                acum += p->position().distance(center->position());
+            }else{
+                acum += p->position().distance(points.at(index)->position());
+            }
+        }
+        if (center != 0){
+            if (index != -1){
+                acum += center->position().distance(points.at(index)->position());
+            }
+        }
+        betterCenters.insert(acum, index);
+    }
+    if (count != 0){
+        if (betterCenters.value(betterCenters.keys().at(0)) == -1){
+            return false;
+        } else {
+            Point * p = center;
+            setCenter(takePoint(betterCenters.value(betterCenters.keys().at(0))));
+            addPoint(p);
+
+            return true;
+        }
+
+    }
+    return false;
+}
+
 
 InterchangeResult Cluster::shift(Point* origPoint, Cluster* dest){
     InterchangeResult result(origPoint, this, 0, dest);

@@ -52,19 +52,16 @@ void FarthestCluster::selectFirstCenters() {
         }
     }
     assign(center1, 0,CCP::Center);
-//     cluster(0)->setCenter( instance()->point( center1 ) );
-//     pointType(center1) = CCP::Center;
     assign(center2, 1,CCP::Center);
-//     cluster(1)->setCenter( instance()->point( center2 ) );
-//     pointType(center2) = CCP::Center;
 
     int centersInserted = 2;
-    QMultiHash <long, int> distances;
+    QMultiMap <long, int> distances;
     for ( count = 0; count < numPoints; ++count ) {
-        distances.insert((instance()->distance(count, center1) * instance()->distance(count, center2)), count);
+        if (count != center2 && count != center1)
+            distances.insert((instance()->distance(count, center1) + instance()->distance(count, center2)), count);
     }
 
-    distances.remove(0);
+//    distances.remove(0);
 
     while ( instance()->numCenters() > centersInserted ) {
 
@@ -76,7 +73,7 @@ void FarthestCluster::selectFirstCenters() {
          QList <long> keys = distances.keys();
          foreach (long key, keys){
              qreal distance = key;
-             distance *= instance()->distance(  distances.value(key),
+             distance += instance()->distance(  distances.value(key),
                                                 insertedCenter
                                              );
              distances.insert(distance, distances.value(key));
@@ -84,42 +81,6 @@ void FarthestCluster::selectFirstCenters() {
              distances.remove(key, distances.value(key));
          }
 
-//         QMultiHash <long, int>::iterator iter = distances.begin();
-//         QMultiHash <long, int>:: iterator endIter = distances.end();
-//        while (distances.begin() != endIter){
-//            qreal distance = distances.begin().key();
-////            for ( int count2 = 0; count2 < centersInserted; ++count2 ) {
-//                distance *= instance()->distance(
-//                                distances.begin().value(),
-//                                insertedCenter
-//                            );
-////            }
-//            distances.insert(distance,distances.begin().value());
-////            ++iter;
-//            distances.remove(distances.begin().key(),distances.begin().value());
-//
-//        }
-        distances.remove(0);
-
-//        for ( count = 0; count < numPoints; ++count ) {
-//            if ( pointType(count)  == CCP::Consumer ) {
-//                distance = 1.0;
-//                for ( int count2 = 0; count2 < centersInserted; ++count2 ) {
-//                    distance *= instance()->distance(
-//                                    instance()->point( count ),
-//                                    cluster(count2)->getCenter()
-//                                );
-//                }
-//                if ( distance > max ) {
-//                    max = distance;
-//                    centerFound = count;
-//                }
-//            }
-//        }
-//	assign(centerFound, centersInserted, CCP::Center);
-////         cluster(centersInserted)->setCenter( instance()->point( centerFound ) );
-////         setPointType(centerFound, CCP::Center);
-//        ++centersInserted;
     }
 }
 

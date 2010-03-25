@@ -64,6 +64,10 @@ private:
       Point * center;
       QList<Point *> points;
       Instance* _instance;
+
+      double _distance;
+      double _demand;
+
       
   public:
     Cluster(Instance * inst);
@@ -83,6 +87,11 @@ private:
     Point * takePoint( unsigned short  arg1 );
     double totalDistance();
     short unsigned int numPoints();
+
+    /** @brief Try to find a better center between the points.
+      Basically this function will calculate a centroid and locate some candidactes pointes (nearst from the centroid). After the function value is recalculated.
+      @return true if was found a better center. */
+    bool findBestCenter();
 
     const Cluster operator=(const Cluster &other);
     
