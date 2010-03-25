@@ -20,6 +20,8 @@
 #ifndef DISTANCE_H
 #define DISTANCE_H
 
+#include <QMap>
+
 /**
 * Namespace
 */
@@ -78,7 +80,7 @@ private:
       Instance * _instance;
       unsigned short _numPoints;
       double ** _values;
-      int ** _near;
+      QMap <int , QList <int> >_near;
 
       /**
       */

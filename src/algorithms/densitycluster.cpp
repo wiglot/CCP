@@ -206,8 +206,6 @@ void DensityCluster::calculateRegret(unsigned short point){
     distance1 = 1.0e10;
     distance2 = 1.0e10;
     for ( count2 = 0; count2 < numClusters; ++count2 ) {
-  //      if (cluster(count2)->remainCapacity() >= p->demand()){
-  //          if ( cluster( count2 )->getCenter() != 0 ) {
                 if ( instance()->distance( p, cluster( count2 )->getCenter() ) < distance1 ) {
                     distance1 = instance()->distance( p, cluster( count2 )->getCenter() );
                     center1 = count2;
@@ -216,7 +214,6 @@ void DensityCluster::calculateRegret(unsigned short point){
   //      }
     }
     for ( count2 = 0; count2 < numClusters; ++count2 ) {
-  //       if ( cluster( count2 )->remainCapacity() >= p->demand() ) {
             if ( instance()->distance( p, cluster( count2 )->getCenter() ) < distance2 && count2 != center1 ) {
                 distance2 = instance()->distance( p, cluster( count2 )->getCenter() );
                 center2 = count2;

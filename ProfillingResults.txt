@@ -1,0 +1,18 @@
+19-03-2010 11:20
+
+5003988  14.4018  CCP                      CCP                      DensityCluster::calculateRegret(unsigned short)
+4580436  13.1828  CCP                      CCP                      AlgorithmStruct::cluster(int)
+3575686  10.2911  libCCPModelLib.so        libCCPModelLib.so        CCP::Instance::pointIndex(CCP::Point*)
+3248677   9.3499  libCCPModelLib.so        libCCPModelLib.so        CCP::Distance::distance(unsigned short, unsigned short)
+2859612   8.2302  libCCPModelLib.so        libCCPModelLib.so        CCP::Instance::distance(CCP::Point*, CCP::Point*, double)
+2422287   6.9715  libCCPModelLib.so        libCCPModelLib.so        CCP::Instance::distance(unsigned short, unsigned short, double)
+
+19-03-2010 11:30
+7868547  14.5169  CCP                      CCP                      AlgorithmStruct::cluster(int)
+7362946  13.5841  CCP                      CCP                      DensityCluster::calculateRegret(unsigned short)
+5250815   9.6874  libCCPModelLib.so        libCCPModelLib.so        CCP::Instance::pointIndex(CCP::Point*)
+4735876   8.7373  libCCPModelLib.so        libCCPModelLib.so        CCP::Distance::distance(unsigned short, unsigned short)
+4211105   7.7692  libCCPModelLib.so        libCCPModelLib.so        CCP::Instance::distance(CCP::Point*, CCP::Point*, double)
+3559565   6.5671  libCCPModelLib.so        libCCPModelLib.so        CCP::Instance::distance(unsigned short, unsigned short, double)
+1644219   3.0335  CCP                      CCP                      AlgorithmStruct::instance()
+1299108   2.3968  CCP                      CCP                      CCP::Point::index()

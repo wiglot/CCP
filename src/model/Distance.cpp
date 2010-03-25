@@ -20,6 +20,7 @@
 #include "Distance.h"
 #include "Point.h"
 #include "Instance.h"
+#include <QMultiMap>
 
 
 /**
@@ -32,14 +33,14 @@ CCP::Distance::Distance ( CCP::Instance* inst) :
     
     unsigned short count, count2;
     this->_values = new double*[_numPoints];
-    this->_near = new int*[_numPoints];
+    //this->_near = new int*[_numPoints];
     for ( count = 0; count < _numPoints; ++count ){
         this->_values[count] = new double[count];
-	this->_near[count] = new int[_numPoints];
+        //this->_near[count] = new int[_numPoints];
         for ( count2 = 0; count2 < _numPoints; ++count2 ) {
 	    if (count2 < count)
 		_values[count][count2] =-1;
-	    _near[count][count2] = -1;
+           // _near[count][count2] = -1;
         }
     }
     
@@ -52,10 +53,10 @@ CCP::Distance::~Distance()
     unsigned short count;
     for ( count = 0; count < _numPoints; ++count ) {
         delete [] _values[count];
-	delete [] _near[count];
+        //delete [] _near[count];
     }
     delete [] _values;
-    delete [] _near;
+  //  delete [] _near;
 
 
 }
@@ -78,55 +79,78 @@ double CCP::Distance::distanceBetween ( unsigned short int point1, unsigned shor
 
 short unsigned int CCP::Distance::near ( unsigned short point, unsigned short nearest )
 {
-    bool * visited; 
-    unsigned short i, count, found;
-    unsigned short init = 1;
-    double min;
+    //bool * visited;
+    //unsigned short i, count, found;
+    //unsigned short init = 1;
+    //double min;
     
-    if ( nearest == 0 )
-	_near[point][0] = point;
-    
-    if (_near[point][nearest] != -1){
-	return _near[point][nearest];
+    if ( _near.contains(point) ){
+        return _near.value(point)[nearest];
     }
-  
-    visited = new bool[_numPoints];
-    for ( i = 0; i < _numPoints; ++i )
+
+    QMultiMap <double, int > distances;
+    for (int  i = 0; i < _numPoints; ++i )
     {
-        visited[i] = false;
+        distances.insert(distance(point, i), i);
     }
-    
-    visited[point] = true;
-    
-    
-    for (i = nearest-1; i > 0; --i){
-	if (_near[point][i] != -1){
-	    init = i + 1;
-	    for (count = i; count > 0; --count){
-		visited[  _near[point][count]  ] = true;
-	    }
-	    break;
-	}
+
+    QMapIterator<double, int > i(distances);
+    QList <int> nears;
+    while (i.hasNext()){
+        i.next();
+        nears.append(i.value());
     }
-    
-    
-    for ( i = init ; i <= nearest; ++i )
-    {
-        min = 2000000;
-        for ( count = 0; count < _numPoints; count++ ) {
-            if ( !visited[count] )
-            {
-                if ( distance ( point, count ) < min ) {
-                    min = distance ( point, count );
-                    found = count;
-                }
-            }
-        }
-	_near[point][i] = found;
-        visited[found] = true;
-    }
-    
-    delete [] visited;
-    
-    return _near[point][nearest];
+
+//    qSort(distances.begin(), distances.end());
+
+    _near.insert(point, nears);
+
+    return _near.value(point)[nearest];
+
+//    if ( nearest == 0 )
+//	_near[point][0] = point;
+//
+//    if (_near[point][nearest] != -1){
+//	return _near[point][nearest];
+//    }
+//
+//    visited = new bool[_numPoints];
+//    for ( i = 0; i < _numPoints; ++i )
+//    {
+//        visited[i] = false;
+//    }
+//
+//    visited[point] = true;
+//
+//
+//    for (i = nearest-1; i > 0; --i){
+//	if (_near[point][i] != -1){
+//	    init = i + 1;
+//	    for (count = i; count > 0; --count){
+//		visited[  _near[point][count]  ] = true;
+//	    }
+//	    break;
+//	}
+//    }
+//
+//
+//    for ( i = init ; i <= nearest; ++i )
+//    {
+//        min = 2000000;
+//        for ( count = 0; count < _numPoints; count++ ) {
+//            if ( !visited[count] )
+//            {
+//                if ( distance ( point, count ) < min ) {
+//                    min = distance ( point, count );
+//                    found = count;
+//                }
+//            }
+//        }
+//	_near[point][i] = found;
+//        visited[found] = true;
+//    }
+//
+//    delete [] visited;
+//
+//    return _near[point][nearest];
 }

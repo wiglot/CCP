@@ -21,6 +21,7 @@
 #include "../model/Instance.h"
 #include "Distance.h"
 #include "Cluster.h"
+#include <QMultiHash>
 
 
 using namespace CCP;
@@ -39,11 +40,11 @@ CCP::Cluster** FarthestCluster::buildClusters(){
 
 void FarthestCluster::selectFirstCenters() {
     unsigned short count, center1, center2, numPoints = instance()->numPoints();
-    double distance = 0.0, max = 0.0;
-    short unsigned int centerFound;
-
+    //long distance = 0, max = 0;
+    //short unsigned int centerFound;
+    double max = 0;
     for ( count = 0; count < numPoints; ++count ) {
-        distance = instance()->distance( count, instance()->distancesMatrixes()->near( count, numPoints - 1 ) );
+        double distance = instance()->distance( count, instance()->distancesMatrixes()->near( count, numPoints - 1 ) );
         if ( distance > max ) {
             max = distance;
             center1 = count;
@@ -58,27 +59,55 @@ void FarthestCluster::selectFirstCenters() {
 //     pointType(center2) = CCP::Center;
 
     int centersInserted = 2;
+    QMultiHash <long, int> distances;
+    for ( count = 0; count < numPoints; ++count ) {
+        distances.insert((instance()->distance(count, center1) * instance()->distance(count, center2)), count);
+    }
+
+    distances.remove(0);
+
     while ( instance()->numCenters() > centersInserted ) {
-        max = 0.0;
-        for ( count = 0; count < numPoints; ++count ) {
-            if ( pointType(count)  == CCP::Consumer ) {
-                distance = 1.0;
-                for ( int count2 = 0; count2 < centersInserted; ++count2 ) {
-                    distance *= instance()->distance(
-                                    instance()->point( count ),
-                                    cluster(count2)->getCenter()
-                                );
-                }
-                if ( distance > max ) {
-                    max = distance;
-                    centerFound = count;
-                }
-            }
+
+         int insertedCenter = distances.value(distances.keys().last());
+         assign(distances.value(distances.keys().last()), centersInserted++, CCP::Center);
+         distances.remove(distances.keys().last());
+
+         QMultiHash <long, int>::iterator iter = distances.begin();
+         QMultiHash <long, int>:: iterator endIter = distances.end();
+        while (distances.begin() != endIter){
+            qreal distance = distances.begin().key();
+//            for ( int count2 = 0; count2 < centersInserted; ++count2 ) {
+                distance *= instance()->distance(
+                                distances.begin().value(),
+                                insertedCenter
+                            );
+//            }
+            distances.insert(distance,distances.begin().value());
+//            ++iter;
+            distances.remove(distances.begin().key(),distances.begin().value());
+
         }
-	assign(centerFound, centersInserted, CCP::Center);
-//         cluster(centersInserted)->setCenter( instance()->point( centerFound ) );
-//         setPointType(centerFound, CCP::Center);
-        ++centersInserted;
+        distances.remove(0);
+
+//        for ( count = 0; count < numPoints; ++count ) {
+//            if ( pointType(count)  == CCP::Consumer ) {
+//                distance = 1.0;
+//                for ( int count2 = 0; count2 < centersInserted; ++count2 ) {
+//                    distance *= instance()->distance(
+//                                    instance()->point( count ),
+//                                    cluster(count2)->getCenter()
+//                                );
+//                }
+//                if ( distance > max ) {
+//                    max = distance;
+//                    centerFound = count;
+//                }
+//            }
+//        }
+//	assign(centerFound, centersInserted, CCP::Center);
+////         cluster(centersInserted)->setCenter( instance()->point( centerFound ) );
+////         setPointType(centerFound, CCP::Center);
+//        ++centersInserted;
     }
 }
 
