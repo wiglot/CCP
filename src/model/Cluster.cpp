@@ -168,6 +168,8 @@ bool Cluster::findBestCenter(){
     CCP::Position centroid;
     int count;
 
+    Point * oldCenter = center;
+
     foreach (CCP::Point * p, points){
         x += p->position().x();
         y += p->position().y();
@@ -183,40 +185,44 @@ bool Cluster::findBestCenter(){
         centroid.setX( x/ (points.count()) );
         centroid.setY( y/ (points.count()) );
     }
-    QMultiMap <double, int> distances;
+    QMultiMap <double, Point*> distances;
     foreach (CCP::Point * p, points){
-        distances.insert(p->position().distance(centroid), points.indexOf(p));
+        distances.insert(p->position().distance(centroid), p);
     }
     if (center != 0){
-        distances.insert(center->position().distance(centroid), -1);
+        distances.insert(center->position().distance(centroid), center);
     }
-    QMultiMap <double, int> betterCenters;
+    QMultiMap <double, Point*> betterCenters;
 
+    betterCenters.insert(_distance, center);
     /** seek only for 50% of points */
-    for (count = 0; count < (points.count()/2 ); ++count){
-        int index = distances.value(distances.keys().at(count));
-        double acum = 0.0;
-        foreach (CCP::Point *p, points){
-            if (index == -1){
-                acum += p->position().distance(center->position());
-            }else{
-                acum += p->position().distance(points.at(index)->position());
-            }
+    for (count = 0; count < (distances.keys().count() ); ++count){
+        Point* index = distances.value(distances.keys().at(count));
+//        double acum = 0.0;
+        if (index != oldCenter){
+            Point * pt = center;
+            removePoint(index);
+            setCenter(index);
+            addPoint(pt);
+            betterCenters.insert(_distance, index);
         }
-        if (center != 0){
-            if (index != -1){
-                acum += center->position().distance(points.at(index)->position());
-            }
-        }
-        betterCenters.insert(acum, index);
+
     }
     if (count != 0){
-        if (betterCenters.value(betterCenters.keys().at(0)) == -1){
+        if (betterCenters.value(betterCenters.keys().at(0)) == oldCenter){
+            if (center != oldCenter){
+                removePoint(oldCenter);
+                addPoint(center);
+                setCenter(oldCenter);
+            }
             return false;
         } else {
-            Point * p = center;
-            setCenter(takePoint(betterCenters.value(betterCenters.keys().at(0))));
-            addPoint(p);
+            if (center != betterCenters.value(betterCenters.keys().at(0))){
+                Point * p = center;
+                removePoint(betterCenters.value(betterCenters.keys().at(0)));
+                setCenter(betterCenters.value(betterCenters.keys().at(0)));
+                addPoint(p);
+            }
 
             return true;
         }
