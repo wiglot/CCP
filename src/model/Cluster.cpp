@@ -88,13 +88,13 @@ void Cluster::addPoint(Point* p){
 }
 
 double Cluster::actualDemand(){
-//  double totalDemand = 0;
-//    foreach(Point * i, points){
-//      totalDemand += i->demand();
-//    }
-//    if (center != 0){
-//        totalDemand += this->center->demand();
-//    }
+  _demand = 0;
+    foreach(Point * i, points){
+      _demand += i->demand();
+    }
+    if (center != 0){
+        _demand += this->center->demand();
+    }
     return _demand;
 }
 

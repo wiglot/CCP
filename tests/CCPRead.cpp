@@ -52,7 +52,7 @@ void CCPRead::lorenaEuclidian(){
     Instance * inst = readCCP::readLorenaEuclidian("../../instances/lorenaEuclidian.dat");
     QVERIFY2(inst != (Instance*) 0, "Can't open the file");
     QCOMPARE(inst->name(), QString("../../instances/lorenaEuclidian.dat")); 
-    QCOMPARE(inst->capacity(), 191.0);
+    QCOMPARE(inst->capacity(), 210.0);
     QCOMPARE(inst->numCenters(), (unsigned short) 3);
     QCOMPARE(inst->numPoints(), (unsigned short) 11);
     delete inst;
