@@ -109,9 +109,9 @@ Solution  SolutionImprovement::hillClimbInterchange(Solution & sol, int K, int Q
 
                 QMap<double, Point *> nearPoints;
                 for ( int j =0; j < cluster->numPoints(); ++j){
-                    nearPoints.insert(inst->distance(i, cluster->getPoint(j)->index()), cluster->getPoint(j) );
+                    nearPoints.insert(inst->distance(myCluster->getCenter()->index(), cluster->getPoint(j)->index()), cluster->getPoint(j) );
                 }
-                nearPoints.insert(inst->distance(i, cluster->getCenter()->index()), cluster->getCenter());
+                nearPoints.insert(inst->distance(myCluster->getCenter()->index(), cluster->getCenter()->index()), cluster->getCenter());
 
                 for (count_q =0; count_q < Q && count_q < nearPoints.values().count();  ++count_q){
                     Point * p = nearPoints.values()[count_q];
