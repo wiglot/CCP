@@ -36,7 +36,7 @@ void CCPCluster_Test::interchangeSimple(){
     sol.constructSolution(CCP::Farthest);
 
     QCOMPARE(int(sol.cluster(0)->numPoints()), 2);
-    QCOMPARE(int(sol.cluster(0)->getPoint(0)->index()), 0);
+    QCOMPARE(int(sol.cluster(0)->getPoint(0)->index()), 1);
     QCOMPARE(int(sol.cluster(1)->numPoints()), 2);
     QVERIFY(sol.isValid());
 
@@ -64,7 +64,7 @@ void CCPCluster_Test::invalidInterchangeSimple(){
     QVERIFY(!result.isValid());
     QVERIFY(sol.isValid());
     QCOMPARE(int(sol.cluster(0)->numPoints()), 2);
-    QCOMPARE(int(sol.cluster(0)->getPoint(0)->index()), 0);
+    QCOMPARE(int(sol.cluster(0)->getPoint(0)->index()), 1);
     QCOMPARE(int(sol.cluster(1)->numPoints()), 2);
 }
 
@@ -74,7 +74,7 @@ void CCPCluster_Test::interchangeSimpleUndo(){
     sol.constructSolution(CCP::Farthest);
 
     QCOMPARE(int(sol.cluster(0)->numPoints()), 2);
-    QCOMPARE(int(sol.cluster(0)->getPoint(0)->index()), 0);
+    QCOMPARE(int(sol.cluster(0)->getPoint(0)->index()), 1);
     QCOMPARE(int(sol.cluster(1)->numPoints()), 2);
     QVERIFY(sol.isValid());
 
@@ -103,7 +103,7 @@ void CCPCluster_Test::invalidInterchangeSimpleUndo(){
     sol.constructSolution(CCP::Farthest);
 
     QCOMPARE(int(sol.cluster(0)->numPoints()), 2);
-    QCOMPARE(int(sol.cluster(0)->getPoint(0)->index()), 0);
+    QCOMPARE(int(sol.cluster(0)->getPoint(0)->index()), 1);
     QCOMPARE(int(sol.cluster(1)->numPoints()), 2);
     QVERIFY(sol.isValid());
 
@@ -130,9 +130,9 @@ void CCPCluster_Test::interchangeDouble(){
     sol.constructSolution(CCP::Farthest);
 
     QCOMPARE(int(sol.cluster(0)->numPoints()), 2);
-    QCOMPARE(int(sol.cluster(0)->getPoint(0)->index()), 0);
+    QCOMPARE(int(sol.cluster(0)->getPoint(0)->index()), 1);
     QCOMPARE(int(sol.cluster(1)->numPoints()), 2);
-    QCOMPARE(int(sol.cluster(1)->getPoint(0)->index()), 4);
+    QCOMPARE(int(sol.cluster(1)->getPoint(0)->index()), 5);
     QVERIFY(sol.isValid());
 
 
@@ -155,9 +155,9 @@ void CCPCluster_Test::invalidInterchangeDouble(){
     sol.constructSolution(CCP::Farthest);
 
     QCOMPARE(int(sol.cluster(0)->numPoints()), 2);
-    QCOMPARE(int(sol.cluster(0)->getPoint(0)->index()), 0);
+    QCOMPARE(int(sol.cluster(0)->getPoint(0)->index()), 1);
     QCOMPARE(int(sol.cluster(1)->numPoints()), 2);
-    QCOMPARE(int(sol.cluster(1)->getPoint(0)->index()), 4);
+    QCOMPARE(int(sol.cluster(1)->getPoint(0)->index()), 5);
     QVERIFY(sol.isValid());
 
     _instance->point(2)->setDemand(0.5);
@@ -170,9 +170,9 @@ void CCPCluster_Test::invalidInterchangeDouble(){
     QVERIFY( ! result.isValid());
     QVERIFY(sol.isValid());
     QCOMPARE(int(sol.cluster(0)->numPoints()), 2);
-    QCOMPARE(int(sol.cluster(0)->getPoint(0)->index()), 0);
+    QCOMPARE(int(sol.cluster(0)->getPoint(0)->index()), 1);
     QCOMPARE(int(sol.cluster(1)->numPoints()), 2);
-    QCOMPARE(int(sol.cluster(1)->getPoint(0)->index()), 4);
+    QCOMPARE(int(sol.cluster(1)->getPoint(0)->index()), 5);
 }
 
 void CCPCluster_Test::interchangeDoubleUndo(){
@@ -181,9 +181,9 @@ void CCPCluster_Test::interchangeDoubleUndo(){
     sol.constructSolution(CCP::Farthest);
 
     QCOMPARE(int(sol.cluster(0)->numPoints()), 2);
-    QCOMPARE(int(sol.cluster(0)->getPoint(0)->index()), 0);
+    QCOMPARE(int(sol.cluster(0)->getPoint(0)->index()), 1);
     QCOMPARE(int(sol.cluster(1)->numPoints()), 2);
-    QCOMPARE(int(sol.cluster(1)->getPoint(0)->index()), 4);
+    QCOMPARE(int(sol.cluster(1)->getPoint(0)->index()), 5);
     QVERIFY(sol.isValid());
 
 

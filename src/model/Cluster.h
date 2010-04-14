@@ -88,10 +88,13 @@ private:
     double totalDistance();
     short unsigned int numPoints();
 
-    /** @brief Try to find a better center between the points.
+    /** return true if the point p is one of points or the center of this cluster.*/
+    bool contains(Point * p);
+
+    /** @brief Try to find a better center between the points. But not will set this point as the new center.
       Basically this function will calculate a centroid and locate some candidactes pointes (nearst from the centroid). After the function value is recalculated.
-      @return true if was found a better center. */
-    bool findBestCenter();
+      @return the new best center. */
+    Point* findBestCenter();
 
     const Cluster operator=(const Cluster &other);
     

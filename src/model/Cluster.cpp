@@ -68,16 +68,16 @@ bool InterchangeResult::redo(){
 
 Cluster::Cluster(Instance* inst): _instance(inst)
 {
-  this->center = 0;
-  _distance = 0.0;
-  _demand = 0.0;
-  points.clear();
+    this->center = 0;
+    _distance = 0.0;
+    _demand = 0.0;
+    points.clear();
 }
 
 Cluster::~Cluster(){ }
 
 void Cluster::addPoint(Point* p){
-//     _instance->setPointType(p, Consumer);
+    //     _instance->setPointType(p, Consumer);
     if (remainCapacity() < p->demand()){
         qDebug() << "Over capacity inserting Point:" << p->index();
     }
@@ -88,9 +88,9 @@ void Cluster::addPoint(Point* p){
 }
 
 double Cluster::actualDemand(){
-  _demand = 0;
+    _demand = 0;
     foreach(Point * i, points){
-      _demand += i->demand();
+        _demand += i->demand();
     }
     if (center != 0){
         _demand += this->center->demand();
@@ -99,7 +99,7 @@ double Cluster::actualDemand(){
 }
 
 double Cluster::remainCapacity(){
-  return (_instance->capacity() - actualDemand());
+    return (_instance->capacity() - actualDemand());
 }
 
 void Cluster::removePoint(Point * p){
@@ -107,35 +107,35 @@ void Cluster::removePoint(Point * p){
     _demand -= p->demand();
     if (center != 0)
         _distance -= _instance->distance(p, center);
-//  for (int i = 0; i < points.size(); ++i){
-//    if (p == points[i]){
-//        points.removeAt(i);
-//        return;
-//    }
-//  }
+    //  for (int i = 0; i < points.size(); ++i){
+    //    if (p == points[i]){
+    //        points.removeAt(i);
+    //        return;
+    //    }
+    //  }
 }
 
 void Cluster::setCenter(Point * c){
-       if (this->center != 0){
-           _demand -= center->demand();
-       }
-      //_instance->setPointType(center, Center);
-      this->center = c;
+    if (this->center != 0){
+        _demand -= center->demand();
+    }
+    //_instance->setPointType(center, Center);
+    this->center = c;
 
-      if (center == 0) {
-          return ;
-      }
-
-      _demand += center->demand();
-
-      _distance = 0.0;
-      foreach (Point *p, points){
-          _distance += _instance->distance(p, center);
-      }
+    if (center == 0) {
+        return ;
     }
 
+    _demand += center->demand();
+
+    _distance = 0.0;
+    foreach (Point *p, points){
+        _distance += _instance->distance(p, center);
+    }
+}
+
 double Cluster::totalDistance(){
-  return _distance;
+    return _distance;
 }
 
 Point * Cluster::getPoint(unsigned short index){
@@ -143,9 +143,9 @@ Point * Cluster::getPoint(unsigned short index){
 }
 
 Point * Cluster::takePoint( unsigned short  arg1 ){
-  Point* candidacte = getPoint(arg1);
-  removePoint(candidacte);
-  return candidacte;
+    Point* candidacte = getPoint(arg1);
+    removePoint(candidacte);
+    return candidacte;
 }
 
 unsigned short int Cluster::numPoints(){
@@ -163,12 +163,22 @@ const Cluster Cluster::operator=(const Cluster &other){
     return *this;
 }
 
-bool Cluster::findBestCenter(){
+bool Cluster::contains(Point * p){
+    if (points.contains(p)){
+        return true;
+    }
+    if (center == p){
+        return true;
+    }
+    return false;
+}
+
+Point* Cluster::findBestCenter(){
     double x = 0.0, y = 0.0;
     CCP::Position centroid;
     int count;
 
-    Point * oldCenter = center;
+    //    Point * oldCenter = center;
 
     foreach (CCP::Point * p, points){
         x += p->position().x();
@@ -196,82 +206,119 @@ bool Cluster::findBestCenter(){
 
     betterCenters.insert(_distance, center);
     /** seek only for 50% of points */
-    for (count = 0; count < (distances.keys().count() ); ++count){
+    for (count = 0; count < (distances.keys().count()*0.3); ++count){
         Point* index = distances.value(distances.keys().at(count));
-//        double acum = 0.0;
-        if (index != oldCenter){
-            Point * pt = center;
-            removePoint(index);
-            setCenter(index);
-            addPoint(pt);
+        double distance = 0.0;
+        if (index != center){
+            distance += _instance->distance(index->index(), center->index());
+        }else{ //Is actual center, no calc needed.
             betterCenters.insert(_distance, index);
+            continue;
         }
 
-    }
-    if (count != 0){
-        if (betterCenters.value(betterCenters.keys().at(0)) == oldCenter){
-            if (center != oldCenter){
-                removePoint(oldCenter);
-                addPoint(center);
-                setCenter(oldCenter);
+        foreach(Point* tmp, points){
+            if (tmp != index){
+                distance += _instance->distance(index->index(), tmp->index());
             }
-            return false;
-        } else {
-            if (center != betterCenters.value(betterCenters.keys().at(0))){
-                Point * p = center;
-                removePoint(betterCenters.value(betterCenters.keys().at(0)));
-                setCenter(betterCenters.value(betterCenters.keys().at(0)));
-                addPoint(p);
-            }
-
-            return true;
         }
+        betterCenters.insert(distance, index);
+
 
     }
-    return false;
+
+    return betterCenters.value(betterCenters.keys().at(0));
+
 }
 
 
 InterchangeResult Cluster::shift(Point* origPoint, Cluster* dest){
     InterchangeResult result(origPoint, this, 0, dest);
-    if (center != origPoint){
+    double newDistance = 0.0;
+    double oldDistance = 0.0;
+//    if (center != origPoint){
         if (dest->remainCapacity() >= origPoint->demand()){
-            double newDistance = _instance->distance(origPoint, dest->getCenter());
-            double oldDistance = _instance->distance(origPoint, center);
+            oldDistance = totalDistance() + dest->totalDistance();
 
-            removePoint(origPoint);
-            dest->addPoint(origPoint);
-
+            if (center == origPoint){
+                if (points.count() > 0){
+                    setCenter(takePoint(0));
+                }else{
+                    setCenter(0);
+                }
+                dest->addPoint(origPoint);
+            }else{
+                removePoint(origPoint);
+                dest->addPoint(origPoint);
+            }
+            Point *newCenter = findBestCenter();
+            if (newCenter != center){
+                Point* p = center;
+                removePoint(newCenter);
+                setCenter(newCenter);
+                addPoint(p);
+            }
+            newCenter = dest->findBestCenter();
+            if (newCenter != dest->getCenter()){
+                Point* p = dest->getCenter();
+                dest->removePoint(newCenter);
+                dest->setCenter(newCenter);
+                dest->addPoint(p);
+            }
+            newDistance = totalDistance() + dest->totalDistance();
             result.valueChange(newDistance - oldDistance );
             result.valid();
         }
-    }
+//    }
     return result;
 }
 
 InterchangeResult Cluster::interchange(Point* origPoint, Point* destPoint, Cluster* dest){
     InterchangeResult result(origPoint, this, destPoint, dest);
-    if (center != origPoint && destPoint != dest->getCenter()){
-        if ((dest->remainCapacity()+destPoint->demand()) >= origPoint->demand()){
-            if ((remainCapacity()+origPoint->demand()) >= destPoint->demand()){
-                double newDistance = _instance->distance(origPoint, dest->getCenter()) +
-                                     _instance->distance(destPoint, center);
+    double newDistance = 0.0;
+    double oldDistance = 0.0;
 
-                double oldDistance = _instance->distance(origPoint, center) +
-                                     _instance->distance(destPoint, dest->getCenter());
+    //    if (center != origPoint && destPoint != dest->getCenter()){
 
+    if ((dest->remainCapacity()+destPoint->demand()) >= origPoint->demand()){
+        if ((remainCapacity()+origPoint->demand()) >= destPoint->demand()){
+            oldDistance = totalDistance() + dest->totalDistance();
+            if (center == origPoint){
+                dest->removePoint(destPoint);
+                setCenter(destPoint);
+                dest->addPoint(origPoint);
+            }else if (dest->getCenter() == destPoint){
+                removePoint(origPoint);
+                dest->setCenter(origPoint);
+                addPoint(destPoint);
+            }else {
                 removePoint(origPoint);
                 dest->removePoint(destPoint);
                 addPoint(destPoint);
                 dest->addPoint(origPoint);
-                result.valueChange(newDistance - oldDistance);
-                result.valid();
-            }/*else{
+            }
+            Point *newCenter = findBestCenter();
+            if (newCenter != center){
+                Point* p = center;
+                removePoint(newCenter);
+                setCenter(newCenter);
+                addPoint(p);
+            }
+            newCenter = dest->findBestCenter();
+            if (newCenter != dest->getCenter()){
+                Point* p = dest->getCenter();
+                dest->removePoint(newCenter);
+                dest->setCenter(newCenter);
+                dest->addPoint(p);
+            }
+            newDistance = totalDistance() + dest->totalDistance();
+            result.valueChange(newDistance - oldDistance);
+            result.valid();
+        }/*else{
                 qDebug() << "can't Insterchange:" << (remainCapacity()+origPoint->demand()) << destPoint->demand();
             }*/
-        }/*else{
+    }/*else{
             qDebug() << "can't Insterchange:" << (dest->remainCapacity()+destPoint->demand()) << origPoint->demand();
         }*/
-    }
+
     return result;
 }

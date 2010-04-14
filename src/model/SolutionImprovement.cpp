@@ -12,7 +12,7 @@ SolutionImprovement::SolutionImprovement( )
     //    _solution = sol;
 }
 
-Solution  SolutionImprovement::hillClimbShift( Solution & sol){
+Solution  SolutionImprovement::hillClimbShift( Solution & sol, int K){
     Instance * inst = sol.instance();
     Solution bestSol(inst);
     bestSol = sol;
@@ -22,6 +22,7 @@ Solution  SolutionImprovement::hillClimbShift( Solution & sol){
 
     do{
         ++count;
+
         Solution* tmpSol = new Solution(inst);
         *tmpSol = bestSol;
 
@@ -50,8 +51,9 @@ Solution  SolutionImprovement::hillClimbShift( Solution & sol){
             }
         }
 
-        if (tmpSol->getValue() < bestValue){
-            bestValue = tmpSol->getValue();
+
+        if (bestSol.getValue() < bestValue){
+            bestValue = bestSol.getValue();
             bestSol = *tmpSol;
             foundBetter = true;
         }else{
@@ -65,7 +67,7 @@ Solution  SolutionImprovement::hillClimbShift( Solution & sol){
 }
 
 
-Solution  SolutionImprovement::hillClimbInterchange(Solution & sol){
+Solution  SolutionImprovement::hillClimbInterchange(Solution & sol, int K, int Q){
     Instance * inst = sol.instance();
     Solution bestSol(inst);
     bestSol = sol;
@@ -73,53 +75,78 @@ Solution  SolutionImprovement::hillClimbInterchange(Solution & sol){
     double bestValue = sol.getValue();
     bool foundBetter = false;
     InterchangeResult bestMove(0,0,0,0);
+    Cluster * cluster;
+    Cluster * myCluster;
+    int  m_q;
+    QMap <double, Cluster*> nearClusters;
 
+    int count_k, count_q;
+
+    if (K == 0){
+        K = inst->numCenters() * 0.3;
+    }
+    if (Q == 0){
+        Q = (inst->numPoints()/inst->numCenters()) * 0.2;
+    }
     do{
         ++count;
-        Solution* tmpSol = new Solution(inst);
-        *tmpSol = bestSol;
+        //        Solution* tmpSol = new Solution(inst);
+        //        *tmpSol = bestSol;
         double better = 0.0;
-        for (int center= 0; center < tmpSol->instance()->numCenters(); ++center){
-            Cluster * origin = tmpSol->cluster(center);
-            for (int center2= 0; center2 < tmpSol->instance()->numCenters(); ++center2){
-                if (center != center2){
+        for (int i = 0 ; i < inst->numPoints(); i++){
+            nearClusters.clear();
+            for (int j = 0;  j <  inst->numCenters(); ++j){
 
-                    Cluster * dest = tmpSol->cluster(center2);
-                    for (int point1 = 0; point1 < origin->numPoints(); ++point1){
-                        for (int point2 = 0; point2 < dest->numPoints(); ++point2){
-                            Point * p1 = origin->getPoint(point1);
-                            Point * p2 = dest->getPoint(point2);
+                if (bestSol.cluster(j)->contains(inst->point(i))){
+                    myCluster = bestSol.cluster(j);
+                }else{
+                    nearClusters.insert(inst->distance(i, bestSol.centerOfCluster(j)->index()), bestSol.cluster(j) );
+                }
+            }
 
-                            InterchangeResult result = origin->interchange(p1,p2,dest);
+            for (count_k = 0; ( count_k < K ) && (count_k < nearClusters.count()) ; count_k++){
+                cluster = nearClusters.values().at(count_k);//
 
-                            if (result.isValid()){
-                                if (result.changeInValue() < better){
-                                    qDebug() << result.changeInValue();
-                                    better = result.changeInValue();
-                                    result.undo();
-                                    bestMove = result;
-                                }else{
-                                    result.undo();
-                                }
-                            }
+                QMap<double, Point *> nearPoints;
+                for (m_q = 0, count_q=0; (count_q < Q) && (m_q < cluster->numPoints()); ++m_q){
+                    nearPoints.insert(inst->distance(i, cluster->getPoint(count_q)->index()), cluster->getPoint(count_q) );
+                    ++count_q;
+                }
+                nearPoints.insert(inst->distance(i, cluster->getCenter()->index()), cluster->getCenter());
 
+                foreach(Point * p, nearPoints.values()){
+                    InterchangeResult result = myCluster->interchange(inst->point(i),p,cluster);
+
+                    if (result.isValid()){
+                        if (result.changeInValue() < better){
+                            qDebug() << result.changeInValue();
+                            better = result.changeInValue();
+                            result.undo();
+                            bestMove = result;
+                        }else{
+                            result.undo();
                         }
                     }
                 }
+                count_k++;
             }
         }
 
+
+
+
+
         bestMove.redo();
 
-        qDebug() << tmpSol->getValue() << bestValue;
-        if (tmpSol->getValue() < bestValue){
-            bestValue = tmpSol->getValue();
-            bestSol = *tmpSol;
+        //qDebug() << tmpSol->getValue() << bestValue;
+        if (bestSol.getValue() < bestValue){
+            bestValue = bestSol.getValue();
+//            bestSol = *tmpSol;
             foundBetter = true;
         }else{
             foundBetter = false;
         }
-        delete tmpSol;
+//        delete tmpSol;
 
     }while (foundBetter);
 
