@@ -77,7 +77,7 @@ Solution  SolutionImprovement::hillClimbInterchange(Solution & sol, int K, int Q
     InterchangeResult bestMove(0,0,0,0);
     Cluster * cluster;
     Cluster * myCluster;
-    int  m_q;
+//    int  m_q;
     QMap <double, Cluster*> nearClusters;
 
     int count_k, count_q;
@@ -86,7 +86,7 @@ Solution  SolutionImprovement::hillClimbInterchange(Solution & sol, int K, int Q
         K = inst->numCenters() * 0.3;
     }
     if (Q == 0){
-        Q = (inst->numPoints()/inst->numCenters()) * 0.2;
+        Q = (inst->numPoints()/inst->numCenters()) * 0.5;
     }
     do{
         ++count;
@@ -108,14 +108,14 @@ Solution  SolutionImprovement::hillClimbInterchange(Solution & sol, int K, int Q
                 cluster = nearClusters.values().at(count_k);//
 
                 QMap<double, Point *> nearPoints;
-                for (m_q = 0, count_q=0; (count_q < Q) && (m_q < cluster->numPoints()); ++m_q){
-                    nearPoints.insert(inst->distance(i, cluster->getPoint(count_q)->index()), cluster->getPoint(count_q) );
-                    ++count_q;
+                for ( int j =0; j < cluster->numPoints(); ++j){
+                    nearPoints.insert(inst->distance(i, cluster->getPoint(j)->index()), cluster->getPoint(j) );
                 }
                 nearPoints.insert(inst->distance(i, cluster->getCenter()->index()), cluster->getCenter());
 
-                foreach(Point * p, nearPoints.values()){
-                    InterchangeResult result = myCluster->interchange(inst->point(i),p,cluster);
+                for (count_q =0; count_q < Q && count_q < nearPoints.values().count();  ++count_q){
+                    Point * p = nearPoints.values()[count_q];
+                    InterchangeResult result = myCluster->interchange(inst->point(i), p ,cluster);
 
                     if (result.isValid()){
                         if (result.changeInValue() < better){
@@ -123,19 +123,19 @@ Solution  SolutionImprovement::hillClimbInterchange(Solution & sol, int K, int Q
                             better = result.changeInValue();
                             result.undo();
                             bestMove = result;
-                        }else{
-                            result.undo();
                         }
                     }
+                    result.undo();
+
                 }
-                count_k++;
+
             }
         }
 
 
 
 
-
+        qDebug() << "Applying best Move.";
         bestMove.redo();
 
         //qDebug() << tmpSol->getValue() << bestValue;
