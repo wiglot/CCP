@@ -66,8 +66,8 @@ CCP::Cluster ** DensityCluster::buildClusters(){
     for (unsigned short count = 0; count < _myInstance->numCenters(); count++){
         emit complete(int(((count+1)/_myInstance->numCenters())*100));
 	this->calculateDensity();
-	unsigned short tmp = this->greatDensity();
-        // TMP value is overbounding num points
+        unsigned short tmp = this->greatDensity(); //redo this function and regret.
+        // TMP value is overbounding num points at count 39 and 10 iterations
 	QList <int> neibor = this->findNeiborhood(tmp, numNeibor);
 
 	assign(tmp, count, CCP::Center);
@@ -241,6 +241,7 @@ QList < int >  DensityCluster::findNeiborhood(unsigned short point, unsigned sho
 	inserted = false;
 	do{
           /** BUG Visited point 2000, but only have 422 */
+            /** Again SJC4b. point 2053*/
 	  p = distance->near(point, tmp);
 	  if (! isAssigned(p)){
             if ((instance()->point(p)->demand()+acumDemand) <= instance()->capacity()) {

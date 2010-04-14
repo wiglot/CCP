@@ -28,10 +28,10 @@ using namespace CCP;
 
 
 CCP::Cluster** FarthestCluster::buildClusters(){
-//     this->_centers = new Cluster*[_myInstance->numCenters()];
-//     for (unsigned short count = 0 ; count < _myInstance->numCenters(); ++count){
-// 	this->_centers[count] = new Cluster(_myInstance);
-//     }
+    //     this->_centers = new Cluster*[_myInstance->numCenters()];
+    //     for (unsigned short count = 0 ; count < _myInstance->numCenters(); ++count){
+    // 	this->_centers[count] = new Cluster(_myInstance);
+    //     }
     this->selectFirstCenters();
     this->findBasicClusters();
     this->findBestCenters();
@@ -55,31 +55,32 @@ void FarthestCluster::selectFirstCenters() {
     assign(center2, 1,CCP::Center);
 
     int centersInserted = 2;
-    QMultiMap <long, int> distances;
+    QMultiMap <double, int> distances;
     for ( count = 0; count < numPoints; ++count ) {
         if (count != center2 && count != center1)
-            distances.insert((instance()->distance(count, center1) + instance()->distance(count, center2)), count);
+            distances.insert((instance()->distance(count, center1) * instance()->distance(count, center2)), count);
     }
 
-//    distances.remove(0);
+    //    distances.remove(0);
 
     while ( instance()->numCenters() > centersInserted ) {
 
         /** BUG when insert 5 itens, distances has 0 itens...*/
-         int insertedCenter = distances.value(distances.keys().last());
-         assign(distances.value(distances.keys().last()), centersInserted++, CCP::Center);
-         distances.remove(distances.keys().last());
+        int insertedCenter = distances.value(distances.keys().last());
+        assign(distances.value(distances.keys().last()), centersInserted++, CCP::Center);
+        distances.remove(distances.keys().last());
 
-         QList <long> keys = distances.keys();
-         foreach (long key, keys){
-             qreal distance = key;
-             distance += instance()->distance(  distances.value(key),
-                                                insertedCenter
-                                             );
-             distances.insert(distance, distances.value(key));
+        QList <double> keys = distances.keys();
+        double minor = keys.at(0);
+        foreach (double key, keys){
+            qreal distance = key / minor;
+            distance *= instance()->distance(  distances.value(key),
+                                               insertedCenter
+                                               );
+            distances.insert(distance, distances.value(key));
 
-             distances.remove(key, distances.value(key));
-         }
+            distances.remove(key, distances.value(key));
+        }
 
     }
 }
@@ -102,7 +103,7 @@ void FarthestCluster::findBasicClusters() {
                 tmpcluster = this->cluster(count);
                 if ( tmpcluster->remainCapacity() >= selectedPoint->demand() ) {
 		    double tmp = instance()->distance(selectedPoint, tmpcluster->getCenter(),
-							  selectedPoint->demand());
+                                                      selectedPoint->demand());
 		    if (tmp <= indicator){
 			indicator = tmp;
 			clusterToAdd = count;
@@ -110,11 +111,11 @@ void FarthestCluster::findBasicClusters() {
                 }
             }
 	    if (clusterToAdd == instance()->numPoints()){
-	      throw QString ("There is no cluster with capacity to suporte a point");
+                throw QString ("There is no cluster with capacity to suporte a point");
 	    }
 	    assign(selectedPoint, clusterToAdd);
-// 	    tmpcluster = this->cluster(clusterToAdd);
-// 	    tmpcluster->addPoint(selectedPoint);
+            // 	    tmpcluster = this->cluster(clusterToAdd);
+            // 	    tmpcluster->addPoint(selectedPoint);
         }
     }
 }
