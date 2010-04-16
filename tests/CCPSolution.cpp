@@ -104,9 +104,7 @@ void CCPSolution::buildDensity(){
       QVERIFY(qAbs(density.pointDensity(4)-(double)0.878683) < 0.00001);
       QVERIFY(qAbs(density.pointDensity(5)-(double)0.878683) < 0.00001);
       
-      QCOMPARE(density.greatDensity(), (unsigned short)2);
-      QCOMPARE(density.greatDensity(1),(unsigned short) 3);
-      QCOMPARE(density.greatDensity(2),(unsigned short) 0);
+      QCOMPARE(density.greatDensity(), 2);
       
     
      density.buildClusters();

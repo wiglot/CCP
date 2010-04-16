@@ -37,7 +37,7 @@ DensityCluster::DensityCluster(Instance* inst): AlgorithmStruct(inst)
     //    }
     setNumIterations(10);
 
-    _numNeibor = ceil( instance()->numPoints() / double(instance()->numCenters())) ;
+    _numNeibor = floor( instance()->numPoints() / double(instance()->numCenters())) ;
 }
 
 
@@ -71,7 +71,11 @@ CCP::Cluster ** DensityCluster::buildClusters(){
         emit complete(int(((count+1)/_myInstance->numCenters())*100));
 
         this->calculateDensity();
-        unsigned short tmp = this->greatDensity(); //redo this function and regret.
+        int tmp = this->greatDensity(); //redo this function and regret.
+        if (tmp == -1){
+            qDebug() << "Xii... need more points to be the center.";
+
+        }
         // TMP value is overbounding num points at count 39 and 10 iterations
         QList <int> neibor = this->findNeiborhood(tmp, _numNeibor);
 
@@ -183,13 +187,13 @@ void DensityCluster::findBestCluster(unsigned short clusters, QList<int> points)
 
 void DensityCluster::calculateDensity(){
 
-    unsigned short m;
+//    unsigned short m;
     QList <int>  neibors;
     
-    m = instance()->numPoints() / instance()->numCenters();
+//    m = instance()->numPoints() / instance()->numCenters();
     for (unsigned short i = 0; i < instance()->numPoints(); ++i){
         if (! this->isAssigned(i)){
-            neibors = this->findNeiborhood(i, m);
+            neibors = this->findNeiborhood(i, _numNeibor);
             //            _pointsDensity[i] = (double)neibors.size()/this->distance(i, neibors);
             _pointsDensity.insert((double)neibors.size()/this->distance(i, neibors) , i);
         }
@@ -282,39 +286,45 @@ QList < int >  DensityCluster::findNeiborhood(unsigned short point, unsigned sho
 }
 
 
-unsigned short DensityCluster::greatRegret(unsigned short big){
-    bool * visited = new bool[instance()->numPoints()];
-    unsigned short i, count, found;
-    double min;
-
-    ++big;
-
-    for ( i = 0; i < instance()->numPoints(); ++i ){
-        visited[i] = false;
+int DensityCluster::greatRegret(){
+    if ( ! _pointsRegret.isEmpty()){
+        return _pointsRegret.values().back();
     }
-    found = 0;
-    for ( i = 0 ; i < big; ++i ){
-        min = 0.0;
-        for ( count = 0; count < instance()->numPoints(); count++ ) {
-            if ( !visited[count] )
-            {
-                if ( pointRegret(count) > min ) {
-                    min = pointRegret(count);
-                    found = count;
-                }
-            }
-        }
-        visited[found] = true;
-    }
-    delete [] visited;
-    return found;
+    qDebug () << "return dont have regrets!.";
+    return -1;
+//    bool * visited = new bool[instance()->numPoints()];
+//    unsigned short i, count, found;
+//    double min;
+//
+//    ++big;
+//
+//    for ( i = 0; i < instance()->numPoints(); ++i ){
+//        visited[i] = false;
+//    }
+//    found = 0;
+//    for ( i = 0 ; i < big; ++i ){
+//        min = 0.0;
+//        for ( count = 0; count < instance()->numPoints(); count++ ) {
+//            if ( !visited[count] )
+//            {
+//                if ( pointRegret(count) > min ) {
+//                    min = pointRegret(count);
+//                    found = count;
+//                }
+//            }
+//        }
+//        visited[found] = true;
+//    }
+//    delete [] visited;
+//    return found;
 
 }
 
-unsigned short DensityCluster::greatDensity(unsigned short big){
+int DensityCluster::greatDensity(){
     if (_pointsDensity.size() > 0){
         return _pointsDensity.values().back();
     }
+    qDebug() << "Dont have density.";
     //
     //    bool * visited = new bool[instance()->numPoints()];
     //    unsigned short i, count, found;

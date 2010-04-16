@@ -36,9 +36,9 @@ public:
     double pointRegret(unsigned short index){
 	return this->_pointsRegret[index];
     }
-    unsigned short greatDensity(unsigned short big = 0);
+    int greatDensity();
     
-    unsigned short greatRegret(unsigned short big = 0);
+    int greatRegret();
     
     /** @brief find the 'nNeibor' most near from the 'point' that don't over capacity of cluster.
       @param point Origin point.
