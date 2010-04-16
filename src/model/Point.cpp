@@ -19,13 +19,15 @@
 
 #include "Point.h"
 #include "Position.h"
+
+#include "Instance.h"
 /**
  * Constructors/Destructors
  */
-CCP::Point::Point ( ):_pos(Position(0.0,0.0)), _demand(0.0), m_index(-1){
+CCP::Point::Point (Instance * inst ):_inst(inst), _pos(Position(0.0,0.0)), _demand(0.0), m_index(-1){
 
 }
-CCP::Point::Point (double x, double y, double demand):_pos(Position( x,y)), _demand(demand), m_index(-1){
+CCP::Point::Point ( Instance * inst, double x, double y, double demand):_inst(inst) ,_pos(Position( x,y)), _demand(demand), m_index(-1){
   
 }
 
@@ -33,3 +35,9 @@ CCP::Point::Point (double x, double y, double demand):_pos(Position( x,y)), _dem
  * Methods
  */
 
+int CCP::Point::index(){
+    if (m_index == -1){
+        m_index = _inst->pointIndex(this);
+    }
+    return m_index;
+}

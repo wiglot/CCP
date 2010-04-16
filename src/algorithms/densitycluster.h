@@ -21,6 +21,7 @@
 #define DENSITYCLUSTER_H
 
 #include "algorithmstruct.h"
+#include <QMap>
 
 class DensityCluster:public AlgorithmStruct{
 public:
@@ -60,14 +61,20 @@ public:
      CCP::Cluster ** buildClusters();
      
 private:
-    double * _pointsDensity;
-    double * _pointsRegret;
+//    double * _pointsDensity;
+//    double * _pointsRegret;
     
     int _iterations;
     
-    void calculateRegret(short unsigned int point);
+    void calculateRegret(QList <int> points);
     
-    void findBestCluster(short unsigned int clusters);
+    void findBestCluster(short unsigned int clusters, QList<int> points = QList<int>());
+
+    unsigned int _numNeibor;
+
+
+    QMap <double, int> _pointsDensity;
+    QMap <double, int> _pointsRegret;
 };
 
 #endif // DENSITYCLUSTER_H

@@ -36,12 +36,12 @@ void CCPSolution::initTestCase()
 {
     this->instance = new Instance;
     Point ** points = new Point*[6];
-    points[0] = new Point(0.0, 2.0, 1.0);
-    points[1] = new Point(0.0, 0.0, 1.0);
-    points[2] = new Point(1.0, 1.0, 1.0);
-    points[3] = new Point(2.0, 1.0, 1.0);
-    points[4] = new Point(3.0, 0.0, 1.0);
-    points[5] = new Point(3.0, 2.0, 1.0);
+    points[0] = new Point(instance,0.0, 2.0, 1.0);
+    points[1] = new Point(instance,0.0, 0.0, 1.0);
+    points[2] = new Point(instance,1.0, 1.0, 1.0);
+    points[3] = new Point(instance,2.0, 1.0, 1.0);
+    points[4] = new Point(instance,3.0, 0.0, 1.0);
+    points[5] = new Point(instance,3.0, 2.0, 1.0);
     instance->setPoints(points, 6);
     instance->setNumCenters(2);
     instance->setCapacity(3.5);

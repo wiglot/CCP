@@ -32,8 +32,8 @@ void CCPModel_test::initTestCase()
 {
     this->instance = new Instance;
     Point ** points = new Point*[2];
-    points[0] = new Point(0.0, 1.0, 1.0);
-    points[1] = new Point(1.0, 1.0, 2.0);
+    points[0] = new Point(instance, 0.0, 1.0, 1.0);
+    points[1] = new Point(instance,1.0, 1.0, 2.0);
     instance->setPoints(points, 2);
     instance->setNumCenters(2);
     instance->setCapacity(6.0);

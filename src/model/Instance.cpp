@@ -20,6 +20,8 @@
 #include "Instance.h"
 #include "Distance.h"
 
+#include "Point.h"
+
 
 /**
  * Constructors/Destructors
@@ -48,7 +50,7 @@ double CCP::Instance::distance (short unsigned int p1, short unsigned int p2, do
 }
 
 double CCP::Instance::distance (Point * p1, Point * p2, double factor){
-      return this->distance(pointIndex(p1), pointIndex(p2), factor);
+      return this->distance(p1->index(), p2->index(), factor);
 }
 
 
@@ -63,9 +65,6 @@ double CCP::Instance::tight(){
 
 unsigned short CCP::Instance::pointIndex( Point* arg1 ){
     
-  if (arg1->index() != -1){
-      return (unsigned short) arg1->index();
-  }
   
   for (unsigned short i = 0 ; i<_numPoints; ++i){
       if (arg1 == _points[i]){

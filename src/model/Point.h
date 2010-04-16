@@ -23,10 +23,15 @@
 #include <string>
 #include "Position.h"
 
+
 /**
  * Namespace
  */
 namespace CCP { 
+
+    class Instance;
+
+
 /**
  * Class Point
  * 
@@ -42,9 +47,9 @@ public:
     /**
      * Empty Constructor
      */
-    Point ( );
-    Point (double x, double y, double demand);
-    Point (Position pos, double demand): _pos(pos), _demand(demand), m_index(-1){ }
+    Point ( Instance * inst);
+    Point ( Instance * inst, double x, double y, double demand);
+    Point (Instance * inst, Position pos, double demand):_inst(inst), _pos(pos), _demand(demand), m_index(-1){ }
     /**
      * Accessor Methods
      */
@@ -72,9 +77,7 @@ public:
 	m_index = new_index;
     }
     
-    int index(){
-	return m_index;
-    }
+    int index();
 /**
  * Private stuff
  */
@@ -82,6 +85,7 @@ private:
     /**
      * Fields
      */
+     Instance * _inst;
      CCP::Position _pos;
      double _demand;
      int m_index;

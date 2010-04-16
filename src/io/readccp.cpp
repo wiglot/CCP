@@ -56,7 +56,7 @@ Instance * readCCP::readSimpleTXT(QString name){
     inst->setNumCenters(list[1].toUShort());
   }
   while (!input.atEnd()){
-    Point * p = new Point;
+    Point * p = new Point (inst);
     line = input.readLine();
     list = line.split(":", QString::SkipEmptyParts);
     p->setDemand(list[3].toDouble());
@@ -113,7 +113,7 @@ Instance * readCCP::readLorenaEuclidian(QString name){
 	qDebug() << "Assertion error. Skiping line " << count+2;
 	--count;
       }else {
-	pointsList[count] = new Point(list[0].toDouble(), list[1].toDouble(), list[3].toDouble());
+    pointsList[count] = new Point(inst, list[0].toDouble(), list[1].toDouble(), list[3].toDouble());
 	if (capacity < list[2].toDouble())
 	    capacity = list[2].toDouble();
       }

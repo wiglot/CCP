@@ -29,8 +29,8 @@ using namespace CCP;
 void CCPDistance::distance(){
     Instance * instance = new Instance;
     Point ** points = new Point*[2];
-    points[0] = new Point(0.0, 1.0, 1.0);
-    points[1] = new Point(1.0, 1.0, 2.0);
+    points[0] = new Point(instance,0.0, 1.0, 1.0);
+    points[1] = new Point(instance,1.0, 1.0, 2.0);
     instance->setPoints(points, 2);
     Distance * distance = new Distance(instance);
     instance->setDistances(distance);
@@ -51,8 +51,8 @@ void CCPDistance::distance(){
 void CCPDistance::distance2Points(){
 
     Point ** points = new Point*[2];
-    points[0] = new Point(0.0, 1.0, 1.0);
-    points[1] = new Point(1.0, 1.0, 2.0);
+    points[0] = new Point(0, 0.0, 1.0, 1.0);
+    points[1] = new Point(0, 1.0, 1.0, 2.0);
 
     QCOMPARE(points[0]->position().distance(points[1]->position()), 1.0);
 
@@ -61,10 +61,10 @@ void CCPDistance::distance2Points(){
 void CCPDistance::near(){
     Instance * instance = new Instance;
     Point ** points = new Point*[4];
-    points[0] = new Point(0.0, 0.0, 1.0);
-    points[1] = new Point(0.0, 1.0, 2.0);
-    points[2] = new Point(0.0, 2.0, 3.0);
-    points[3] = new Point(0.0, 3.0, 4.0);
+    points[0] = new Point(instance,0.0, 0.0, 1.0);
+    points[1] = new Point(instance,0.0, 1.0, 2.0);
+    points[2] = new Point(instance,0.0, 2.0, 3.0);
+    points[3] = new Point(instance,0.0, 3.0, 4.0);
     instance->setPoints(points, 4);
     Distance * distance = new Distance(instance);
     instance->setDistances(distance);
