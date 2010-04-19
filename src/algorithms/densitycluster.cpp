@@ -28,13 +28,6 @@ using namespace CCP;
 
 DensityCluster::DensityCluster(Instance* inst): AlgorithmStruct(inst)
 {
-    //this->_pointsDensity = new double[this->instance()->numPoints()];
-    //    this->_pointsRegret = new double[instance()->numPoints()];
-    
-    //    for (unsigned short i = 0; i < instance()->numPoints(); ++i){
-    //        this->_pointsDensity[i] = -1.0;
-    //        this->_pointsRegret[i] = -1.0;
-    //    }
     setNumIterations(10);
 
     _numNeibor = floor( instance()->numPoints() / double(instance()->numCenters())) ;
@@ -42,14 +35,10 @@ DensityCluster::DensityCluster(Instance* inst): AlgorithmStruct(inst)
 
 
 DensityCluster::~DensityCluster() {
-    //delete []_pointsDensity;
-    //    delete []_pointsRegret;
+
+
 }
 
-// double DensityCluster::distance(short unsigned int point, QList< int > list)
-// {
-//   return 0.0;
-// }
 
 
 CCP::Cluster ** DensityCluster::buildClusters(){
@@ -71,6 +60,7 @@ CCP::Cluster ** DensityCluster::buildClusters(){
         emit complete(int(((count+1)/_myInstance->numCenters())*100));
 
         this->calculateDensity();
+
         int tmp = this->greatDensity(); //redo this function and regret.
         if (tmp == -1){
             qDebug() << "Xii... need more points to be the center.";
@@ -86,8 +76,6 @@ CCP::Cluster ** DensityCluster::buildClusters(){
             if (_myInstance->point(actual) != cluster(count)->getCenter()){
                 if (cluster(count)->remainCapacity() >= _myInstance->point(actual)->demand()){
                     assign(actual, count);
-                    //assignedPoints.append(actual);
-                    //                    this->_pointsDensity[actual] = 0.0;
                 }else{
                     qDebug() << "Can't assign point" << actual << _myInstance->point(actual)->demand();
                 }
@@ -99,7 +87,6 @@ CCP::Cluster ** DensityCluster::buildClusters(){
         }
     }
 
-    //    assignToNearest();
 
     QList<int> assignedPoints;
 
@@ -108,8 +95,6 @@ CCP::Cluster ** DensityCluster::buildClusters(){
             assignedPoints.append(count);
         }
     }
-
-
 
     findBestCluster(_myInstance->numCenters(), assignedPoints);
 
@@ -140,22 +125,15 @@ void DensityCluster::findBestCluster(unsigned short clusters, QList<int> points)
         }
 
         //For each point unassigned
+
+        //Aqui está a demora. Pensar em uma forma melhor.
+
         while (unAssgned.size() > 0){
             //double maxRegret = -1.0;
             //            foreach(i, unAssgned){
             calculateRegret(unAssgned);
             nextPoint = _pointsRegret.values().back();
-            //                    nextPoint = i;
-            //                    maxRegret = pointRegret(i);
-            //                }
-            //            }
-            //       //select the great regret
-            //       i = 0;
-            //       do {
-            // 	nextPoint = this->greatRegret(i);
-            // 	++i;
-            //       } while (isAssigned(nextPoint) && i < instance()->numPoints()); //never select a assigned point.
-            //Find the near center
+
 
             double min = 1.0e10;
             nearCenter = -1;
@@ -187,21 +165,19 @@ void DensityCluster::findBestCluster(unsigned short clusters, QList<int> points)
 
 void DensityCluster::calculateDensity(){
 
-//    unsigned short m;
+
     QList <int>  neibors;
     
-//    m = instance()->numPoints() / instance()->numCenters();
     for (unsigned short i = 0; i < instance()->numPoints(); ++i){
         if (! this->isAssigned(i)){
             neibors = this->findNeiborhood(i, _numNeibor);
-            //            _pointsDensity[i] = (double)neibors.size()/this->distance(i, neibors);
             _pointsDensity.insert((double)neibors.size()/this->distance(i, neibors) , i);
         }
     }
 }
 
 void DensityCluster::calculateRegret(QList <int> points){
-    //     unsigned short * tmpCenters = new unsigned short[instance()->numCenters()];
+
     unsigned short count2;
     double distance1, distance2;
     unsigned short center1, center2;
@@ -224,7 +200,7 @@ void DensityCluster::calculateRegret(QList <int> points){
         distance2 = 1.0e10;
         for ( count2 = 0; count2 < numClusters; ++count2 ) {
             double dist = instance()->distance( p->index(), cluster( count2 )->getCenter()->index() );
-            if ( dist < distance1 ) {
+            if ( dist < distance1  && p->demand() <= cluster(count2)->remainCapacity()) {
                 if (distance1 < distance2){
                     distance2 = distance1;
                     center2 = center1;
@@ -233,27 +209,16 @@ void DensityCluster::calculateRegret(QList <int> points){
                 center1 = count2;
             }
             if (count2 != center1){
-                if (dist < distance2){
+                if (dist < distance2 && p->demand() <= cluster(count2)->remainCapacity()){
                     distance2 = dist;
                     center2 = count2;
                 }
             }
 
         }
-        //    for ( count2 = 0; count2 < numClusters; ++count2 ) {
-        //            if ( instance()->distance( p, cluster( count2 )->getCenter() ) < distance2 && count2 != center1 ) {
-        //                distance2 = instance()->distance( p, cluster( count2 )->getCenter() );
-        //                center2 = count2;
-        //            }
-        //   //      }
-        //    }
-        //   if ( center1 < instance()->numPoints() && center2 < instance()->numPoints() ) {
-        this->_pointsRegret.insert(distance2 - distance1, point);
-        //   }else{
-        //        qDebug() << "can't calculate Regret of point "<< p->index() << p->demand();
 
-        //    }
-        //     }
+        this->_pointsRegret.insert(distance2 - distance1, point);
+
     }
 }
 
