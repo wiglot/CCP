@@ -31,8 +31,8 @@ class HMeansCluster : public AlgorithmStruct
     HMeansCluster(CCP::Instance* inst);
     ~HMeansCluster();
     CCP::Cluster** buildClusters();
-    void selectInitialCenters();
-    
+    void selectRandonInitialCenters();
+    void selectDensityInitialCenters();
     
 };
 

@@ -7,6 +7,6 @@ set (Algorithms_H algorithmstruct.h)
 qt4_automoc(${Algorithms_CCP})
 QT4_WRAP_CPP(MOC_CPP ${Algorithms_H})
 
-add_library(CCPAlgorithms STATIC ${Algorithms_CCP} ${MOC_CPP})
+add_library(CCPAlgorithms SHARED ${Algorithms_CCP} ${MOC_CPP})
 
-link_libraries(CCPModelLib ${QT_QT_LIBRARY} CCPModelLib )
+#link_libraries(CCPModelLib ${QT_QT_LIBRARY} CCPModelLib )

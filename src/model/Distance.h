@@ -20,6 +20,8 @@
 #ifndef DISTANCE_H
 #define DISTANCE_H
 
+#include "model_global.h"
+
 #include <QMap>
 
 /**
@@ -31,7 +33,7 @@ namespace CCP {
 * Class Distance
 * Contains the values of distances, will be build empty, and at every request, it will build the matrix and vectors(ordered) of distances  
 */
-class Distance {
+class CCPModelLib_EXPORT Distance {
 /**
 * Public stuff
 */

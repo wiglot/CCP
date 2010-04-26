@@ -19,6 +19,9 @@
 
 #ifndef CLUSTER_H
 #define CLUSTER_H
+
+#include "model_global.h"
+
 #include <qtextstream.h>
 #include <QList>
 
@@ -27,7 +30,7 @@ namespace CCP{
   class Instance;
 
 
-class InterchangeResult{
+class CCPModelLib_EXPORT InterchangeResult{
   private:
       bool _valid;
       bool _canRedo;
@@ -49,7 +52,7 @@ class InterchangeResult{
 
       }
       ~InterchangeResult(){ }
-      inline const bool isValid(){ return _valid;}
+      inline bool isValid() const { return _valid;}
       inline double changeInValue(){return _change;}
 
       void valid(const bool v = true){ _valid = v;}
@@ -59,7 +62,7 @@ class InterchangeResult{
   };
 
 
-class Cluster {
+class CCPModelLib_EXPORT Cluster {
 private:
       Point * center;
       QList<Point *> points;

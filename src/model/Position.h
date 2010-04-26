@@ -20,6 +20,8 @@
 #ifndef POSITION_H
 #define POSITION_H
 
+#include "model_global.h"
+
 #include <cmath>
 
 /**
@@ -29,7 +31,7 @@ namespace CCP {
 /**
  * Class Position
  */
-class Position {
+ class CCPModelLib_EXPORT Position {
 /**
  * Public stuff
  */

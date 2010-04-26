@@ -1,20 +1,18 @@
 #ifndef SOLUTIONIMPROVEMENT_H
 #define SOLUTIONIMPROVEMENT_H
+
+#include "model_global.h"
+
 class QString;
 //#include "Solution.h"
 
 namespace CCP{
 
-    class Solution;
+class Solution;
 
-    enum ImprovementHeuristic {
-        HillClimbShift,
-        HillClimbInterchange,
-        SimulatedAnnelingShift,
-        SimulatedAnnelingInterchange
-    };
 
-class SolutionImprovement
+
+class CCPModelLib_EXPORT SolutionImprovement
 {
 
 private:

@@ -62,6 +62,7 @@ CCP::Cluster ** DensityCluster::buildClusters(){
         this->calculateDensity();
 
         int tmp = this->greatDensity(); //redo this function and regret.
+
         if (tmp == -1){
             qDebug() << "Xii... need more points to be the center.";
 
@@ -287,7 +288,9 @@ int DensityCluster::greatRegret(){
 
 int DensityCluster::greatDensity(){
     if (_pointsDensity.size() > 0){
-        return _pointsDensity.values().back();
+        int dens = _pointsDensity.values().back();
+        _pointsDensity.remove(_pointsDensity.keys().back());
+        return dens;
     }
     qDebug() << "Dont have density.";
     //

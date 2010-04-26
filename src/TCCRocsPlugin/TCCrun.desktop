@@ -1,0 +1,17 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Service
+#Icon=icon
+ServiceTypes=Rocs/ToolPlugin
+X-KDE-Library=TCCrun
+X-KDE-PluginInfo-Author=Wagner Reck
+X-KDE-PluginInfo-Email=wagner.reck@gmail.com
+X-KDE-PluginInfo-Name=Run my TCC algorithms
+X-KDE-PluginInfo-Version=0.0.1
+X-KDE-PluginInfo-Website=http://wiglot.wordpress.com
+X-KDE-PluginInfo-Category=Plugins
+X-KDE-PluginInfo-License=GPL
+X-KDE-PluginInfo-EnabledByDefault=false
+Name=TCC Run
+Comment=Private plugin to run my algorithms.
+

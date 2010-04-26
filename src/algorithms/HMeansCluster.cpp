@@ -19,6 +19,7 @@ This program is free software: you can redistribute it and/or modify
 */
 
 #include "HMeansCluster.h"
+#include "densitycluster.h"
 #include <QTime>
 #include <QDebug>
 
@@ -35,9 +36,13 @@ HMeansCluster::~HMeansCluster()
 }
 
 
-CCP::Cluster** HMeansCluster::buildClusters()
+CCP::Cluster** HMeansCluster::buildClusters()//CCP::HMeans)
 {
-    selectInitialCenters();
+
+    //selectRandonInitialCenters();
+
+    selectDensityInitialCenters();
+
     bool changed = true;
     
     while (changed){
@@ -45,14 +50,14 @@ CCP::Cluster** HMeansCluster::buildClusters()
         if (incIter() > 1000){
             return _centers;
         }
-	//Remove all points
-	unAssignAllConsumers();
-	
-	//re-assign points to nearst center...
+        //Remove all points
+        unAssignAllConsumers();
+
+        //re-assign points to nearst center...
         assignToNearest();
-	
-	//Try find bests centers
-	changed = findBestCenters();
+
+        //Try find bests centers
+        changed = findBestCenters();
     }
     
     return _centers;
@@ -60,15 +65,31 @@ CCP::Cluster** HMeansCluster::buildClusters()
 }
 
 
-void HMeansCluster::selectInitialCenters(){
-  qsrand(QTime::currentTime().msec());
-  int i;
-  
-  for (i = 0; i < instance()->numCenters(); ++i){
-    int gen;
-    do{
-      gen = qrand() % instance()->numPoints();
-    }while (isAssigned(gen));
-    assign(gen,i,CCP::Center);
-  }
+void HMeansCluster::selectRandonInitialCenters(){
+    qsrand(QTime::currentTime().msec());
+    int i;
+
+    for (i = 0; i < instance()->numCenters(); ++i){
+        int gen;
+        do{
+            gen = qrand() % instance()->numPoints();
+        }while (isAssigned(gen));
+        assign(gen,i,CCP::Center);
+    }
+}
+
+void HMeansCluster::selectDensityInitialCenters(){
+    int i;
+    DensityCluster density(instance());
+
+    density.calculateDensity();
+
+    for (i = 0; i < instance()->numCenters(); ++i){
+        int gen;
+        do{
+            gen = density.greatDensity();
+        }while (isAssigned(gen));
+        assign(gen,i,CCP::Center);
+
+    }
 }

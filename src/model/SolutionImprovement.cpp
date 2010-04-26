@@ -76,7 +76,7 @@ Solution  SolutionImprovement::hillClimbInterchange(Solution & sol, int K, int Q
     bool foundBetter = false;
     InterchangeResult bestMove(0,0,0,0);
     Cluster * cluster;
-    Cluster * myCluster;
+    Cluster * myCluster = 0;
 //    int  m_q;
     QMap <double, Cluster*> nearClusters;
 

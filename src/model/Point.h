@@ -20,6 +20,8 @@
 #ifndef POINT_H
 #define POINT_H
 
+#include "model_global.h"
+
 #include <string>
 #include "Position.h"
 
@@ -36,7 +38,7 @@ namespace CCP {
  * Class Point
  * 
  */
-class Point {
+class CCPModelLib_EXPORT Point {
 /**
  * Public stuff
  */

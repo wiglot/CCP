@@ -17,27 +17,22 @@
 
 */
 
-#ifndef JMEANSCLUSTER_H
-#define JMEANSCLUSTER_H
+#ifndef TCCRUN_H
+#define TCCRUN_H
 
-#include "algorithmstruct.h"
+#include <QtCore/QObject>
+#include "rocs/ToolsPluginInterface.h"
+#include <QStringList>
 
-
-class JMeansCluster : public AlgorithmStruct
+class TCCRun : public Rocs::ToolsPluginInterface
 {
+  Q_OBJECT
   public:
-    JMeansCluster(CCP::Instance* inst);
-    ~JMeansCluster();
     
-    CCP::Cluster** buildClusters();
-
-    void findMeans(double * vect);
-
-    QList <int> findUnoccupied(double * tolerances);
-
-    void selectRandonInitialCenters();
-
+    TCCRun(QObject* parent, const QList< QVariant >&);
+     ~TCCRun();
+     QString run(QObject* parent = 0) const;
 
 };
 
-#endif // JMEANSCLUSTER_H
+#endif // MAKECOMPLETETOOLSPLUGIN_H

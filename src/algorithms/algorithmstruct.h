@@ -19,11 +19,14 @@
 
 #ifndef ALGORITHMSTRUCT_H
 #define ALGORITHMSTRUCT_H
+
+#include "../model/model_global.h"
 #include <QList>
 #include <QObject>
 #include "../model/Instance.h"
 #include "../model/Solution.h"
 #include "../model/Cluster.h"
+
 /** @class AlgorithmStruct
     @brief A helper class that take care of know if a point is assigned or not, and some operations needed by various methods.
     

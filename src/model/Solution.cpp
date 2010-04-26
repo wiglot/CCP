@@ -163,7 +163,7 @@ double Solution::getValue(){
   return acum;
 }
 
-const bool Solution::isValid(){
+bool Solution::isValid(){
 
     if (_centers == 0){
         return false;

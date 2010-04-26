@@ -22,6 +22,7 @@
 #include "Distance.h"
 #include "Cluster.h"
 #include <QMultiHash>
+#include <QDebug>
 
 
 using namespace CCP;
@@ -111,7 +112,8 @@ void FarthestCluster::findBasicClusters() {
                 }
             }
 	    if (clusterToAdd == instance()->numPoints()){
-                throw QString ("There is no cluster with capacity to suporte a point");
+            qDebug() << "There is no cluster with capacity to suporte a point";
+                //throw QString ("There is no cluster with capacity to suporte a point");
 	    }
 	    assign(selectedPoint, clusterToAdd);
             // 	    tmpcluster = this->cluster(clusterToAdd);

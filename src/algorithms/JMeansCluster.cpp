@@ -18,6 +18,7 @@
 */
 
 #include "JMeansCluster.h"
+#include "densitycluster.h"
 #include <QList>
 #include <QTime>
 
@@ -45,7 +46,7 @@ Cluster** JMeansCluster::buildClusters()
     QList <int> unoccupied;
 //    QList <double> means;
 
-    selectInitialCenters();
+    selectRandonInitialCenters();
 
     assignToNearest();
     while (incIter() < 1000){
@@ -127,15 +128,28 @@ QList <int> JMeansCluster::findUnoccupied(double *tolerances){
     return ret;
 }
 
-void JMeansCluster::selectInitialCenters(){
-    qsrand(QTime::currentTime().msec());
+void JMeansCluster::selectRandonInitialCenters(){
+//    qsrand(QTime::currentTime().msec());
+//    int i;
+//
+//    for (i = 0; i < instance()->numCenters(); ++i){
+//        int gen;
+//        do{
+//            gen = qrand() % instance()->numPoints();
+//        }while (isAssigned(gen));
+//        assign(gen,i,CCP::Center);
+//    }
     int i;
+    DensityCluster density(instance());
+
+    density.calculateDensity();
 
     for (i = 0; i < instance()->numCenters(); ++i){
         int gen;
         do{
-            gen = qrand() % instance()->numPoints();
+            gen = density.greatDensity();
         }while (isAssigned(gen));
         assign(gen,i,CCP::Center);
+
     }
 }

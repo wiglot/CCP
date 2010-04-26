@@ -20,6 +20,8 @@
 #ifndef SOLUTION_H
 #define SOLUTION_H
 
+#include "model_global.h"
+
 /**
  * Namespace
  */
@@ -35,23 +37,12 @@ namespace CCP {
     class Instance;
     class Cluster;
 
-    enum PointType {
-        Center,
-        Consumer
-    };
-
-    enum HeuristicType {
-        Density,
-        Farthest,
-        HMeans,
-        JMeans
-    };
 
 
     /**
  * Class Solution
  */
-    class Solution{
+ class CCPModelLib_EXPORT Solution{
         //    :public QObject {
         //    Q_OBJECT
         /**
@@ -136,7 +127,7 @@ namespace CCP {
 	This method check if all points are assigned to only on cluster, all cluster have a center and the center is not an consumer point too.
 	Is checked also the capacity of clusters.
 	*/
-        const bool isValid();
+        bool isValid() ;
 
         bool isImprovement() const { return toImprove;}
 

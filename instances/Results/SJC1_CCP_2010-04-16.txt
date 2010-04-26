@@ -1,0 +1,14 @@
+Algorithm, Obj,, Time, iter,
+SJC1:
+Farthest,	25905,	0,009,	0,
+Density,	18193,2,	0,085,	10,
+HMeans,	21384,2	0,004	9
+HMeans,	19969,8	0,002	6
+HMeans,	19688,6	0,004	7
+HMeans,	20385,4	0,002	5
+HMeans,	19169,4	0,002	4
+HMeans,	19908,5	0,441	1001
+HMeans,	20862,4	0,003	6
+HMeans,	19989,9	0,002	5
+HMeans,	19787,5	0,002	5
+HMeans,	19520,3	0,006	12

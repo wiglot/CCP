@@ -19,6 +19,9 @@
 
 #ifndef INSTANCE_H
 #define INSTANCE_H
+
+#include "model_global.h"
+
 #include <string>
 #include <QString>
 #include "Distance.h"
@@ -30,7 +33,7 @@ class Solution;
 /**
  * Class Instance
  */
-class Instance {
+class CCPModelLib_EXPORT Instance {
     /**
      * Public stuff
      */
@@ -89,8 +92,11 @@ public:
      *
      */
     CCP::Distance * distancesMatrixes ( ) {
-	if (_distance == 0)
-	    throw QString ("Initialize \"Distance\" First.");
+        if (_distance == 0){
+            new CCP::Distance(this);
+        }
+
+        //throw QString ("Initialize \"Distance\" First.");
         return _distance;
     }
     /**

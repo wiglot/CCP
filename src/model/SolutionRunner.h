@@ -1,6 +1,8 @@
 #ifndef SOLUTIONRUNNER_H
 #define SOLUTIONRUNNER_H
 
+#include "model_global.h"
+
 #include <QObject>
 #include "Instance.h"
 #include "Solution.h"
@@ -8,7 +10,7 @@
 #include <QMutex>
 #include <QThread>
 
-class SolutionRunner : public QThread
+class CCPModelLib_EXPORT SolutionRunner : public QThread
 {
 Q_OBJECT
     QQueue <CCP::Solution*> solQueue;

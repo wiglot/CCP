@@ -17,27 +17,23 @@
 
 */
 
-#ifndef JMEANSCLUSTER_H
-#define JMEANSCLUSTER_H
+#ifndef DATFILEPLUGIN_H
+#define DATFILEPLUGIN_H
+#include "FilePluginInterface.h"
 
-#include "algorithmstruct.h"
-
-
-class JMeansCluster : public AlgorithmStruct
+class DATFilePlugin: public Rocs::FilePluginInterface
 {
+  Q_OBJECT
   public:
-    JMeansCluster(CCP::Instance* inst);
-    ~JMeansCluster();
+    explicit DATFilePlugin(QObject* parent, const QList< QVariant >&);
+    ~DATFilePlugin();
     
-    CCP::Cluster** buildClusters();
-
-    void findMeans(double * vect);
-
-    QList <int> findUnoccupied(double * tolerances);
-
-    void selectRandonInitialCenters();
-
-
+    const QStringList extensions() const; //Extensões suportadas
+    
+    GraphDocument * readFile(const QString &file) const; //return 0 se arq. inválido
+    
+    bool writeFile(const GraphDocument&, const QString&) const; //false se não gravou.
+  
 };
 
-#endif // JMEANSCLUSTER_H
+#endif // DATFILEPLUGIN_H
