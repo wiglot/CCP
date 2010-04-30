@@ -71,7 +71,7 @@ static CCP::Instance * rocs2tcc(Graph *graph) {
 
     }
     inst->setPoints(points, i);
-    inst->setNumCenters(graph->property("numCenters").toInt());
+    inst->setNumCenters(graph->property("NumCenters").toInt());
     inst->setCapacity(graph->property("Capacity").toDouble());
     new CCP::Distance(inst);
 
@@ -95,12 +95,13 @@ static void tcc2rocs(CCP::Solution * sol, Graph *g) {
         CCP::Cluster * cluster = sol->cluster(j);
         QString color = colors.at(qrand()%colors.count());
         Node* center = nodes.at(cluster->getCenter()->index());
-        center->setWidth(0.5);
+        center->setWidth(0.4);
         center->setColor(color);
 
         for (int i = 0; i < cluster->numPoints(); ++i){
             CCP::Point *p = cluster->getPoint(i);
             Node * n = nodes.at(p->index());
+//	    kDebug() << n->name() << p->index();
             n->setWidth(0.2);
             n->setColor(color);
             g->addEdge(center, n);
@@ -122,7 +123,8 @@ QString TCCRun::run(QObject* doc ) const
              CCP::Solution * sol = new CCP::Solution(inst);
              sol->constructSolution(CCP::HMeans);
 //             sol->run();
-             tcc2rocs(sol,graph);
+	     if (sol->isValid())
+	             tcc2rocs(sol,graph);
          }
     //         foreach ( Edge *e, graph->edges() )
     //         {
@@ -140,7 +142,7 @@ QString TCCRun::run(QObject* doc ) const
     //
     //   return QString();
 
-    return QString (" ");
+    return QString ();
 //            "function makeComplete(graph){"
 //            "  nodes = graph.list_nodes();"
 //            "  edges = graph.list_edges();"

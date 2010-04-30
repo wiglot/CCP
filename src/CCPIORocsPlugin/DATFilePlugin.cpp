@@ -21,6 +21,7 @@
 #include "graphDocument.h"
 #include "graph.h"
 #include <KAboutData>
+#include <QRectF>
 #include <KGenericFactory>
 #include <QFile>
 
@@ -100,7 +101,46 @@ GraphDocument * DATFilePlugin::readFile(const QString &fileName) const{
   }    
 
     graph->addDinamicProperty("Capacity", capacity);
+
+
+   QRectF outBox; 
+   outBox.setRect(graph->nodes()[0]->property("coordX").toDouble(), graph->nodes()[0]->property("coordY").toDouble(),
+                 0.0,0.0);
+  foreach(Node * n, graph->nodes()){
+      if (n->property("coordY").toDouble() < outBox.top()){
+          outBox.setTop(n->property("coordY").toDouble());
+      }
+      if (n->property("coordY").toDouble() > outBox.bottom()){
+          outBox.setBottom(n->property("coordY").toDouble());
+      }
+      if (n->property("coordX").toDouble() < outBox.left()){
+          outBox.setLeft(n->property("coordX").toDouble());
+      }
+      if (n->property("coordX").toDouble() > outBox.right()){
+          outBox.setRight(n->property("coordX").toDouble());
+      }
+  }
+//  kDebug() << outBox.left() << outBox.top() << outBox.right() << outBox.bottom();
+  qreal factorX = graphDoc->width()/(outBox.width());
+  qreal factorY = graphDoc->height()/(outBox.height());
+  qreal ratioX = 1.0;
+  qreal ratioY = 1.0;
+  if (outBox.height() > outBox.width()){
+      ratioX = outBox.width() / outBox.height();
+  }else {
+      ratioY = outBox.height() / outBox.width();
+  }
+//  KDebug() << ratioX << ratioY;
+//  kDebug() << factorX << factorY;
+
+  foreach(Node * n, graph->nodes()){
+          n->setX((n->property("coordX").toDouble() - outBox.left()) * factorX * ratioX);
+          n->setY((n->property("coordY").toDouble() - outBox.top()) * factorY * ratioY);
+          n->setWidth(0.2);
+  }
+
     return graphDoc;
+
 }
 
 bool DATFilePlugin::writeFile(const GraphDocument &/*graph*/ , const QString &filename) const{

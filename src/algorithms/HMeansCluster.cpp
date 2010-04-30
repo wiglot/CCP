@@ -39,9 +39,9 @@ HMeansCluster::~HMeansCluster()
 CCP::Cluster** HMeansCluster::buildClusters()//CCP::HMeans)
 {
 
-    //selectRandonInitialCenters();
+    selectRandonInitialCenters();
 
-    selectDensityInitialCenters();
+//    selectDensityInitialCenters();
 
     bool changed = true;
     
