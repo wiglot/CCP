@@ -3,6 +3,7 @@
 #include <QString>
 #include <Solution.h>
 
+
 RunBatch::RunBatch(QWidget *parent) :
     QDockWidget(parent),
     ui(new Ui::RunBatch)
@@ -30,18 +31,18 @@ void RunBatch::changeEvent(QEvent *e)
 void RunBatch::run(){
     int num = ui->farthestNum->text().toInt();
     for (int i = 0; i < num; ++i){
-        emit runAlgorithm(CCP::Farthest);
+        emit runAlgorithm(CCP::Farthest, ui->improve->isChecked());
     }
     num = ui->densityNum->text().toInt();
     for (int i = 0; i < num; ++i){
-        emit runAlgorithm(CCP::Density);
+        emit runAlgorithm(CCP::Density, ui->improve->isChecked());
     }
     num = ui->hmeansNum->text().toInt();
     for (int i = 0; i < num; ++i){
-       emit runAlgorithm(CCP::HMeans);
+       emit runAlgorithm(CCP::HMeans, ui->improve->isChecked());
     }
     num = ui->jmeansNum->text().toInt();
     for (int i = 0; i < num; ++i){
-        emit runAlgorithm(CCP::JMeans);
+        emit runAlgorithm(CCP::JMeans, ui->improve->isChecked());
     }
 }

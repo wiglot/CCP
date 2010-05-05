@@ -113,9 +113,11 @@ int AlgorithmStruct::findNearCenter(CCP::Point* point, QList< int > forbiden){
             forbiden.removeOne(i);
             continue;
         }
-        if (distance > instance()->distance(point, _centers[i]->getCenter()) ){
-            distance = instance()->distance(point, _centers[i]->getCenter());
-            ret = i;
+        if (_centers[i]->getCenter() != 0) {
+            if (distance > instance()->distance(point, _centers[i]->getCenter()) ){
+                distance = instance()->distance(point, _centers[i]->getCenter());
+                ret = i;
+            }
         }
     }
     return ret;

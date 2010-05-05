@@ -7,18 +7,19 @@
 #include "Instance.h"
 #include "Solution.h"
 #include <QQueue>
+#include <QPair>
 #include <QMutex>
 #include <QThread>
 
 class CCPModelLib_EXPORT SolutionRunner : public QThread
 {
 Q_OBJECT
-    QQueue <CCP::Solution*> solQueue;
+    QQueue < QPair<CCP::Solution*, bool> > solQueue;
 
     QMutex readQueue;
     QMutex running;
-    CCP::Solution * next();
-    void insert(CCP::Solution * sol);
+    QPair<CCP::Solution*, bool> next();
+    void insert(CCP::Solution * sol, bool improve = false);
 
     static SolutionRunner * inst;
 
@@ -30,7 +31,7 @@ signals:
     void finished(CCP::Solution * sol);
 
 public slots:
-    static void queue(CCP::Instance *instance, CCP::HeuristicType type);
+    static void queue(CCP::Instance *instance, CCP::HeuristicType type, bool improve = false);
     static void queue(CCP::Solution *sol, CCP::ImprovementHeuristic type);
     static SolutionRunner * New();
 };

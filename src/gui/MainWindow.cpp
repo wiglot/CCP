@@ -38,7 +38,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QTreeView *table = new QTreeView(this);
     table->setModel(pool);
     
-    QDockWidget *TabledockWidget = new QDockWidget(tr("Text results"), this);
+    QDockWidget *TabledockWidget = new QDockWidget(tr("Results' table"), this);
     TabledockWidget->setAllowedAreas(Qt::BottomDockWidgetArea);
     TabledockWidget->setWidget(table);
     addDockWidget(Qt::BottomDockWidgetArea, TabledockWidget);
@@ -56,7 +56,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect (this, SIGNAL(newInstance(CCP::Instance*)), centralWidget(), SLOT(setInstance(CCP::Instance*)));
     connect (this, SIGNAL(closing()), pool, SLOT(clear()));
 
-    connect(table, SIGNAL(clicked(QModelIndex)), pool, SLOT(selectedItem(QModelIndex)));
+    connect(table, SIGNAL(activated(QModelIndex)), pool, SLOT(selectedItem(QModelIndex)));
     connect (pool, SIGNAL(selectedSolution(CCP::Solution*)), this, SLOT(showSolution(CCP::Solution*)));
 
     connect (this, SIGNAL(newSolution(CCP::Solution*)), centralWidget(), SLOT(setSolution(CCP::Solution*)));
@@ -64,7 +64,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect (SolutionRunner::New(), SIGNAL(finished(CCP::Solution*)), this, SLOT(finishedAlgorithm(CCP::Solution*)));
 
-    connect (runWidget, SIGNAL(runAlgorithm(CCP::HeuristicType)), this, SLOT(runAlgorithm(CCP::HeuristicType)));
+    connect (runWidget, SIGNAL(runAlgorithm(CCP::HeuristicType,bool)), this, SLOT(runAlgorithm(CCP::HeuristicType, bool)));
 
     connect (this, SIGNAL(newSolution(CCP::Solution*)), run, SLOT(setData(CCP::Solution*)));
     connect (this, SIGNAL(textResult(QString)), text, SLOT(insertPlainText(QString)));
@@ -160,7 +160,7 @@ void MainWindow::openFile(){
     }
 }
 
-void MainWindow::runAlgorithm( CCP::HeuristicType inType){
+void MainWindow::runAlgorithm( CCP::HeuristicType inType, bool improve){
     CCP::HeuristicType type;
     QAction * act = qobject_cast<QAction*>(sender());
 
@@ -185,7 +185,7 @@ void MainWindow::runAlgorithm( CCP::HeuristicType inType){
     }else{
         type = inType;
     }
-    SolutionRunner::queue(_instance, type);
+    SolutionRunner::queue(_instance, type, improve);
 }
 
 void MainWindow::improveSolution(){

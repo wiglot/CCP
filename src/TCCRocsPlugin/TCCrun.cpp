@@ -65,10 +65,10 @@ static CCP::Instance * rocs2tcc(Graph *graph) {
     for (i = 0; i < graph->nodes().count(); ++i){
             Node * n1 = graph->nodes().at(i);
             points[i] = new CCP::Point(inst, 
-				n1->property("CoordX").toDouble(), 
-				n1->property("CoordY").toDouble(),
+				n1->property("coordX").toDouble(), 
+				n1->property("coordY").toDouble(),
 				n1->property("Demand").toDouble());
-
+	kDebug() << "Point" << i << points[i]->position().x() << points[i]->position().y() << points[i]->demand(); 
     }
     inst->setPoints(points, i);
     inst->setNumCenters(graph->property("NumCenters").toInt());
@@ -121,7 +121,7 @@ QString TCCRun::run(QObject* doc ) const
              Graph * graph = graphDoc->activeGraph();
              CCP::Instance * inst = rocs2tcc(graph);
              CCP::Solution * sol = new CCP::Solution(inst);
-             sol->constructSolution(CCP::HMeans);
+             sol->constructSolution(CCP::Density);
 //             sol->run();
 	     if (sol->isValid())
 	             tcc2rocs(sol,graph);

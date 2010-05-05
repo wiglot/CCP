@@ -129,27 +129,27 @@ QList <int> JMeansCluster::findUnoccupied(double *tolerances){
 }
 
 void JMeansCluster::selectRandonInitialCenters(){
-//    qsrand(QTime::currentTime().msec());
-//    int i;
-//
-//    for (i = 0; i < instance()->numCenters(); ++i){
-//        int gen;
-//        do{
-//            gen = qrand() % instance()->numPoints();
-//        }while (isAssigned(gen));
-//        assign(gen,i,CCP::Center);
-//    }
+    qsrand(QTime::currentTime().msec());
     int i;
-    DensityCluster density(instance());
-
-    density.calculateDensity();
 
     for (i = 0; i < instance()->numCenters(); ++i){
         int gen;
         do{
-            gen = density.greatDensity();
+            gen = qrand() % instance()->numPoints();
         }while (isAssigned(gen));
         assign(gen,i,CCP::Center);
-
     }
+//    int i;
+//    DensityCluster density(instance());
+//
+//    density.calculateDensity();
+//
+//    for (i = 0; i < instance()->numCenters(); ++i){
+//        int gen;
+//        do{
+//            gen = density.greatDensity();
+//        }while (isAssigned(gen));
+//        assign(gen,i,CCP::Center);
+//
+//    }
 }

@@ -19,7 +19,7 @@ protected:
     void changeEvent(QEvent *e);
 
 signals:
-    void runAlgorithm(CCP::HeuristicType type);
+    void runAlgorithm(CCP::HeuristicType type, bool improve);
 
 private slots:
     void run();

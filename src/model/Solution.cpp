@@ -52,13 +52,13 @@ Solution::Solution( Instance * instance ) {
 
 Solution::~Solution() {
     if (_centers != 0){
-      for (unsigned short i = 0; i < _myInstance->numCenters(); ++i){
-	  delete _centers[i];
-      }
-    
-      delete [] _centers;
+        for (unsigned short i = 0; i < _myInstance->numCenters(); ++i){
+            delete _centers[i];
+        }
+
+        delete [] _centers;
     }
-//     delete [] _pointsType;
+    //     delete [] _pointsType;
 }
 /**
  * Methods
@@ -79,13 +79,13 @@ void Solution::setInstance( Instance * inst ) {
 }
 
 PointType Solution::pointType (unsigned short index){
-  for (unsigned short i = 0; i < _myInstance->numCenters(); ++i){
-      if (_myInstance->point(index) == _centers[i]->getCenter()){
-	  return CCP::Center;
-      }
-  }
-  return CCP::Consumer;
-  
+    for (unsigned short i = 0; i < _myInstance->numCenters(); ++i){
+        if (_myInstance->point(index) == _centers[i]->getCenter()){
+            return CCP::Center;
+        }
+    }
+    return CCP::Consumer;
+
 }
 
 void Solution::setAlgorithmToUse(HeuristicType type){
@@ -97,70 +97,70 @@ void Solution::constructSolution(HeuristicType type) {
 }
 
 void Solution::run() {
-//     for ( count = 0; count < _myInstance->numPoints(); ++count ) {
-//         _pointsType[count] = CCP::Consumer;//Everyone is consumer at begin...
-//     }
-//    if (!_lock.tryLock()){
-//        return;
-//    }
-//    QProgressDialog dialog ("Progress of algorithm", "cancel", 0,100);
-//
-//    dialog.setWindowModality(Qt::WindowModal);
+    //     for ( count = 0; count < _myInstance->numPoints(); ++count ) {
+    //         _pointsType[count] = CCP::Consumer;//Everyone is consumer at begin...
+    //     }
+    //    if (!_lock.tryLock()){
+    //        return;
+    //    }
+    //    QProgressDialog dialog ("Progress of algorithm", "cancel", 0,100);
+    //
+    //    dialog.setWindowModality(Qt::WindowModal);
     if (_centers != 0){
-	delete [] _centers;
+        delete [] _centers;
     }
     QTime count;
     count.start();
     switch (_type){
-      case Farthest: {
-	    FarthestCluster far(_myInstance);
-//            connect (&far, SIGNAL(complete(int)), &dialog, SLOT(setValue(int)));
+    case Farthest: {
+            FarthestCluster far(_myInstance);
+            //            connect (&far, SIGNAL(complete(int)), &dialog, SLOT(setValue(int)));
             _centers = far.buildClusters();
             _myAlgorithmName = "Farthest";
             _myIterations = far.iterations();
-      }
-      break; 
-      case Density: {
-	    DensityCluster density(_myInstance);
-//            connect (&density, SIGNAL(complete(int)), &dialog, SLOT(setValue(int)));
-	    _centers = density.buildClusters();	
+        }
+        break;
+    case Density: {
+            DensityCluster density(_myInstance);
+            //            connect (&density, SIGNAL(complete(int)), &dialog, SLOT(setValue(int)));
+            _centers = density.buildClusters();
             _myAlgorithmName = "Density";
             _myIterations = density.iterations();
-      }
-	break; 
-      case HMeans: {
-	  HMeansCluster hmean(_myInstance);
-//          connect (&hmean, SIGNAL(complete(int)), &dialog, SLOT(setValue(int)));
-	  _centers = hmean.buildClusters();
-          _myAlgorithmName = "HMeans";
-          _myIterations = hmean.iterations();
-      }break;
-      case JMeans: {
-              JMeansCluster jmean(_myInstance);
-//              connect (&jmean, SIGNAL(complete(int)), &dialog, SLOT(setValue(int)));
-              _centers = jmean.buildClusters();
-              _myAlgorithmName = "JMeans";
-              _myIterations = jmean.iterations();
-      }break;
+        }
+        break;
+    case HMeans: {
+            HMeansCluster hmean(_myInstance);
+            //          connect (&hmean, SIGNAL(complete(int)), &dialog, SLOT(setValue(int)));
+            _centers = hmean.buildClusters();
+            _myAlgorithmName = "HMeans";
+            _myIterations = hmean.iterations();
+        }break;
+    case JMeans: {
+            JMeansCluster jmean(_myInstance);
+            //              connect (&jmean, SIGNAL(complete(int)), &dialog, SLOT(setValue(int)));
+            _centers = jmean.buildClusters();
+            _myAlgorithmName = "JMeans";
+            _myIterations = jmean.iterations();
+        }break;
     }
 
     _myTime = count.elapsed()/1000.0;
-//    dialog.setValue(100);
-//    _lock.unlock();
-   
-//    emit finished();
+    //    dialog.setValue(100);
+    //    _lock.unlock();
+
+    //    emit finished();
 }
 
 Point * Solution::centerOfCluster(unsigned short index){
-      return this->cluster(index)->getCenter();
+    return this->cluster(index)->getCenter();
 }
 
 double Solution::getValue(){
-  double acum = 0.0;
-  for (unsigned short i = 0; i < _myInstance->numCenters(); ++i){
-      acum += _centers[i]->totalDistance();
-  }
-  return acum;
+    double acum = 0.0;
+    for (unsigned short i = 0; i < _myInstance->numCenters(); ++i){
+        acum += _centers[i]->totalDistance();
+    }
+    return acum;
 }
 
 bool Solution::isValid(){
@@ -169,50 +169,55 @@ bool Solution::isValid(){
         return false;
     }
 
-  int numPoints = instance()->numPoints();
-  int numCenters = instance()->numCenters();
-  QScopedArrayPointer<bool> visited (new bool[numPoints]);
-  
-  bool notFailed = true;
-  unsigned short i, j;
-  for (i =0; i < numPoints; ++i){
-      visited[i] = false;
-  }
-  for (i = 0; i < numCenters; ++i){
-      Cluster * clusterTMP = cluster(i);
-      if (visited[clusterTMP->getCenter()->index()]){
-	  qDebug () << QString("Point %1 (as Center of cluster %2) is inserted twice (at least)")
-                                      .arg(clusterTMP->getCenter()->index())
-				      .arg(i);
-	  notFailed = false;
-      }
-      visited[clusterTMP->getCenter()->index()] = true;
+    int numPoints = instance()->numPoints();
+    int numCenters = instance()->numCenters();
+    QScopedArrayPointer<bool> visited (new bool[numPoints]);
 
-      for (j = 0; j < clusterTMP->numPoints(); ++j){
-          Point* point = clusterTMP->getPoint(j);
-          if (visited[point->index()]){
-	      qDebug () << QString("Point %1 (as point of cluster %2) is inserted twice (at least)")
-                                      .arg(point->index())
-				      .arg(i);
-		notFailed = false;
-	  }
-
-          visited[point->index()] = true;
-      }
-      if (clusterTMP->remainCapacity() < 0.0){
-            qDebug() << QString("Over demand on cluster %1").arg(i);
+    bool notFailed = true;
+    unsigned short i, j;
+    for (i =0; i < numPoints; ++i){
+        visited[i] = false;
+    }
+    for (i = 0; i < numCenters; ++i){
+        Cluster * clusterTMP = cluster(i);
+        if (clusterTMP->getCenter() == 0){
+            qDebug() << QString ("Center of cluster %2 is 0.").arg(i);
             notFailed = false;
-      }
-  }
+        }else{
+            if (visited[clusterTMP->getCenter()->index()]){
+                qDebug () << QString("Point %1 (as Center of cluster %2) is inserted twice (at least)")
+                        .arg(clusterTMP->getCenter()->index())
+                        .arg(i);
+                notFailed = false;
+            }
+            visited[clusterTMP->getCenter()->index()] = true;
 
-  for (i =0; i < numPoints; ++i){
-      if (visited[i] == false){
-	qDebug() << QString ("Point %1 was not visited.").arg(i);
-	notFailed = false;
-      }
-  }
-  
-  return notFailed;
+            for (j = 0; j < clusterTMP->numPoints(); ++j){
+                Point* point = clusterTMP->getPoint(j);
+                if (visited[point->index()]){
+                    qDebug () << QString("Point %1 (as point of cluster %2) is inserted twice (at least)")
+                            .arg(point->index())
+                            .arg(i);
+                    notFailed = false;
+                }
+
+                visited[point->index()] = true;
+            }
+            if (clusterTMP->remainCapacity() < 0.0){
+                qDebug() << QString("Over demand on cluster %1").arg(i);
+                notFailed = false;
+            }
+        }
+    }
+
+    for (i =0; i < numPoints; ++i){
+        if (visited[i] == false){
+            qDebug() << QString ("Point %1 was not visited.").arg(i);
+            notFailed = false;
+        }
+    }
+
+    return notFailed;
 }
 
 const Solution& Solution::operator=(const Solution & other){
@@ -239,12 +244,12 @@ Solution Solution::improve(){
     if (toImprove){
         QTime count;
         count.start();
-         sol = SolutionImprovement::improve(*this, improveType);
-         sol._parent = this;
-         sol.toImprove = true;
-         toImprove = false;
-         sol._myTime = count.elapsed()/1000.0;
-         sol._myAlgorithmName = SolutionImprovement::text(improveType);
+        sol = SolutionImprovement::improve(*this, improveType);
+        sol._parent = this;
+        sol.toImprove = true;
+        toImprove = false;
+        sol._myTime = count.elapsed()/1000.0;
+        sol._myAlgorithmName = SolutionImprovement::text(improveType);
     }
 
 

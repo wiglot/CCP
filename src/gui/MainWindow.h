@@ -15,7 +15,7 @@ public:
     ~MainWindow();
 public slots:
    void openFile();
-   void runAlgorithm(CCP::HeuristicType type = CCP::Farthest );
+   void runAlgorithm(CCP::HeuristicType type = CCP::Farthest, bool improve = false );
 //    void kmeansAlgorithm();
 //    void farAlgorithm();
 //    void densityAlgorithm();
