@@ -28,12 +28,12 @@
 * Namespace
 */
 namespace CCP {
-  class Instance; 
+  class Instance;
 /**
 * Class Distance
-* Contains the values of distances, will be build empty, and at every request, it will build the matrix and vectors(ordered) of distances  
+* Contains the values of distances, will be build empty, and at every request, it will build the matrix and vectors(ordered) of distances
 */
-class CCPModelLib_EXPORT Distance {
+class /*CCPModelLib_EXPORT*/ Distance {
 /**
 * Public stuff
 */
@@ -50,7 +50,7 @@ public:
     * Accessor Methods
     */
     /**
-    * 
+    *
     */
     inline double distance(unsigned short point1, unsigned short point2 ) {
 	if (point1 == point2){
@@ -69,7 +69,7 @@ public:
     }
     short unsigned int near ( short unsigned int arg1, short unsigned int nearest );
     /**
-    * 
+    *
     */
 //     void set__values (double value ) {
 //         _values = value;
@@ -78,7 +78,7 @@ private:
     /**
     * Fields
     */
-    
+
       Instance * _instance;
       unsigned short _numPoints;
       double ** _values;
@@ -89,6 +89,6 @@ private:
       double distanceBetween ( short unsigned int arg1, short unsigned int arg2 );
 
 };
-} 
+}
 #endif //DISTANCE_H
 

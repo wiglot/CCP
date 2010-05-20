@@ -30,7 +30,7 @@ namespace CCP{
   class Instance;
 
 
-class CCPModelLib_EXPORT InterchangeResult{
+class /*CCPModelLib_EXPORT*/ InterchangeResult{
   private:
       bool _valid;
       bool _canRedo;
@@ -62,7 +62,7 @@ class CCPModelLib_EXPORT InterchangeResult{
   };
 
 
-class CCPModelLib_EXPORT Cluster {
+class /*CCPModelLib_EXPORT*/ Cluster {
 private:
       Point * center;
       QList<Point *> points;
@@ -71,18 +71,18 @@ private:
       double _distance;
       double _demand;
 
-      
+
   public:
     Cluster(Instance * inst);
     ~Cluster();
     void addPoint(Point * p);
     void removePoint(Point * p);
-    
+
     double actualDemand();
     double remainCapacity();
-    
+
     void setCenter(Point * center);
-    
+
     inline Point * getCenter(){
 	return this->center;
     }
@@ -100,7 +100,7 @@ private:
     Point* findBestCenter();
 
     const Cluster operator=(const Cluster &other);
-    
+
     /** @brief Interchage points between Clusters.
     *   To make the interchange, is checked if dest support the origPoint.
     *   At end return if interchange change was done or not.
@@ -119,7 +119,7 @@ private:
     *   \return total change in values of distances.
     */
     InterchangeResult interchange(Point* origPoint, Point* retPoint,Cluster* dest);
-    
+
 };
 }
 #endif // CLUSTER_H

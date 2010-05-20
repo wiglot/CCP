@@ -40,7 +40,7 @@ CCP::Cluster** FarthestCluster::buildClusters(){
 }
 
 void FarthestCluster::selectFirstCenters() {
-    unsigned short count, center1, center2, numPoints = instance()->numPoints();
+    unsigned short count, center1 = 0, center2=0, numPoints = instance()->numPoints();
     //long distance = 0, max = 0;
     //short unsigned int centerFound;
     double max = 0;
@@ -52,6 +52,9 @@ void FarthestCluster::selectFirstCenters() {
             center2 = instance()->distancesMatrixes()->near( count, numPoints - 1 );
         }
     }
+    if (center1 == center2)
+        return;
+
     assign(center1, 0,CCP::Center);
     assign(center2, 1,CCP::Center);
 
@@ -91,10 +94,10 @@ void FarthestCluster::findBasicClusters() {
     Point * selectedPoint;
     unsigned short clusterToAdd;
     double indicator = 0.0;
-    
+
     CCP::Cluster * tmpcluster;
-    
-    
+
+
     for ( count2 = 0; count2 < instance()->numPoints(); ++count2 ) {
         if ( this->pointType(count2) == CCP::Consumer ) {
             selectedPoint = instance()->point( count2 );

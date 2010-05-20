@@ -11,7 +11,7 @@
 #include <QMutex>
 #include <QThread>
 
-class CCPModelLib_EXPORT SolutionRunner : public QThread
+class /*CCPModelLib_EXPORT*/ SolutionRunner : public QThread
 {
 Q_OBJECT
     QQueue < QPair<CCP::Solution*, bool> > solQueue;

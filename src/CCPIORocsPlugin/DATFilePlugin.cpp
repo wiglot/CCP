@@ -74,7 +74,7 @@ GraphDocument * DATFilePlugin::readFile(const QString &fileName) const{
 	  return 0;
       }
       numPoints = list[0].toUShort();
-      graph->addDinamicProperty("NumCenters", list[1].toUShort());
+      graph->addDynamicProperty("NumCenters", list[1].toUShort());
 //      inst->setName(name);
   }
 //  pointsList = new  Point*[numPoints];
@@ -90,9 +90,9 @@ GraphDocument * DATFilePlugin::readFile(const QString &fileName) const{
 	--count;
       }else {
 	      Node * n = graph->addNode(QString::number(count));
-	      n->addDinamicProperty("coordX", list[0].toDouble());
-	      n->addDinamicProperty("coordY", list[1].toDouble());
-	      n->addDinamicProperty("Demand", list[3].toDouble());
+	      n->addDynamicProperty("coordX", list[0].toDouble());
+	      n->addDynamicProperty("coordY", list[1].toDouble());
+	      n->addDynamicProperty("Demand", list[3].toDouble());
 		//    pointsList[count] = new Point(inst, list[0].toDouble(), list[1].toDouble(), list[3].toDouble());
 	if (capacity < list[2].toDouble())
 	    capacity = list[2].toDouble();
@@ -100,7 +100,7 @@ GraphDocument * DATFilePlugin::readFile(const QString &fileName) const{
       ++count;
   }    
 
-    graph->addDinamicProperty("Capacity", capacity);
+    graph->addDynamicProperty("Capacity", capacity);
 
 
    QRectF outBox; 

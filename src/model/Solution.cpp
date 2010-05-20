@@ -33,6 +33,7 @@
 #include <QProgressDialog>
 #include <HMeansCluster.h>
 #include <JMeansCluster.h>
+#include "History.h"
 
 using namespace CCP;
 
@@ -48,6 +49,7 @@ Solution::Solution( Instance * instance ) {
     _myAlgorithmName = "";
     toImprove = false;
     _parent = 0;
+   _history = 0;
 }
 
 Solution::~Solution() {
@@ -118,6 +120,7 @@ void Solution::run() {
             _centers = far.buildClusters();
             _myAlgorithmName = "Farthest";
             _myIterations = far.iterations();
+            _history = far.history();
         }
         break;
     case Density: {
@@ -126,6 +129,7 @@ void Solution::run() {
             _centers = density.buildClusters();
             _myAlgorithmName = "Density";
             _myIterations = density.iterations();
+            _history = density.history();
         }
         break;
     case HMeans: {
@@ -134,6 +138,7 @@ void Solution::run() {
             _centers = hmean.buildClusters();
             _myAlgorithmName = "HMeans";
             _myIterations = hmean.iterations();
+            _history = hmean.history();
         }break;
     case JMeans: {
             JMeansCluster jmean(_myInstance);
@@ -141,10 +146,12 @@ void Solution::run() {
             _centers = jmean.buildClusters();
             _myAlgorithmName = "JMeans";
             _myIterations = jmean.iterations();
+            _history = jmean.history();
         }break;
     }
 
     _myTime = count.elapsed()/1000.0;
+
     //    dialog.setValue(100);
     //    _lock.unlock();
 
@@ -261,4 +268,10 @@ void Solution::setImprovement(ImprovementHeuristic type){
         toImprove = true;
         improveType = type;
     }
+}
+
+
+
+CCP::History* CCP::Solution::history() {
+    return _history;
 }

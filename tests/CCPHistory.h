@@ -1,8 +1,9 @@
 /*
-    CCP - Capacited Clustering Problem.
-    Copyright (C) 2009  Wagner Reck (wagner.reck@gmail.com)
+Wagner de Melo Reck (wagner.reck@gmail.com)
 
-    This program is free software: you can redistribute it and/or modify
+CCP
+
+This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
@@ -17,22 +18,23 @@
 
 */
 
-#ifndef FARTHESTCLUSTER_H
-#define FARTHESTCLUSTER_H
+#ifndef CCPHISTORY_H
+#define CCPHISTORY_H
 
-#include "algorithmstruct.h"
+#include <QObject>
+#include "../src/model/Instance.h"
 
-class FarthestCluster:public AlgorithmStruct {
-  private:
-    void selectFirstCenters();
-    void findBasicClusters();
-
-
-  public:
-
-    FarthestCluster(CCP::Instance* inst):AlgorithmStruct(inst){ }
-    CCP::Cluster** buildClusters();
+class CCPHistory:public QObject {
+    Q_OBJECT
+        CCP::Instance* instance;
+    private slots:
+       void initTestCase();
+       void checkHistory();
+       void changeIteraction();
+       void firstStep();
+       void lastStep();
+       void changeSteps();
 
 };
 
-#endif // FARTHESTCLUSTER_H
+#endif // CCPHISTORY_H

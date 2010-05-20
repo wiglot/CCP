@@ -23,6 +23,7 @@
 #include <QGraphicsView>
 
 #include "Solution.h"
+#include "../model/History.h"
 
 class ViewCluster: public QGraphicsView {
     Q_OBJECT;
@@ -38,8 +39,10 @@ class ViewCluster: public QGraphicsView {
 public slots:
     void setInstance (CCP::Instance * inst);
     void setSolution(CCP::Solution * sol);
-    
-    
+    void viewHistoryStep(CCP::HistoryStep step );
+    CCP::Solution* solution() {return _sol;}
+
+
 };
 
 #endif // VIEWCLUSTER_H

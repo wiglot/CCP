@@ -2,10 +2,10 @@
 BuildItems=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x01\x00\x00\x00\x0b\x00\x00\x00\x00\x01\x00\x00\x00\x06\x00C\x00C\x00P)
 
 [CMake]
-BuildDirs[$e]=$HOME/src/CCP/build
+BuildDirs[$e]=$HOME/src/CCP/build_2
 CMakeDir=/usr/share/cmake-2.6/Modules
 Current CMake Binary=file:///usr/bin/cmake
-CurrentBuildDir=file:///home/wagner/src/CCP/build
+CurrentBuildDir=file:///home/wagner/src/CCP/build_2
 CurrentBuildType=debug
 CurrentInstallDir=file:///usr/local
 ProjectRootRelative=./

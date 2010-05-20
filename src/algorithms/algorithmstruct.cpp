@@ -19,7 +19,7 @@
 
 #include "algorithmstruct.h"
 #include "Instance.h"
-
+#include "../model/History.h"
 using namespace CCP;
 
 
@@ -36,11 +36,27 @@ AlgorithmStruct::AlgorithmStruct( Instance* inst ):
     }
 
     _iterations = 0;
+    _history = new CCP::History;
 
 }
 int AlgorithmStruct::incIter(){
+    _history->finishIteration();
     return ++_iterations;
 }
+
+
+CCP::History* AlgorithmStruct::history() {
+    return _history;
+}
+
+void AlgorithmStruct::updateHistory(){
+    HistoryStep step;
+    for (int i = 0; i < _myInstance->numCenters(); ++i){
+        step.AssignCluster(_centers[i]);
+    }
+    _history->appendStep(step);
+}
+
 
 CCP::PointType AlgorithmStruct::pointType(int index){
     for (unsigned short i = 0; i < _myInstance->numCenters(); ++i){
@@ -60,6 +76,7 @@ double AlgorithmStruct::distance(unsigned short point, QList <int> list){
 
 void AlgorithmStruct::assign(CCP::Point * point, int cluster, CCP::PointType asType){
     assign(_myInstance->pointIndex(point), cluster, asType);
+    updateHistory();
 }
 
 void AlgorithmStruct::assign(unsigned short point, int cluster, CCP::PointType asType){
@@ -75,6 +92,7 @@ void AlgorithmStruct::assign(unsigned short point, int cluster, CCP::PointType a
     }else{
         _centers[cluster]->addPoint(_myInstance->point(point));
     }
+    updateHistory();
 }
 
 void AlgorithmStruct::unAssign(CCP::Point * point){
@@ -98,6 +116,7 @@ void AlgorithmStruct::unAssignAllConsumers(){
             unAssign(i);
         }
     }
+    updateHistory();
 }
 
 

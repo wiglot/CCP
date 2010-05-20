@@ -9,4 +9,4 @@ QT4_WRAP_CPP(MOC_CPP ${Algorithms_H})
 
 add_library(CCPAlgorithms SHARED ${Algorithms_CCP} ${MOC_CPP})
 
-#link_libraries(CCPModelLib ${QT_QT_LIBRARY} CCPModelLib )
+link_libraries(CCPModelLib ${QT_QT_LIBRARY} CCPModelLib )

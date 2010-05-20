@@ -30,10 +30,11 @@
 namespace CCP {
 
 class Solution;
+#include "Point.h"
 /**
  * Class Instance
  */
-class CCPModelLib_EXPORT Instance {
+class /*CCPModelLib_EXPORT*/ Instance {
     /**
      * Public stuff
      */
@@ -65,7 +66,7 @@ public:
     void setNumCenters (unsigned short value ) {
         _numCenters = value;
     }
-    
+
     unsigned short numPoints(){ return _numPoints;   }
     /**
      *
@@ -85,8 +86,8 @@ public:
     * Overloaded function, same that instance::distancesMatrixes()->distance(p1, p2)
     */
     double distance (unsigned short p1, unsigned short p2, double factor = 1);
-    
-    
+
+
     double distance (Point * p1, Point * p2, double factor = 1);
     /**
      *
@@ -113,7 +114,7 @@ public:
 //         return _solutions[index];
 //     }
     /**
-     * 
+     *
      */
 //     void setSolutions (Solution ** value, unsigned short numSol ) {
 //         _solutions = value;
@@ -122,19 +123,19 @@ public:
     /** Return the capacity of centers
     */
     double capacity(){
-      return _capacity; 
+      return _capacity;
     }
     /** Set the capacity os centers.
     */
     void setCapacity(double value){
 	_capacity = value;
     }
-     
+
     /** @brief Return how tight is demands by capacity.
     *
     */
     double tight();
-    
+
     void setName( QString arg1 ){
       _name = arg1;
     }
@@ -154,7 +155,7 @@ private:
     CCP::Distance * _distance;
 //     unsigned short _numSolutions;
 //     Solution ** _solutions;
-    
+
     double _capacity;
     QString _name;
 

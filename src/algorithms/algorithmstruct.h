@@ -26,19 +26,21 @@
 #include "../model/Instance.h"
 #include "../model/Solution.h"
 #include "../model/Cluster.h"
+class History;
 
 /** @class AlgorithmStruct
     @brief A helper class that take care of know if a point is assigned or not, and some operations needed by various methods.
-    
+
 */
 class AlgorithmStruct:public QObject {
 Q_OBJECT
-protected:    
+protected:
   CCP::Instance * _myInstance;
   int * _assigned;
   CCP::PointType * _pointType;
   CCP::Cluster ** _centers;
   int _iterations;
+  CCP::History * _history;;
 
 signals:
   void complete(int percentage);
@@ -47,7 +49,7 @@ public:
     ~AlgorithmStruct(){
 	delete [] _assigned;
     }
-    
+
     int incIter();
 
     int iterations(){ return _iterations; }
@@ -61,29 +63,30 @@ public:
     inline bool isAssigned(unsigned short index){
       return (this->assignedTo(index) != -1);
     }
-    
+
     inline int assignedTo(unsigned short index){
 	return this->_assigned[index];
     }
-    
+
     void assign(unsigned short point, int cluster, CCP::PointType asType = CCP::Consumer);
     void assign(CCP::Point * point, int cluster, CCP::PointType asType = CCP::Consumer);
     void unAssign(CCP::Point * point);
     void unAssign(unsigned short index);
-    
-    void unAssignAllConsumers();
-    
 
+    void unAssignAllConsumers();
+
+    /** @brief return the history of algorithm. */
+    CCP::History* history();
 
     /** @brief calculate the distance from 'center' to all points on list 'points'.
     */
     double distance(unsigned short center, QList<int> points);
-    
+
     /** @brief seek for wich is the best center of clusters.
     */
     bool findBestCenters(short unsigned int numClusters = 0);
-    
-    
+
+
     /** @brief Find a center near of \point excluding centers in \forbiden
     Return center(cluster) index or -1 if there is no centers was found. Capacity is not take in consideration here.
     */
@@ -93,8 +96,10 @@ public:
 
     */
     void assignToNearest();
-    
+
     virtual CCP::Cluster** buildClusters() = 0;
+    private:
+        void updateHistory();
 };
 
 #endif // ALGORITHMSTRUCT_H

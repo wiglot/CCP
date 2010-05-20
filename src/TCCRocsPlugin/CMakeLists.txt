@@ -1,5 +1,5 @@
 
-                                                                                                                                                                                                     
+
 include_directories( ${KDE4_INCLUDES} ${QT_INCLUDES} )
 
 ############ Path to CCP ########
@@ -34,6 +34,7 @@ set (Model_CCP
 ../model/Solution.cpp
 ../model/SolutionImprovement.cpp
 ../model/SolutionRunner.cpp
+../model/History.cpp
 )
 Set (TCCRun_SRC TCCrun.cpp )
 
@@ -41,10 +42,10 @@ qt4_automoc(${Algorithms_CCP})
 QT4_WRAP_CPP(MOC_CPP ${Algorithms_H})
 
 kde4_add_plugin(TCCrun ${TCCRun_SRC}  ${Model_CCP} ${Algorithms_CCP} )
-target_link_libraries(TCCrun 
+target_link_libraries(TCCrun
 			    ${KDE4_KDEUI_LIBS}
                             rocslib
-  
+
 		     )
 
 install(TARGETS TCCrun  DESTINATION ${PLUGIN_INSTALL_DIR})

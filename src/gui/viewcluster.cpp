@@ -27,6 +27,7 @@
 #include <QDebug>
 
 
+
 ViewCluster::ViewCluster(QWidget * parent)
     :QGraphicsView(parent)
 {
@@ -34,7 +35,10 @@ ViewCluster::ViewCluster(QWidget * parent)
     scene->setSceneRect(0, 0, 400, 400);
     setRenderHint(QPainter::Antialiasing);
     setScene(scene);
+    _sol = 0;
+    _instance = 0;
 }
+
 void ViewCluster::setInstance(CCP::Instance *inst){
     double maxX, maxY, minX, minY;
     clearSolution();
@@ -43,6 +47,7 @@ void ViewCluster::setInstance(CCP::Instance *inst){
     if (inst == 0){
         return;
     }
+    _sol = 0;
     minY = minX = 1e10;
 
     for (unsigned short i = 0; i < inst->numPoints(); i++){
@@ -99,6 +104,46 @@ void ViewCluster::setSolution(CCP::Solution * sol){
                              );
 	}
     }
+}
+
+void ViewCluster::viewHistoryStep(CCP::HistoryStep step ){
+    if (_instance == 0){
+        return;
+    }
+    CCP::Point * tmpPoint = 0;
+
+    scene()->clear();
+    qreal ellipseSize = (qMin(_instanceSize.width(), _instanceSize.height())/_instance->numPoints());
+
+    for (int i = 0; i < _instance->numPoints(); ++i){
+        if (step.assignedTo(i) == i){
+            tmpPoint = _instance->point(i);
+            scene()->addEllipse(tmpPoint->position().x() - ellipseSize*0.5,
+                                tmpPoint->position().y() - ellipseSize*0.5,
+                                ellipseSize, ellipseSize, QPen(QBrush(Qt::blue), 2));
+        }
+    }
+    for (int i = 0; i < _instance->numPoints(); ++i){
+        if (step.assignedTo(i) != -1){
+            CCP::Point* tmpCenter = _instance->point(step.assignedTo(i));
+            scene()->addEllipse(_instance->point(i)->position().x() - ellipseSize*0.35 ,
+                                _instance->point(i)->position().y() -  ellipseSize*0.35 ,
+                                ellipseSize*0.7, ellipseSize*0.7,
+                                QPen(QBrush(Qt::green), 2));
+            scene()->addLine(tmpCenter->position().x() ,
+                            tmpCenter->position().y() ,
+                             _instance->point(i)->position().x() ,
+                             _instance->point(i)->position().y()
+                            );
+        }else{
+            scene()->addEllipse(_instance->point(i)->position().x() - ellipseSize*0.35 ,
+                                _instance->point(i)->position().y() -  ellipseSize*0.35 ,
+                                ellipseSize*0.7, ellipseSize*0.7,
+                                QPen(QBrush(Qt::red), 2));
+        }
+
+    }
+
 }
 
 void ViewCluster::clearSolution(){

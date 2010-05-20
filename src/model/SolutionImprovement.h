@@ -12,7 +12,7 @@ class Solution;
 
 
 
-class CCPModelLib_EXPORT SolutionImprovement
+class /*CCPModelLib_EXPORT*/ SolutionImprovement
 {
 
 private:

@@ -59,3 +59,14 @@ add_test(CCPSolutionImprovement CCPSolutionImprovement)
 
 target_link_libraries(CCPSolutionImprovement ${QT_QTTEST_LIBRARY} CCPModelLib CCPAlgorithms)
 
+
+########## CCPHistory_Test #############
+set(CCPHistory_SRC CCPHistory.cpp)
+
+qt4_automoc (${CCPHistory_SRC})
+
+add_executable(CCPHistory ${CCPHistory_SRC})
+
+add_test(CCPHistory CCPHistory)
+
+target_link_libraries(CCPHistory ${QT_QTTEST_LIBRARY} CCPModelLib CCPAlgorithms)

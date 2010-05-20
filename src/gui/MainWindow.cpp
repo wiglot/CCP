@@ -17,6 +17,7 @@
 #include "RunData.h"
 #include "RunBatch.h"
 #include <SolutionImprovement.h>
+#include "HistoryChanger.h"
 
 MainWindow::MainWindow(QWidget *parent) :
         QMainWindow(parent),
@@ -34,15 +35,24 @@ MainWindow::MainWindow(QWidget *parent) :
     dockWidget->setWidget(run);
     addDockWidget(Qt::RightDockWidgetArea, dockWidget);
 
+
+    HistoryChanger * history = new HistoryChanger(this);
+    history->setView((ViewCluster*) this->centralWidget());
+    QDockWidget *historykWidget = new QDockWidget(tr("History Changer"), this);
+    historykWidget->setAllowedAreas(Qt::RightDockWidgetArea);
+    historykWidget->setWidget(history);
+    addDockWidget(Qt::RightDockWidgetArea, historykWidget);
+
+
     SolutionTreeModel * pool = new SolutionTreeModel(this);
     QTreeView *table = new QTreeView(this);
     table->setModel(pool);
-    
+
     QDockWidget *TabledockWidget = new QDockWidget(tr("Results' table"), this);
     TabledockWidget->setAllowedAreas(Qt::BottomDockWidgetArea);
     TabledockWidget->setWidget(table);
     addDockWidget(Qt::BottomDockWidgetArea, TabledockWidget);
-    
+
     QTextEdit *text = new QTextEdit(this);
     text->setReadOnly(true);
     QDockWidget *TXTdockWidget = new QDockWidget(tr("Text results"), this);

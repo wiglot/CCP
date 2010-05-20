@@ -27,11 +27,11 @@
 /**
  * Namespace
  */
-namespace CCP { 
+namespace CCP {
 /**
  * Class Position
  */
- class CCPModelLib_EXPORT Position {
+ class /*CCPModelLib_EXPORT*/ Position {
 /**
  * Public stuff
  */
@@ -52,25 +52,25 @@ public:
      * Accessor Methods
      */
     /**
-     * 
+     *
      */
     double x ( ) {
         return _x;
     }
     /**
-     * 
+     *
      */
     void setX (double value ) {
         _x = value;
     }
     /**
-     * 
+     *
      */
     double y ( ) {
         return _y;
     }
     /**
-     * 
+     *
      */
     void setY (double value ) {
         _y = value;
@@ -88,8 +88,8 @@ private:
      */
      double _x;
      double _y;
-    
+
 };
-} 
+}
 #endif //POSITION_H
 

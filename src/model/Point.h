@@ -29,16 +29,16 @@
 /**
  * Namespace
  */
-namespace CCP { 
+namespace CCP {
 
     class Instance;
 
 
 /**
  * Class Point
- * 
+ *
  */
-class CCPModelLib_EXPORT Point {
+class /*CCPModelLib_EXPORT*/ Point {
 /**
  * Public stuff
  */
@@ -59,7 +59,7 @@ public:
         return _pos;
     }
     /**
-     * 
+     *
      */
     void setPosition (CCP::Position value ) {
         _pos = value;
@@ -70,15 +70,15 @@ public:
     void setDemand(double value) {
 	_demand = value;
     }
-    
+
     double demand(){
 	return _demand;
     }
-    
+
     void setIndex(int new_index){
 	m_index = new_index;
     }
-    
+
     int index();
 /**
  * Private stuff
@@ -92,6 +92,6 @@ private:
      double _demand;
      int m_index;
 };
-} 
+}
 #endif //POINT_H
 

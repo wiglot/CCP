@@ -36,13 +36,14 @@ namespace CCP {
     class Point;
     class Instance;
     class Cluster;
+    class History;
 
 
 
     /**
  * Class Solution
  */
- class CCPModelLib_EXPORT Solution{
+ class /*CCPModelLib_EXPORT*/ Solution{
         //    :public QObject {
         //    Q_OBJECT
         /**
@@ -75,7 +76,7 @@ namespace CCP {
             return _myInstance;
         }
         /**
-     * 
+     *
      */
         PointType pointType (unsigned short index);
 
@@ -117,8 +118,7 @@ namespace CCP {
      * @return Point considered as center os cluster.
     */
         Point * centerOfCluster(unsigned short index);
-        Instance * getInstance(){
-            return _myInstance;
+        Instance * getInstance(){       return _myInstance;
         }
         double getValue();
         void setPointType( Point* arg1, PointType arg2 );
@@ -136,6 +136,9 @@ namespace CCP {
         Solution * solutionParent() { return _parent;}
 
         void setImprovement(ImprovementHeuristic type);
+
+
+        History * history();
 
         const Solution & operator=(const Solution & other);
 
@@ -161,7 +164,8 @@ namespace CCP {
         ImprovementHeuristic improveType;
 
         Solution * _parent;
+            History* _history;
     };
-} 
+}
 #endif //SOLUTION_H
 
