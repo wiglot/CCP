@@ -34,6 +34,8 @@ class CCPHistory:public QObject {
        void firstStep();
        void lastStep();
        void changeSteps();
+       void tryForwardAtEnd();
+       void tryBackwardAtBegin();
 
 };
 

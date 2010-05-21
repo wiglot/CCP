@@ -97,14 +97,44 @@ void CCPHistory::changeSteps() {
     sol->constructSolution(CCP::HMeans);
     History * h = sol->history();
 
-
     h->end();
     int step = h->actualStep();
     QCOMPARE(step, h->actualStep());
     h->begin();
     QVERIFY(step != h->actualStep());
 
+    //begin must be 0
+    QCOMPARE(h->actualStep(), 0);
+    //And after must be 1
+    h->stepFoward();
+    QCOMPARE(h->actualStep(), 1);
+    //And before must be 0 (again)
+    h->stepBackward();
+    QCOMPARE(h->actualStep(), 0);
 }
+
+void CCPHistory::tryBackwardAtBegin() {
+    Solution * sol = new Solution(instance);
+    sol->constructSolution(CCP::HMeans);
+    History * h = sol->history();
+
+    h->begin();
+    QCOMPARE(h->actualStep(), 0);
+    h->stepBackward();
+    QCOMPARE(h->actualStep(), 0);
+}
+
+void CCPHistory::tryForwardAtEnd() {
+    Solution * sol = new Solution(instance);
+    sol->constructSolution(CCP::HMeans);
+    History * h = sol->history();
+
+    h->end();
+    QCOMPARE(h->actualStep(), h->stepsCount()-1);
+    h->stepFoward();
+    QCOMPARE(h->actualStep(), h->stepsCount()-1);
+}
+
 
 
 QTEST_MAIN(CCPHistory)

@@ -121,10 +121,10 @@ HistoryStep History::moveSteps ( int stp ) {
             _actualStep += stp;
         }
     }else {
-        if (( _actualStep - stp) < 0){
+        if (( _actualStep + stp) < 0){
             _actualStep = 0;
         }else{
-            _actualStep -= stp;
+            _actualStep += stp;
         }
     }
 
