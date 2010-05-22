@@ -24,6 +24,7 @@ This program is free software: you can redistribute it and/or modify
 #include <QPushButton>
 #include "viewcluster.h"
 #include <QSpinBox>
+#include <QSlider>
 
 class HistoryChanger : public QWidget {
     Q_OBJECT
@@ -31,6 +32,7 @@ class HistoryChanger : public QWidget {
         QPushButton * minus;
         ViewCluster * _view;
         QSpinBox* stepSize;
+        QSlider* slider;
 
     public:
 
@@ -42,6 +44,7 @@ class HistoryChanger : public QWidget {
     private slots:
         void nextStep();
         void backStep();
+        void gotToStep(int);
 
 };
 

@@ -120,7 +120,7 @@ void ViewCluster::viewHistoryStep(CCP::HistoryStep step ){
             tmpPoint = _instance->point(i);
             scene()->addEllipse(tmpPoint->position().x() - ellipseSize*0.5,
                                 tmpPoint->position().y() - ellipseSize*0.5,
-                                ellipseSize, ellipseSize, QPen(QBrush(Qt::blue), 2));
+                                ellipseSize*2, ellipseSize*2, QPen(QBrush(Qt::blue), 3));
         }
     }
     for (int i = 0; i < _instance->numPoints(); ++i){
@@ -128,7 +128,7 @@ void ViewCluster::viewHistoryStep(CCP::HistoryStep step ){
             CCP::Point* tmpCenter = _instance->point(step.assignedTo(i));
             scene()->addEllipse(_instance->point(i)->position().x() - ellipseSize*0.35 ,
                                 _instance->point(i)->position().y() -  ellipseSize*0.35 ,
-                                ellipseSize*0.7, ellipseSize*0.7,
+                                ellipseSize, ellipseSize,
                                 QPen(QBrush(Qt::green), 2));
             scene()->addLine(tmpCenter->position().x() ,
                             tmpCenter->position().y() ,
