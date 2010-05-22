@@ -23,12 +23,14 @@ This program is free software: you can redistribute it and/or modify
 #include <QWidget>
 #include <QPushButton>
 #include "viewcluster.h"
+#include <QSpinBox>
 
 class HistoryChanger : public QWidget {
     Q_OBJECT
         QPushButton * plus;
         QPushButton * minus;
         ViewCluster * _view;
+        QSpinBox* stepSize;
 
     public:
 

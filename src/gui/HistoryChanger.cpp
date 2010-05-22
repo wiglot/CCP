@@ -27,9 +27,15 @@ This program is free software: you can redistribute it and/or modify
 HistoryChanger::HistoryChanger ( QWidget* parent, Qt::WindowFlags f ) : QWidget ( parent, f ) {
     plus = new QPushButton("Next",this);
     minus = new QPushButton("back",this);
+    stepSize = new QSpinBox(this);
+    stepSize->setRange(1, 10);
+    stepSize->setValue(1);
+    stepSize->setSuffix(tr(" Step"));
+
     QGridLayout *lay = new QGridLayout(this);
     lay->addWidget(minus,0,0);
     lay->addWidget(plus,0,1);
+    lay->addWidget(stepSize,1,0);
 
     _view = 0;
 
@@ -48,7 +54,7 @@ void HistoryChanger::backStep() {
 //     ViewCluster * view = qobject_cast<ViewCluster*>(parentWidget());
     if (_view){
         if (_view->solution() != 0){
-            CCP::HistoryStep step = _view->solution()->history()->stepBackward();
+            CCP::HistoryStep step = _view->solution()->history()->moveSteps(-stepSize->value());
             _view->viewHistoryStep(step);
         }
     }
@@ -59,7 +65,7 @@ void HistoryChanger::nextStep() {
 //     ViewCluster * view = qobject_cast<ViewCluster*>(parentWidget());
     if (_view){
         if (_view->solution() != 0){
-            CCP::HistoryStep step = _view->solution()->history()->stepFoward();
+            CCP::HistoryStep step = _view->solution()->history()->moveSteps(stepSize->value());
             _view->viewHistoryStep(step);
         }
     }
