@@ -17,29 +17,20 @@
 
 */
 
-#ifndef JMEANSCLUSTER_H
-#define JMEANSCLUSTER_H
+#ifndef JMEANSWITHDENSITY_H
+#define JMEANSWITHDENSITY_H
 
-#include "algorithmstruct.h"
+#include "JMeansCluster.h"
 
 
-class JMeansCluster : public AlgorithmStruct
+class JMeansWithDensity : public JMeansCluster
 {
-  public:
-    JMeansCluster(CCP::Instance* inst);
-    ~JMeansCluster();
 
-    CCP::Cluster** buildClusters();
-
-    void jmeansMethod();
-
-    void findMeans(double * vect);
-
-    QList <int> findUnoccupied(double * tolerances);
-
-    void selectRandonInitialCenters();
-
-
+public:
+    JMeansWithDensity(CCP::Instance* inst):JMeansCluster(inst){}
+    virtual CCP::Cluster** buildClusters();
+private:
+    void selectInitialCenters();
 };
 
-#endif // JMEANSCLUSTER_H
+#endif // JMEANSWITHDENSITY_H

@@ -11,7 +11,10 @@ namespace CCP{
         Density,
         Farthest,
         HMeans,
-        JMeans
+        JMeans,
+        RandonDensity,
+        DensityHMeans,
+        DensityJMeans
     };
 
     enum ImprovementHeuristic {

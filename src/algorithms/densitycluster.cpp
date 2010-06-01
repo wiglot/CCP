@@ -102,7 +102,7 @@ CCP::Cluster ** DensityCluster::buildClusters(){
 
 
     return this->_centers;
-    
+
 }
 
 void DensityCluster::findBestCluster(unsigned short clusters, QList<int> points){
@@ -168,7 +168,7 @@ void DensityCluster::calculateDensity(){
 
 
     QList <int>  neibors;
-    
+
     for (unsigned short i = 0; i < instance()->numPoints(); ++i){
         if (! this->isAssigned(i)){
             neibors = this->findNeiborhood(i, _numNeibor);
@@ -247,7 +247,7 @@ QList < int >  DensityCluster::findNeiborhood(unsigned short point, unsigned sho
             ++tmp;
         }while (!inserted && tmp < instance()->numPoints());
     }
-    
+
     return list;
 }
 
@@ -293,35 +293,6 @@ int DensityCluster::greatDensity(){
         return dens;
     }
     qDebug() << "Dont have density.";
-    //
-    //    bool * visited = new bool[instance()->numPoints()];
-    //    unsigned short i, count, found;
-    //    double min;
-    //
-    //    ++big;
-    //
-    //    for ( i = 0; i < instance()->numPoints(); ++i )
-    //    {
-    //        visited[i] = false;
-    //    }
-    //    //     visited[point] = true;
-    //
-    //    for ( i = 0 ; i < big; ++i )
-    //    {
-    //        min = 0.0;
-    //        for ( count = 0; count < instance()->numPoints(); count++ ) {
-    //            if ( !visited[count] )
-    //            {
-    //                if ( pointDensity(count) > min ) {
-    //                    min = pointDensity(count);
-    //                    found = count;
-    //                }
-    //            }
-    //        }
-    //        visited[found] = true;
-    //    }
-    //    delete [] visited;
-    //    //could be return found initialized. in case of all points have density == 0.0
     return -1;
 
 }

@@ -34,6 +34,9 @@
 #include <HMeansCluster.h>
 #include <JMeansCluster.h>
 #include "History.h"
+#include <RandonDensityCluster.h>
+#include <HMeansWithDensity.h>
+#include <JMeansWithDensity.h>
 
 using namespace CCP;
 
@@ -148,6 +151,25 @@ void Solution::run() {
             _myIterations = jmean.iterations();
             _history = jmean.history();
         }break;
+    case RandonDensity: {
+              RandomDensityCluster randomD(_myInstance);
+              _centers = randomD.buildClusters();
+              _myAlgorithmName = "Randon Density";
+              _history = randomD.history();
+          }break;
+    case DensityHMeans: {
+          HMeansWithDensity hd(_myInstance);
+          _centers = hd.buildClusters();
+          _myAlgorithmName = "HMeans With Density";
+          _history = hd.history();
+    }break;
+    case DensityJMeans: {
+          JMeansWithDensity jd(_myInstance);
+          _centers = jd.buildClusters();
+          _myAlgorithmName = "JMeans With Density";
+          _history = jd.history();
+    }break;
+
     }
 
     _myTime = count.elapsed()/1000.0;

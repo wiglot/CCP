@@ -75,8 +75,8 @@ public:
     void setY (double value ) {
         _y = value;
     }
-    double distance(const Position p){
-      return sqrt((this->_x - p._x)*(this->_x - p._x) + (this->_y - p._y)*(this->_y - p._y));
+    virtual double distance(const Position p){
+       return sqrt((this->_x - p._x)*(this->_x - p._x) + (this->_y - p._y)*(this->_y - p._y));
     }
 
 /**

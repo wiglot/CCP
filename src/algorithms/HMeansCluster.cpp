@@ -38,13 +38,14 @@ HMeansCluster::~HMeansCluster()
 
 CCP::Cluster** HMeansCluster::buildClusters()//CCP::HMeans)
 {
-
     selectRandonInitialCenters();
+    return HMeansMethod();
+}
 
-//    selectDensityInitialCenters();
-
+CCP::Cluster** HMeansCluster::HMeansMethod()
+{
     bool changed = true;
-    
+
     while (changed){
 
         if (incIter() > 1000){
@@ -59,9 +60,9 @@ CCP::Cluster** HMeansCluster::buildClusters()//CCP::HMeans)
         //Try find bests centers
         changed = findBestCenters();
     }
-    
+
     return _centers;
-    
+
 }
 
 
@@ -89,6 +90,7 @@ void HMeansCluster::selectDensityInitialCenters(){
         do{
             gen = density.greatDensity();
         }while (isAssigned(gen));
+
         assign(gen,i,CCP::Center);
 
     }

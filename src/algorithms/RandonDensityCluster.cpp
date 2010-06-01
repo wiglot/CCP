@@ -17,29 +17,25 @@
 
 */
 
-#ifndef JMEANSCLUSTER_H
-#define JMEANSCLUSTER_H
+#include "RandonDensityCluster.h"
+#include <QDebug>
+#include <QTime>
 
-#include "algorithmstruct.h"
-
-
-class JMeansCluster : public AlgorithmStruct
+int RandomDensityCluster::greatDensity()
 {
-  public:
-    JMeansCluster(CCP::Instance* inst);
-    ~JMeansCluster();
+     qsrand(QTime::currentTime().msec());
+    if (_pointsDensity.size() > 0){
+        int position = _pointsDensity.count() < _myInstance->numCenters()?
+                                           qrand()%_pointsDensity.count():
+                                           qrand()%_myInstance->numCenters();
+        double key = _pointsDensity.keys().at(position);
+        int dens = _pointsDensity.value(key);
+        _pointsDensity.remove(key);
+        qDebug() << dens << key;
+        return dens;
+    }
+    qDebug() << "Dont have density.";
+    return -1;
+}
 
-    CCP::Cluster** buildClusters();
 
-    void jmeansMethod();
-
-    void findMeans(double * vect);
-
-    QList <int> findUnoccupied(double * tolerances);
-
-    void selectRandonInitialCenters();
-
-
-};
-
-#endif // JMEANSCLUSTER_H

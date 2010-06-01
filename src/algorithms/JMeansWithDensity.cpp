@@ -17,29 +17,29 @@
 
 */
 
-#ifndef JMEANSCLUSTER_H
-#define JMEANSCLUSTER_H
+#include "JMeansWithDensity.h"
+#include "densitycluster.h"
 
-#include "algorithmstruct.h"
-
-
-class JMeansCluster : public AlgorithmStruct
+CCP::Cluster** JMeansWithDensity::buildClusters()
 {
-  public:
-    JMeansCluster(CCP::Instance* inst);
-    ~JMeansCluster();
+    selectInitialCenters();
+    jmeansMethod();
+    return _centers;
+}
 
-    CCP::Cluster** buildClusters();
+void JMeansWithDensity::selectInitialCenters()
+{
+    int numNeibor = floor( instance()->numPoints() / double(instance()->numCenters())) ;
+    DensityCluster d(_myInstance);
+    for (int count = 0; count < _myInstance->numCenters(); ++count){
+        d.calculateDensity();
+        int nextCenter = d.greatDensity();
+        QList<int>neibor =  d.findNeiborhood(nextCenter, numNeibor);
+        d.assign(nextCenter, count, CCP::Center);
+        foreach(int i, neibor){
+          d.assign(i, count, CCP::Consumer);
+        }
+        assign(nextCenter,count, CCP::Center);
+    }
+}
 
-    void jmeansMethod();
-
-    void findMeans(double * vect);
-
-    QList <int> findUnoccupied(double * tolerances);
-
-    void selectRandonInitialCenters();
-
-
-};
-
-#endif // JMEANSCLUSTER_H

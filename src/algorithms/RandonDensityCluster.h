@@ -17,29 +17,18 @@
 
 */
 
-#ifndef JMEANSCLUSTER_H
-#define JMEANSCLUSTER_H
+#ifndef RANDONDENSITYCLUSTER_H
+#define RANDONDENSITYCLUSTER_H
 
-#include "algorithmstruct.h"
+#include "densitycluster.h"
 
 
-class JMeansCluster : public AlgorithmStruct
+class RandomDensityCluster : public DensityCluster
 {
-  public:
-    JMeansCluster(CCP::Instance* inst);
-    ~JMeansCluster();
 
-    CCP::Cluster** buildClusters();
-
-    void jmeansMethod();
-
-    void findMeans(double * vect);
-
-    QList <int> findUnoccupied(double * tolerances);
-
-    void selectRandonInitialCenters();
-
-
+public:
+    RandomDensityCluster(CCP::Instance* inst):DensityCluster(inst){ }
+    virtual int greatDensity();
 };
 
-#endif // JMEANSCLUSTER_H
+#endif // RANDONDENSITYCLUSTER_H

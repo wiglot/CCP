@@ -38,6 +38,14 @@ JMeansCluster::~JMeansCluster()
 
 Cluster** JMeansCluster::buildClusters()
 {
+
+    selectRandonInitialCenters();
+    jmeansMethod();
+    return _centers;
+}
+
+void JMeansCluster::jmeansMethod()
+{
     qreal fOpt = 1000000.0;
     qreal fTmp;
     int delC; //Cluster to delete
@@ -46,7 +54,6 @@ Cluster** JMeansCluster::buildClusters()
     QList <int> unoccupied;
 //    QList <double> means;
 
-    selectRandonInitialCenters();
 
     assignToNearest();
     while (incIter() < 1000){
@@ -94,8 +101,8 @@ Cluster** JMeansCluster::buildClusters()
         }
         assignToNearest();
     }
-    return _centers;
 }
+
 
 void JMeansCluster::findMeans(double * vect){
     int c;

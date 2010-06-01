@@ -118,16 +118,16 @@ void ViewCluster::viewHistoryStep(CCP::HistoryStep step ){
     for (int i = 0; i < _instance->numPoints(); ++i){
         if (step.assignedTo(i) == i){
             tmpPoint = _instance->point(i);
-            scene()->addEllipse(tmpPoint->position().x() - ellipseSize*0.5,
-                                tmpPoint->position().y() - ellipseSize*0.5,
+            scene()->addEllipse(tmpPoint->position().x() - ellipseSize,
+                                tmpPoint->position().y() - ellipseSize,
                                 ellipseSize*2, ellipseSize*2, QPen(QBrush(Qt::blue), 3));
         }
     }
     for (int i = 0; i < _instance->numPoints(); ++i){
         if (step.assignedTo(i) != -1){
             CCP::Point* tmpCenter = _instance->point(step.assignedTo(i));
-            scene()->addEllipse(_instance->point(i)->position().x() - ellipseSize*0.35 ,
-                                _instance->point(i)->position().y() -  ellipseSize*0.35 ,
+            scene()->addEllipse(_instance->point(i)->position().x() - ellipseSize*0.5 ,
+                                _instance->point(i)->position().y() -  ellipseSize*0.5 ,
                                 ellipseSize, ellipseSize,
                                 QPen(QBrush(Qt::green), 2));
             scene()->addLine(tmpCenter->position().x() ,

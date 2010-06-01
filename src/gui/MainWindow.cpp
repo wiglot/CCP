@@ -118,6 +118,17 @@ void MainWindow::setupAction(){
     act = menu->addAction("HMeans",this,SLOT(runAlgorithm()));
     act->setData(CCP::HMeans);
     act->setShortcut(QKeySequence(Qt::Key_H));
+    menu->addSeparator();
+    act = menu->addAction("HMeans With Density",this,SLOT(runAlgorithm()));
+    act->setData(CCP::DensityHMeans);
+    act->setShortcut(QKeySequence(Qt::Key_N));
+    act = menu->addAction("Density With Random",this,SLOT(runAlgorithm()));
+    act->setData(CCP::RandonDensity);
+    act->setShortcut(QKeySequence(Qt::Key_R));
+    act = menu->addAction("JMeans With Density",this,SLOT(runAlgorithm()));
+    act->setData(CCP::DensityJMeans);
+    act->setShortcut(QKeySequence(Qt::Key_M));
+
 
     menu = menuBar()->addMenu(tr("Improvments"));
     act = menu->addAction("Hill Climb whit Shift",this, SLOT(improveSolution()));
@@ -190,6 +201,17 @@ void MainWindow::runAlgorithm( CCP::HeuristicType inType, bool improve){
 
         case CCP::Density:
             type = CCP::Density;
+            break;
+
+        case CCP::DensityHMeans:
+            type = CCP::DensityHMeans;
+            break;
+
+        case CCP::RandonDensity:
+            type = CCP::RandonDensity;
+            break;
+        case CCP::DensityJMeans:
+            type = CCP::DensityJMeans;
             break;
         }
     }else{

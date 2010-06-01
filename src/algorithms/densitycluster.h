@@ -25,21 +25,21 @@
 
 class DensityCluster:public AlgorithmStruct{
 public:
-  
+
     DensityCluster(CCP::Instance* inst);
     ~DensityCluster();
-    
+
     double pointDensity(unsigned short index){
 	return this->_pointsDensity[index];
     }
-    
+
     double pointRegret(unsigned short index){
 	return this->_pointsRegret[index];
     }
-    int greatDensity();
-    
+    virtual int greatDensity();
+
     int greatRegret();
-    
+
     /** @brief find the 'nNeibor' most near from the 'point' that don't over capacity of cluster.
       @param point Origin point.
       @param nNeibor Number of neibors to find.
@@ -54,25 +54,25 @@ public:
 //      double distance(short unsigned int point, QList< int > list);
 
      void calculateDensity();
-     
+
      void setNumIterations(int iter){_iterations = iter;}
      int iterations(){return _iterations;}
-     
+
      CCP::Cluster ** buildClusters();
-     
+
 private:
 //    double * _pointsDensity;
 //    double * _pointsRegret;
-    
+
     int _iterations;
-    
+
     void calculateRegret(QList <int> points);
-    
+
     void findBestCluster(short unsigned int clusters, QList<int> points = QList<int>());
 
     unsigned int _numNeibor;
 
-
+  protected:
     QMap <double, int> _pointsDensity;
     QMap <double, int> _pointsRegret;
 };
