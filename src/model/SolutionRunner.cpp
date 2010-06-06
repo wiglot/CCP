@@ -39,10 +39,17 @@ void SolutionRunner::insert(CCP::Solution * sol, bool improve){
 
 }
 
-void SolutionRunner::queue(Instance *instance, HeuristicType type, bool improve){
+void SolutionRunner::queue(Instance *instance, HeuristicType type, bool improve, bool useThread){
     Solution * sol = new Solution(instance);
     sol->setAlgorithmToUse(type);
-    SolutionRunner::New()->insert(sol, improve);
+    if (useThread){
+      SolutionRunner::New()->insert(sol, improve);
+    }else{
+      New()->running.lock();
+      QPair < Solution*, bool> imp(sol, improve);
+      New()->solQueue.enqueue(imp);
+      New()->run();
+    }
 }
 
 void SolutionRunner::queue(CCP::Solution *sol, CCP::ImprovementHeuristic type){

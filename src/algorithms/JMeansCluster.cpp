@@ -39,8 +39,8 @@ JMeansCluster::~JMeansCluster()
 Cluster** JMeansCluster::buildClusters()
 {
 
-    selectRandonInitialCenters();
-    jmeansMethod();
+//     selectRandonInitialCenters();
+//     jmeansMethod();
     return _centers;
 }
 

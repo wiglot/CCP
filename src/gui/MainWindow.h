@@ -7,15 +7,16 @@
 namespace Ui {
     class MainWindow;
 }
-
+class QTextEdit;
 class MainWindow : public QMainWindow {
     Q_OBJECT
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 public slots:
-   void openFile();
-   void runAlgorithm(CCP::HeuristicType type = CCP::Farthest, bool improve = false );
+   void openFile(QString filename = QString());
+   void runAlgorithm(CCP::HeuristicType inType = CCP::Farthest, bool improve = false, bool useThread =true);
+   void saveResults(QString &filename);
 //    void kmeansAlgorithm();
 //    void farAlgorithm();
 //    void densityAlgorithm();
@@ -35,11 +36,13 @@ private slots:
     void showSolution(CCP::Solution* sol);
     void improveSolution();
     void closeInstance();
+    void batchDialog();
 private:
     void setupAction();
     Ui::MainWindow *ui;
     CCP::Solution * _solution;
     CCP::Instance * _instance;
+    QTextEdit* _text;
 };
 
 #endif // MAINWINDOW_H

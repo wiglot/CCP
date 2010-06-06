@@ -14,7 +14,6 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 */
 
 #ifndef INSTANCE_H
@@ -53,9 +52,6 @@ public:
     ~Instance( );
     /**
      * Accessor Methods
-     */
-    /**
-     *
      */
     unsigned short numCenters ( ) {
         return _numCenters;
@@ -106,21 +102,8 @@ public:
     void setDistances (CCP::Distance * value ) {
         _distance = value;
     }
-    /**
-     *
-     */
-//     Solution * solutions ( unsigned short index) {
-//       if (index < _numSolutions)
-//         return _solutions[index];
-//     }
-    /**
-     *
-     */
-//     void setSolutions (Solution ** value, unsigned short numSol ) {
-//         _solutions = value;
-// 	_numSolutions = numSol;
-//     }
-    /** Return the capacity of centers
+
+/** Return the capacity of centers
     */
     double capacity(){
       return _capacity;
@@ -135,6 +118,13 @@ public:
     *
     */
     double tight();
+    /** Set the tight of instance. This function change the capacity of clusters to fit desired tight
+    this value shoud be bigger than 1.0 to produce valid solutions. */
+    void setTight(double);
+
+
+    /** Return a string with the data of instance.*/
+    QString printData();
 
     void setName( QString arg1 ){
       _name = arg1;

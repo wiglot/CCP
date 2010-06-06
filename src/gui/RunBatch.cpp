@@ -45,4 +45,16 @@ void RunBatch::run(){
     for (int i = 0; i < num; ++i){
         emit runAlgorithm(CCP::JMeans, ui->improve->isChecked());
     }
+    num = ui->randomDensityNum->text().toInt();
+    for (int i = 0; i < num; ++i){
+        emit runAlgorithm(CCP::RandonDensity, ui->improve->isChecked());
+    }
+    num = ui->jmeansDensityNum->text().toInt();
+    for (int i = 0; i < num; ++i){
+        emit runAlgorithm(CCP::DensityJMeans, ui->improve->isChecked());
+    }
+    num = ui->hmeansDensityNum->text().toInt();
+    for (int i = 0; i < num; ++i){
+        emit runAlgorithm(CCP::DensityHMeans, ui->improve->isChecked());
+    }
 }

@@ -52,7 +52,7 @@ Solution  SolutionImprovement::hillClimbShift( Solution & sol, int K){
         }
 
 
-        if (qAbs( tmpSol->getValue() - bestValue) > 0.0001){
+        if (( bestValue - tmpSol->getValue()) > 0.001){
             bestValue = bestSol.getValue();
             bestSol = *tmpSol;
             foundBetter = true;

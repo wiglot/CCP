@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>259</width>
-    <height>296</height>
+    <height>303</height>
    </rect>
   </property>
   <property name="floating">
@@ -66,7 +66,7 @@
       <item row="3" column="1">
        <widget class="QLineEdit" name="jmeansNum"/>
       </item>
-      <item row="5" column="0" colspan="2">
+      <item row="8" column="0" colspan="2">
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
          <spacer name="horizontalSpacer">
@@ -90,12 +90,42 @@
         </item>
        </layout>
       </item>
-      <item row="4" column="0" colspan="2">
+      <item row="7" column="0" colspan="2">
        <widget class="QCheckBox" name="improve">
         <property name="text">
          <string>Apply Improvements</string>
         </property>
        </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="label_5">
+        <property name="text">
+         <string>Randon Density</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="0">
+       <widget class="QLabel" name="label_6">
+        <property name="text">
+         <string>JMeans (Density)</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0">
+       <widget class="QLabel" name="label_7">
+        <property name="text">
+         <string>HMeans (Density)</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QLineEdit" name="randomDensityNum"/>
+      </item>
+      <item row="5" column="1">
+       <widget class="QLineEdit" name="hmeansDensityNum"/>
+      </item>
+      <item row="6" column="1">
+       <widget class="QLineEdit" name="jmeansDensityNum"/>
       </item>
      </layout>
     </item>

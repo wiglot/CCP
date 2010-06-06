@@ -22,8 +22,8 @@
 
 CCP::Cluster** JMeansWithDensity::buildClusters()
 {
-    selectInitialCenters();
-    jmeansMethod();
+//     selectInitialCenters();
+//     jmeansMethod();
     return _centers;
 }
 

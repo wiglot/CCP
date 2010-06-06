@@ -21,11 +21,18 @@
 #define CCPTEST_H
 
 #include <QtCore/QObject>
+namespace CCP{
+  class Instance;
+}
 
 class CCPTest : public QObject
 {
 Q_OBJECT
-private slots:
+
+    CCP::Instance* _instance;
+
+
+  private slots:
     void initTestCase();
     void init();
     void cleanup();

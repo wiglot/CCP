@@ -18,6 +18,7 @@
 #include "RunBatch.h"
 #include <SolutionImprovement.h>
 #include "HistoryChanger.h"
+#include "FileBatch.h"
 
 MainWindow::MainWindow(QWidget *parent) :
         QMainWindow(parent),
@@ -53,11 +54,11 @@ MainWindow::MainWindow(QWidget *parent) :
     TabledockWidget->setWidget(table);
     addDockWidget(Qt::BottomDockWidgetArea, TabledockWidget);
 
-    QTextEdit *text = new QTextEdit(this);
-    text->setReadOnly(true);
+    _text = new QTextEdit(this);
+    _text->setReadOnly(true);
     QDockWidget *TXTdockWidget = new QDockWidget(tr("Text results"), this);
     TXTdockWidget->setAllowedAreas(Qt::BottomDockWidgetArea);
-    TXTdockWidget->setWidget(text);
+    TXTdockWidget->setWidget(_text);
     addDockWidget(Qt::BottomDockWidgetArea, TXTdockWidget);
 
     RunBatch * runWidget = new RunBatch(this);
@@ -77,8 +78,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect (runWidget, SIGNAL(runAlgorithm(CCP::HeuristicType,bool)), this, SLOT(runAlgorithm(CCP::HeuristicType, bool)));
 
     connect (this, SIGNAL(newSolution(CCP::Solution*)), run, SLOT(setData(CCP::Solution*)));
-    connect (this, SIGNAL(textResult(QString)), text, SLOT(insertPlainText(QString)));
-    connect (this, SIGNAL(newInstance(CCP::Instance*)), text, SLOT(clear()));
+    connect (this, SIGNAL(textResult(QString)), _text, SLOT(insertPlainText(QString)));
+    connect (this, SIGNAL(newInstance(CCP::Instance*)), _text, SLOT(clear()));
 }
 
 MainWindow::~MainWindow()
@@ -98,10 +99,12 @@ void MainWindow::changeEvent(QEvent *e)
     }
 }
 
-void MainWindow::setupAction(){
+void MainWindow::setupAction() {
     QMenu * menu = menuBar()->addMenu(tr("File"));
     QAction * act = menu->addAction("Open",this,SLOT(openFile()));
     act->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_O));
+    act = menu->addAction(tr("Batch Process"),this,SLOT(batchDialog()));
+    act->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_B));
     act = menu->addAction("Quit",this,SLOT(close()));
     act->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Q));
 
@@ -143,51 +146,74 @@ void MainWindow::setupAction(){
 
 }
 
-void MainWindow::closeInstance(){
+void MainWindow::saveResults(QString& filename)
+{
+    QFile fp(filename);
+    if (!fp.open(QIODevice::Append|QIODevice::Text)) {
+        qDebug() << "Error writting file! " << filename;
+        return;
+    }
+    QTextStream str(&fp);
+    str << "\nInstance "<<_instance->name() << " " << QDateTime::currentDateTime().toString() ;
+    str << _text->document()->toPlainText();
+}
+
+
+void MainWindow::closeInstance() {
     _solution = 0;
 
-    if (_instance){
+    if (_instance) {
         emit closing();
         delete _instance;
         _instance = 0;
     }
-
-
 }
 
-void MainWindow::openFile(){
-    QFileDialog f(this);
-    CCP::Instance * inst;
-    f.setFilters(QStringList() << "Dat type (*.dat)"<<"Text files (*.txt)");
-    if(f.exec()){
-        if (f.selectedFiles().count() == 0){
+void MainWindow::batchDialog()
+{
+    FileBatch f(this);
+    f.exec();
+}
+
+
+void MainWindow::openFile(QString filename) {
+    CCP::Instance * inst = 0;
+
+    if (filename.isEmpty()) {
+        QFileDialog f(this);
+        f.setFilters(QStringList() << "Dat type (*.dat)"<<"Text files (*.txt)");
+        if (f.exec()) {
+            if (f.selectedFiles().count() == 0) {
+                return;
+            }
+            closeInstance();
+
+            filename = f.selectedFiles().at(0);
+        }else {
             return;
         }
-        closeInstance();
-
-        QString filename = f.selectedFiles().at(0);
-        if (filename.endsWith(".dat")){
-            inst = readCCP::readLorenaEuclidian(filename);
-
-        }else if (filename.endsWith(".txt")){
-            inst = readCCP::readSimpleTXT(filename);
-
-        }
-        new CCP::Distance(inst);
-        emit newInstance(inst);
-
-        _instance = inst;
-
+    }
+    if (filename.endsWith(".dat")) {
+        inst = readCCP::readLorenaEuclidian(filename);
+    } else if (filename.endsWith(".txt")) {
+        inst = readCCP::readSimpleTXT(filename);
+    }
+    if (inst != 0){
+      new CCP::Distance(inst);
+      emit newInstance(inst);
+      _instance = inst;
+    }else{
+        _text->insertPlainText(QString("Cannot open the file %1").arg(filename));
     }
 }
 
-void MainWindow::runAlgorithm( CCP::HeuristicType inType, bool improve){
+void MainWindow::runAlgorithm( CCP::HeuristicType inType, bool improve, bool useThread) {
     CCP::HeuristicType type;
     QAction * act = qobject_cast<QAction*>(sender());
 
-    if (act){
+    if (act) {
 
-        switch(act->data().toInt()){
+        switch (act->data().toInt()) {
         case CCP::HMeans:
             type = CCP::HMeans;
             break;
@@ -214,19 +240,20 @@ void MainWindow::runAlgorithm( CCP::HeuristicType inType, bool improve){
             type = CCP::DensityJMeans;
             break;
         }
-    }else{
+    } else {
         type = inType;
     }
-    SolutionRunner::queue(_instance, type, improve);
+    SolutionRunner::queue(_instance, type, improve, useThread);
+
 }
 
-void MainWindow::improveSolution(){
-    if (_solution == 0){
+void MainWindow::improveSolution() {
+    if (_solution == 0) {
         return;
     }
     QAction * act = qobject_cast<QAction*>(sender());
-    if (act){
-        switch(act->data().toInt()){
+    if (act) {
+        switch (act->data().toInt()) {
         case CCP::HillClimbShift:
             SolutionRunner::queue(_solution, CCP::HillClimbShift);
             break;
@@ -246,14 +273,14 @@ void MainWindow::improveSolution(){
 
 }
 
-void MainWindow::finishedAlgorithm(CCP::Solution * sol){
-    if (sol == 0){
+void MainWindow::finishedAlgorithm(CCP::Solution * sol) {
+    if (sol == 0) {
         statusBar()->showMessage("Invalid  solution. ", 2000);
-    }else{
+
+    } else {
         _solution = sol;
-        QString result = sol->algorithmName() + ",\t";
-        result += QString::number(sol->getValue()) + ",\t";
-        result += QString::number(sol->timeTaken()) + ",\t";
+        QString result = _instance->printData() + ", " + sol->algorithmName() + ", " + QString::number(sol->getValue()) + ", ";
+        result += QString::number(sol->timeTaken()) + ", ";
         result += QString::number(sol->iterations()) + ",\n";
         emit textResult(result);
 
@@ -261,7 +288,7 @@ void MainWindow::finishedAlgorithm(CCP::Solution * sol){
     }
 }
 
-void MainWindow::showSolution(CCP::Solution* sol){
+void MainWindow::showSolution(CCP::Solution* sol) {
     if (sol==0)
         return;
     _solution = sol;

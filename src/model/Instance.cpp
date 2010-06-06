@@ -14,7 +14,6 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 */
 
 #include "Instance.h"
@@ -42,9 +41,9 @@ void CCP::Instance::setPoints (Point ** value, unsigned short numPoints) {
       this->_points = value;
       this->_numPoints = numPoints;
       new Distance(this);
-      
+
 }
-    
+
 double CCP::Instance::distance (short unsigned int p1, short unsigned int p2, double factor){
       return this->_distance->distance(p1, p2) * factor;
 }
@@ -59,13 +58,25 @@ double CCP::Instance::tight(){
    for (int i = 0; i < this->_numPoints; ++i){
       acum += _points[i]->demand();
    }
-   return acum/this->capacity();
+   acum /= numCenters();
+   return 1+((this->capacity() - acum)/ acum);
+}
+void CCP::Instance::setTight(double  newTight)
+{
+  double acum = 0.0;
+   for (int i = 0; i < this->_numPoints; ++i){
+      acum += _points[i]->demand();
+   }
+   acum += acum * (newTight-1);
+   _capacity = acum/numCenters();
+//     double ajustTight = newTight - tight();
+//     _capacity += _capacity* ajustTight;
 }
 
 
 unsigned short CCP::Instance::pointIndex( Point* arg1 ){
-    
-  
+
+
   for (unsigned short i = 0 ; i<_numPoints; ++i){
       if (arg1 == _points[i]){
 	arg1->setIndex(i);
@@ -73,4 +84,10 @@ unsigned short CCP::Instance::pointIndex( Point* arg1 ){
       }
   }
   return _numPoints;
+}
+
+QString CCP::Instance::printData()
+{
+  return (name() +", " + QString::number(tight()));
+
 }

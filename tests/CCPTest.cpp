@@ -25,7 +25,20 @@
 using namespace CCP;
 
 void CCPTest::initTestCase()
-{}
+{
+_instance = new Instance();
+    Point ** points = new Point*[6];
+    points[0] = new Point(_instance, 0.0, 2.0, 1.0);
+    points[1] = new Point(_instance,0.0, 0.0, 1.0);
+    points[2] = new Point(_instance,1.0, 1.0, 1.0);
+    points[3] = new Point(_instance,2.0, 1.0, 1.0);
+    points[4] = new Point(_instance,3.0, 0.0, 1.0);
+    points[5] = new Point(_instance,3.0, 2.0, 1.0);
+    _instance->setPoints(points, 6);
+    _instance->setNumCenters(2);
+    _instance->setCapacity(4.0);
+    new Distance(_instance);
+}
 
 void CCPTest::init()
 {}
@@ -38,7 +51,9 @@ void CCPTest::cleanupTestCase()
 
 void CCPTest::someTest()
 {
-    QCOMPARE(1,1);
+  QWARN(QString::number(_instance->tight()).toAscii());
+      _instance->setTight(1.5);
+    QCOMPARE(1.5,_instance->tight());
 }
 
 

@@ -48,6 +48,8 @@ public:
       _x = x;
       _y = y;
     }
+
+    virtual ~Position() { }
     /**
      * Accessor Methods
      */
