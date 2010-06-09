@@ -61,7 +61,7 @@ Solution  SolutionImprovement::hillClimbShift( Solution & sol, int K){
         }
         delete tmpSol;
 
-    }while (foundBetter);
+    }while (foundBetter && count < 100);
     bestSol.setIterations(count);
     return bestSol;
 }
@@ -148,7 +148,7 @@ Solution  SolutionImprovement::hillClimbInterchange(Solution & sol, int K, int Q
         }
 //        delete tmpSol;
 
-    }while (foundBetter);
+    }while (foundBetter && count < 100);
 
     return bestSol;
 }

@@ -40,7 +40,7 @@ AlgorithmStruct::AlgorithmStruct( Instance* inst ):
 
 }
 int AlgorithmStruct::incIter(){
-    _history->finishIteration();
+//     _history->finishIteration();
     return ++_iterations;
 }
 
@@ -50,11 +50,11 @@ CCP::History* AlgorithmStruct::history() {
 }
 
 void AlgorithmStruct::updateHistory(){
-    HistoryStep step;
-    for (int i = 0; i < _myInstance->numCenters(); ++i){
-        step.AssignCluster(_centers[i]);
-    }
-    _history->appendStep(step);
+//     HistoryStep step;
+//     for (int i = 0; i < _myInstance->numCenters(); ++i){
+//         step.AssignCluster(_centers[i]);
+//     }
+//     _history->appendStep(step);
 }
 
 

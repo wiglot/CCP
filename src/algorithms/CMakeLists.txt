@@ -2,9 +2,23 @@
 include_directories(${QT_INCLUDES} ${CMAKE_CURRENT_BINARY_DIR} ../model)
 
 
-set (Algorithms_CCP JMeansWithDensity.cpp RandonDensityCluster.cpp HMeansWithDensity.cpp HMeansCluster.cpp JMeansCluster.cpp densitycluster.cpp farthestcluster.cpp algorithmstruct.cpp)
-set (Algorithms_H algorithmstruct.h)
+set (Algorithms_CCP
+	JMeansWithDensity.cpp 
+	RandonDensityCluster.cpp 
+	HMeansWithDensity.cpp 
+	HMeansCluster.cpp 
+	JMeansCluster.cpp 
+	densitycluster.cpp 
+	farthestcluster.cpp 
+	algorithmstruct.cpp
+)
+
+set (Algorithms_H 
+	algorithmstruct.h
+)
+
 qt4_automoc(${Algorithms_CCP})
+
 QT4_WRAP_CPP(MOC_CPP ${Algorithms_H})
 
 add_library(CCPAlgorithms SHARED ${Algorithms_CCP} ${MOC_CPP})

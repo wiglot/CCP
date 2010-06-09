@@ -69,7 +69,6 @@ void FarthestCluster::selectFirstCenters() {
 
     while ( instance()->numCenters() > centersInserted ) {
 
-        /** BUG when insert 5 itens, distances has 0 itens...*/
         int insertedCenter = distances.value(distances.keys().last());
         assign(distances.value(distances.keys().last()), centersInserted++, CCP::Center);
         distances.remove(distances.keys().last());
@@ -116,6 +115,7 @@ void FarthestCluster::findBasicClusters() {
             }
 	    if (clusterToAdd == instance()->numPoints()){
             qDebug() << "There is no cluster with capacity to suporte a point";
+            return;
                 //throw QString ("There is no cluster with capacity to suporte a point");
 	    }
 	    assign(selectedPoint, clusterToAdd);

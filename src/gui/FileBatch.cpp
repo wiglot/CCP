@@ -26,6 +26,7 @@
 #include <QDebug>
 #include <QCheckBox>
 #include <QLineEdit>
+#include <Instance.h>
 
 
 FileBatch::FileBatch(QWidget* parent, Qt::WindowFlags f): QDialog(parent, f)
@@ -96,34 +97,41 @@ void FileBatch::accept()
   for(int i = 0; i < _filesList->count(); ++i){
     QString filename = _filesList->item(i)->text();
     qDebug() << "processing: " << filename;
+    double adj = 1.0;
     emit openFile(filename);
-    if (_farthest->isChecked()){
-      emit process(CCP::Farthest, true, false);
-    }
-    if (_density->isChecked()){
-      emit process(CCP::Density, true, false);
-    }
-    if (_hmeans->isChecked()){
-      for (int i = 0; i < times; ++i)
-          emit process(CCP::HMeans, true, false);
-    }
-    if (_jmeans->isChecked()){
-      for (int i = 0; i < times; ++i)
-          emit process(CCP::JMeans, true, false);
-    }
-    if (_densityRandom->isChecked()){
-      for (int i = 0; i < times; ++i)
-          emit process(CCP::RandonDensity, true, false);
-    }
-    if (_hmeansDensity->isChecked()){
-         for (int i = 0; i < times; ++i)
-              emit process(CCP::DensityHMeans, true, false);
-    }
-    if (_jmeansDensity->isChecked()){
+    for (int j = 0; j < 3; ++j){
+      //if (j != 0){
+        adj += 0.1;
+        MainWindow * main = qobject_cast<MainWindow*>(parent());
+        main->instance()->setTight(adj);
+      //}
+      if (_farthest->isChecked()){
+        emit process(CCP::Farthest, true, false);
+      }
+      if (_density->isChecked()){
+        emit process(CCP::Density, true, false);
+      }
+      if (_hmeans->isChecked()){
         for (int i = 0; i < times; ++i)
-            emit process(CCP::DensityJMeans, true, false);
+            emit process(CCP::HMeans, true, false);
+      }
+      if (_jmeans->isChecked()){
+        for (int i = 0; i < times; ++i)
+            emit process(CCP::JMeans, true, false);
+      }
+      if (_densityRandom->isChecked()){
+        for (int i = 0; i < times; ++i)
+            emit process(CCP::RandonDensity, true, false);
+      }
+      if (_hmeansDensity->isChecked()){
+          for (int i = 0; i < times; ++i)
+                emit process(CCP::DensityHMeans, true, false);
+      }
+      if (_jmeansDensity->isChecked()){
+          for (int i = 0; i < times; ++i)
+              emit process(CCP::DensityJMeans, true, false);
+      }
     }
-
     emit saveResults(filename.append(".out"));
   }
   QDialog::accept();

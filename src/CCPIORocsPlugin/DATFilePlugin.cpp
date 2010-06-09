@@ -27,29 +27,29 @@
 
 static const KAboutData aboutdata("datfileplugin", 0, ki18n("Open and Save DAT files") , "0.1" );
 
-K_PLUGIN_FACTORY( DATFilePLuginFactory, registerPlugin< DATFilePlugin>(); ) 
+K_PLUGIN_FACTORY( DATFilePLuginFactory, registerPlugin< Rocs::DATFilePlugin>(); ) 
 K_EXPORT_PLUGIN( DATFilePLuginFactory(aboutdata) )
 
 
-DATFilePlugin::~DATFilePlugin()
+Rocs::DATFilePlugin::~DATFilePlugin()
 {
 
 }
 
-DATFilePlugin::DATFilePlugin(QObject* parent, const QList< QVariant >& ):
+Rocs::DATFilePlugin::DATFilePlugin(QObject* parent, const QList< QVariant >& ):
     FilePluginInterface(DATFilePLuginFactory::componentData(), parent)
 {
 
 }
 
-const QStringList DATFilePlugin::extensions() const
+const QStringList Rocs::DATFilePlugin::extensions() const
 {
     return QStringList()
 	<< i18n("*.dat|DAT Files") + '\n';
 }
 
 
-GraphDocument * DATFilePlugin::readFile(const QString &fileName) const{
+GraphDocument * Rocs::DATFilePlugin::readFile(const QString &fileName) {
     QFile file(fileName);
     if (!file.open(QFile::ReadOnly | QFile::Text)){
 	return 0;
@@ -143,7 +143,7 @@ GraphDocument * DATFilePlugin::readFile(const QString &fileName) const{
 
 }
 
-bool DATFilePlugin::writeFile(const GraphDocument &/*graph*/ , const QString &filename) const{
+bool Rocs::DATFilePlugin::writeFile(GraphDocument &/*graph*/ , const QString &filename) {
     QFile file (filename);
     if (file.open(QFile::WriteOnly))
     {

@@ -22,7 +22,11 @@ set (Algorithms_CCP
     ../algorithms/densitycluster.cpp
     ../algorithms/farthestcluster.cpp
     ../algorithms/algorithmstruct.cpp
+    ../algorithms/JMeansWithDensity.cpp
+    ../algorithms/HMeansWithDensity.cpp
+    ../algorithms/RandonDensityCluster.cpp
 )
+
 set (Algorithms_H     ../algorithms/algorithmstruct.h)
 
 set (Model_CCP

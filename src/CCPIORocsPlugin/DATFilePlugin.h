@@ -20,8 +20,8 @@
 #ifndef DATFILEPLUGIN_H
 #define DATFILEPLUGIN_H
 #include "FilePluginInterface.h"
-
-class DATFilePlugin: public Rocs::FilePluginInterface
+namespace Rocs{
+class DATFilePlugin: public FilePluginInterface
 {
   Q_OBJECT
   public:
@@ -30,10 +30,10 @@ class DATFilePlugin: public Rocs::FilePluginInterface
     
     const QStringList extensions() const; //Extensões suportadas
     
-    GraphDocument * readFile(const QString &file) const; //return 0 se arq. inválido
+    GraphDocument * readFile(const QString &file) ; //return 0 se arq. inválido
     
-    bool writeFile(const GraphDocument&, const QString&) const; //false se não gravou.
+    bool writeFile(GraphDocument&, const QString&) ; //false se não gravou.
   
 };
-
+}
 #endif // DATFILEPLUGIN_H

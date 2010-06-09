@@ -209,7 +209,7 @@ void MainWindow::openFile(QString filename) {
 
 void MainWindow::runAlgorithm( CCP::HeuristicType inType, bool improve, bool useThread) {
     CCP::HeuristicType type;
-    QAction * act = qobject_cast<QAction*>(sender());
+                                                                          QAction * act = qobject_cast<QAction*>(sender());
 
     if (act) {
 

@@ -13,6 +13,8 @@ class MainWindow : public QMainWindow {
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+
+    CCP::Instance * instance(){return _instance;}
 public slots:
    void openFile(QString filename = QString());
    void runAlgorithm(CCP::HeuristicType inType = CCP::Farthest, bool improve = false, bool useThread =true);
