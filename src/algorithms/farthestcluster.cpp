@@ -68,21 +68,34 @@ void FarthestCluster::selectFirstCenters() {
     //    distances.remove(0);
 
     while ( instance()->numCenters() > centersInserted ) {
-
+        qDebug() << distances.size();
         int insertedCenter = distances.value(distances.keys().last());
+
         assign(distances.value(distances.keys().last()), centersInserted++, CCP::Center);
-        distances.remove(distances.keys().last());
+        qDebug() << "Removed: " << distances.remove(distances.keys().last(),insertedCenter);
 
         QList <double> keys = distances.keys();
-        double minor = keys.at(0);
+        qDebug() << distances.size();
+
+         double minor = 0.0;
+         do {
+            minor = keys.at(0);
+            if (minor == 0){
+                distances.remove(minor, distances.value(minor));
+            }
+         }while (minor == 0);
         foreach (double key, keys){
             qreal distance = key / minor;
-            distance *= instance()->distance(  distances.value(key),
-                                               insertedCenter
-                                               );
-            distances.insert(distance, distances.value(key));
+            int p = distances.value(key);
+            distance *= instance()->distance(  p, insertedCenter );
+            if (distance != key){
+                distances.insert(distance, p);
 
-            distances.remove(key, distances.value(key));
+                if (distances.remove(key, p) != 1){
+                    qDebug() << key << p;
+
+                }
+            }
         }
 
     }
