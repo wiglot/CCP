@@ -82,6 +82,8 @@ void FarthestCluster::selectFirstCenters() {
             minor = keys.at(0);
             if (minor == 0){
                 distances.remove(minor, distances.value(minor));
+		keys = distances.keys();
+ 
             }
          }while (minor == 0);
         foreach (double key, keys){
