@@ -27,6 +27,7 @@
 #include <QCheckBox>
 #include <QLineEdit>
 #include <Instance.h>
+#include <QLabel>
 
 
 FileBatch::FileBatch(QWidget* parent, Qt::WindowFlags f): QDialog(parent, f)
@@ -68,9 +69,14 @@ FileBatch::FileBatch(QWidget* parent, Qt::WindowFlags f): QDialog(parent, f)
   _densityRandom = new QCheckBox(tr("Density Randon"), this);
   _densityRandom->setCheckState(Qt::Checked);
   lay->addWidget(_densityRandom,3,4);
-
+QLabel lab("Repeat times:", this);
+  lay->addWidget(&lab, 0,5);
   _times = new QLineEdit(tr("Repeat times"), this);
-  lay->addWidget(_times,0,4);
+  lay->addWidget(_times,1,5);
+
+  _changeTight = new QCheckBox(tr("Change Tight"), this);
+  _changeTight->setCheckState(Qt::Unchecked);
+  lay->addWidget(_changeTight,2,5);
 
   this->setLayout(lay);
 
@@ -94,17 +100,23 @@ void FileBatch::accept()
   if (!ok){
     times = 1;
   }
+  int tights = 3;
+  if (!_changeTight->isChecked()){
+      tights = 1;
+  }
   for(int i = 0; i < _filesList->count(); ++i){
     QString filename = _filesList->item(i)->text();
     qDebug() << "processing: " << filename;
     double adj = 1.0;
     emit openFile(filename);
-    for (int j = 0; j < 3; ++j){
-      //if (j != 0){
+
+
+    for (int j = 0; j < tights; ++j){
+      if (_changeTight->isChecked()){
         adj += 0.1;
         MainWindow * main = qobject_cast<MainWindow*>(parent());
         main->instance()->setTight(adj);
-      //}
+      }
       if (_farthest->isChecked()){
         emit process(CCP::Farthest, true, false);
       }

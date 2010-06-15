@@ -54,6 +54,7 @@ private:
     QCheckBox* _jmeansDensity;
     QCheckBox* _hmeansDensity;
     QCheckBox* _densityRandom;
+    QCheckBox* _changeTight;
 };
 
 #endif // FILEBATCH_H
