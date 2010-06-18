@@ -3,6 +3,7 @@ include_directories(${QT_INCLUDES} ${CMAKE_CURRENT_BINARY_DIR} ../algorithms)
 
 
 set (Model_CCP
+    InstanceInfo.cpp
     Cluster.cpp
     Distance.cpp
     Instance.cpp

@@ -39,6 +39,8 @@ private slots:
     void improveSolution();
     void closeInstance();
     void batchDialog();
+    /** Calculate and show the infos about the instance. */
+    void showInstanceInto();
 private:
     void setupAction();
     Ui::MainWindow *ui;

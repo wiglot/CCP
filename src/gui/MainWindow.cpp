@@ -19,6 +19,7 @@
 #include <SolutionImprovement.h>
 #include "HistoryChanger.h"
 #include "FileBatch.h"
+#include <InstanceInfo.h>
 
 MainWindow::MainWindow(QWidget *parent) :
         QMainWindow(parent),
@@ -105,6 +106,8 @@ void MainWindow::setupAction() {
     act->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_O));
     act = menu->addAction(tr("Batch Process"),this,SLOT(batchDialog()));
     act->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_B));
+    act = menu->addAction(tr("Instance Info"),this,SLOT(showInstanceInto()));
+    act->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_I));
     act = menu->addAction("Quit",this,SLOT(close()));
     act->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Q));
 
@@ -156,6 +159,13 @@ void MainWindow::saveResults(QString& filename)
     QTextStream str(&fp);
     str << "\nInstance "<<_instance->name() << " " << QDateTime::currentDateTime().toString() ;
     str << _text->document()->toPlainText();
+}
+
+void MainWindow::showInstanceInto()
+{
+    InstanceInfo info(_instance);
+    info.calculate();
+    _text->insertPlainText(info.report());
 }
 
 

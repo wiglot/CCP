@@ -205,7 +205,7 @@ Point* Cluster::findBestCenter(){
     QMultiMap <double, Point*> betterCenters;
 
     betterCenters.insert(_distance, center);
-    /** seek only for 50% of points */
+    /** seek only for 30% of points */
     for (count = 0; count < (distances.keys().count()*0.3); ++count){
         Point* index = distances.value(distances.keys().at(count));
         double distance = 0.0;

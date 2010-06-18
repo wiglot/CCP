@@ -25,7 +25,7 @@
 #include "Point.h"
 #include <QRectF>
 #include <QDebug>
-
+#include <QWheelEvent>
 
 
 ViewCluster::ViewCluster(QWidget * parent)
@@ -35,6 +35,16 @@ ViewCluster::ViewCluster(QWidget * parent)
     scene->setSceneRect(0, 0, 400, 400);
     setRenderHint(QPainter::Antialiasing);
     setScene(scene);
+
+    setCacheMode(CacheBackground);
+    setViewportUpdateMode(BoundingRectViewportUpdate);
+    //  setViewport(new QGLWidget);
+
+    //transformadorRender = new QSvgRenderer(QString::fromStdString(":images/transformador.svg"), this);
+    //nodeRender = new QSvgRenderer(QString::fromStdString(":images/node.svg"), this);
+    //seRender = new QSvgRenderer(QString::fromStdString(":images/node.svg"), this);
+    setTransformationAnchor(AnchorUnderMouse);
+    setResizeAnchor(AnchorViewCenter);
     _sol = 0;
     _instance = 0;
 }
@@ -84,7 +94,7 @@ void ViewCluster::setSolution(CCP::Solution * sol){
     _sol = sol;
 
     scene()->clear();
-    qreal ellipseSize = (qMin(_instanceSize.width(), _instanceSize.height())/_instance->numPoints());
+    qreal ellipseSize = (qMin(_instanceSize.width(), _instanceSize.height())/(_instance->numPoints()*4));
     this->fitInView(scene()->sceneRect(), Qt::KeepAspectRatio);
 
     for (unsigned short i = 0; i < _instance->numCenters(); i++){
@@ -96,7 +106,7 @@ void ViewCluster::setSolution(CCP::Solution * sol){
             scene()->addEllipse(_sol->cluster(i)->getPoint(k)->position().x() - ellipseSize*0.35 ,
                                             _sol->cluster(i)->getPoint(k)->position().y() -  ellipseSize*0.35 ,
                                             ellipseSize*0.7, ellipseSize*0.7,
-                                            QPen(QBrush(Qt::black), 2));
+                                            QPen(QBrush(Qt::black), 0));
             scene()->addLine(tmpCenter->position().x() ,
                              tmpCenter->position().y() ,
                              _sol->cluster(i)->getPoint(k)->position().x() ,
@@ -150,4 +160,46 @@ void ViewCluster::clearSolution(){
     foreach (QGraphicsItem* item, _solItens){
         scene()->removeItem(item);
     }
+}
+
+void ViewCluster::wheelEvent(QWheelEvent *event){
+    if (event->delta() > 0){
+        scale(qreal(1.2), 1.2 );
+    }
+    if (event->delta() < 0){
+        scale(1 / qreal(1.2), 1/1.2);
+    }
+}
+
+void ViewCluster::zoomInc() {
+    scale((qreal(1.2)), 1.2);
+}
+void ViewCluster::zoomDec() {
+    scale(1 / qreal(1.2), 1 / qreal(1.2));
+}
+
+void ViewCluster::zoom100() {
+
+    fitInView(QRectF(-100, -100, 1800, 1800), Qt::KeepAspectRatio);
+}
+
+void ViewCluster::mousePressEvent(QMouseEvent *event){
+
+    if(event->button()==Qt::RightButton){
+        //setPos1(event->pos());
+        setCursor(Qt::CrossCursor);
+    }
+    event->ignore();
+
+}
+void ViewCluster::mouseReleaseEvent(QMouseEvent *event){
+    if (event->button()==Qt::RightButton){
+        //setPos2(event->pos());
+        unsetCursor();
+
+        //QRectF ret(mapToScene(getPos1()), mapToScene(getPos2()));
+//        fitInView(ret, Qt::KeepAspectRatio);
+    }
+    event->ignore();
+
 }

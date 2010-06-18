@@ -17,44 +17,34 @@
 
 */
 
-#ifndef VIEWCLUSTER_H
-#define VIEWCLUSTER_H
+#ifndef INSTANCEINFO_H
+#define INSTANCEINFO_H
+#include "Instance.h"
 
-#include <QGraphicsView>
-
-#include "Solution.h"
-#include "../model/History.h"
-class QWheelEvent;
-
-class ViewCluster: public QGraphicsView {
-    Q_OBJECT;
-    CCP::Solution* _sol;
-    CCP::Instance* _instance;
-    QRectF _instanceSize;
-
-    QList <QGraphicsItem*> _solItens;
-    void clearSolution();
+class InstanceInfo
+{
+  private:
+    double _demandMean;
+    CCP::Instance * _inst;
+    double _demandMin;
+    double _demandMax;
+    double _minDistance;
+    double _maxDistance;
+    double _distanceMean;
+    int _numCentroids;
+    int _centroidsMeanPoints;
+    double _centroidsMeanDemand;
+    void calculateDemandMean();
+    void calculateValues();
+    CCP::Position calculateMassCenter(bool* arg1);
+    QList< int > findNeibour(CCP::Position arg1, bool* visited);
   public:
-    ViewCluster(QWidget * parent = 0);
+    InstanceInfo(CCP::Instance *inst);
+    void calculate();
+    double demandMean();
+    double tight();
 
-void wheelEvent(QWheelEvent *event);
-
-void mousePressEvent(QMouseEvent *event);
-void mouseReleaseEvent(QMouseEvent *event);
-
-public slots:
-    void setInstance (CCP::Instance * inst);
-    void setSolution(CCP::Solution * sol);
-    void viewHistoryStep(CCP::HistoryStep step );
-    CCP::Solution* solution() {return _sol;}
-
-
-
-  void zoomInc();
-  void zoomDec();
-
-  void zoom100();
-
+    QString report();
 };
 
-#endif // VIEWCLUSTER_H
+#endif // INSTANCEINFO_H
