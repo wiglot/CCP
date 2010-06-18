@@ -28,6 +28,7 @@
 #include <QLineEdit>
 #include <Instance.h>
 #include <QLabel>
+#include <InstanceInfo.h>
 
 
 FileBatch::FileBatch(QWidget* parent, Qt::WindowFlags f): QDialog(parent, f)
@@ -78,6 +79,11 @@ QLabel lab("Repeat times:", this);
   _changeTight->setCheckState(Qt::Unchecked);
   lay->addWidget(_changeTight,2,5);
 
+  _emitReport = new QCheckBox(tr("Process info from instances"), this);
+  _emitReport->setCheckState(Qt::Unchecked);
+  lay->addWidget(_emitReport,3,5);
+
+
   this->setLayout(lay);
 
   connect (_process, SIGNAL(clicked(bool)), this, SLOT(accept()));
@@ -97,6 +103,7 @@ void FileBatch::accept()
 {
   bool ok;
   int times = _times->text().toInt(&ok);
+  MainWindow * main = qobject_cast<MainWindow*>(parent());
   if (!ok){
     times = 1;
   }
@@ -114,8 +121,18 @@ void FileBatch::accept()
     for (int j = 0; j < tights; ++j){
       if (_changeTight->isChecked()){
         adj += 0.1;
-        MainWindow * main = qobject_cast<MainWindow*>(parent());
         main->instance()->setTight(adj);
+      }
+      if (_emitReport->isChecked()){
+        InstanceInfo info(main->instance());
+        QFile f("info.txt");
+        if (!f.open(QIODevice::Append)){
+          qDebug() << "Cannot open file info.txt to write.";
+        }else{
+          QTextStream out(&f);
+          info.calculate();
+          out << info.report() << "\n";
+        }
       }
       if (_farthest->isChecked()){
         emit process(CCP::Farthest, true, false);

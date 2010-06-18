@@ -165,8 +165,8 @@ double InstanceInfo::tight()
 
 QString InstanceInfo::report()
 {
-    return QObject::tr("Tight %8 Demand Mean %1, Min Demand %2, Max Demand %3. MinDistance %4, MaxDistance %5,"
-                       "Distance Mean %6 Num. Of Centroids %7. Mean num points by Centroid %9, Mean used demand Centroid %10, ")
+    return QObject::tr("Tight ,%8, Demand Mean ,%1, Min Demand ,%2, Max Demand ,%3, MinDistance ,%4, MaxDistance ,%5,"
+                       "Distance Mean ,%6, Num. Of Centroids ,%7, Mean num points by Centroid ,%9, Mean used demand Centroid ,%10,")
                                                                               .arg(_demandMean)
                                                                               .arg(_demandMin)
                                                                               .arg(_demandMax)
