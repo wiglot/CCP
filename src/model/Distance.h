@@ -33,7 +33,7 @@ namespace CCP {
 * Class Distance
 * Contains the values of distances, will be build empty, and at every request, it will build the matrix and vectors(ordered) of distances
 */
-class /*CCPModelLib_EXPORT*/ Distance {
+class Distance {
 /**
 * Public stuff
 */

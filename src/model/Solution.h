@@ -43,7 +43,7 @@ namespace CCP {
     /**
  * Class Solution
  */
- class /*CCPModelLib_EXPORT*/ Solution{
+ class Solution{
         //    :public QObject {
         //    Q_OBJECT
         /**

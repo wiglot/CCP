@@ -38,7 +38,7 @@ namespace CCP {
  * Class Point
  *
  */
-class /*CCPModelLib_EXPORT*/ Point {
+class Point {
 /**
  * Public stuff
  */

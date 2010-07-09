@@ -30,7 +30,7 @@ namespace CCP{
   class Instance;
 
 
-class /*CCPModelLib_EXPORT*/ InterchangeResult{
+class InterchangeResult{
   private:
       bool _valid;
       bool _canRedo;
@@ -62,7 +62,7 @@ class /*CCPModelLib_EXPORT*/ InterchangeResult{
   };
 
 
-class /*CCPModelLib_EXPORT*/ Cluster {
+class Cluster {
 private:
       Point * center;
       QList<Point *> points;

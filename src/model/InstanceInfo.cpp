@@ -78,7 +78,7 @@ void InstanceInfo::calculateValues() {
 QList< int > InstanceInfo::findNeibour(CCP::Position arg1, bool* visited)
 {
     QMultiMap<double, int> map;
-    double acum = 0.0;
+   // double acum = 0.0;
     QList<int> ret;
 
     for (int i =0; i < _inst->numPoints(); ++i) {
@@ -87,12 +87,16 @@ QList< int > InstanceInfo::findNeibour(CCP::Position arg1, bool* visited)
         }
     }
     int k = 0;
-
-    while ( k < map.count() &&  acum + _inst->point(map.values().value(k))->demand() < _inst->capacity()) {
-        acum += _inst->point(map.values().value(k))->demand();
+    while ( k < map.count() &&  ret.count() < _inst->numPoints()/_inst->numCenters()) {
+        //acum += _inst->point(map.values().value(k))->demand();
         ret.append(map.values().at(k));
         k++;
     }
+//     while ( k < map.count() &&  acum + _inst->point(map.values().value(k))->demand() < _inst->capacity()) {
+//         acum += _inst->point(map.values().value(k))->demand();
+//         ret.append(map.values().at(k));
+//         k++;
+//     }
     return ret;
 }
 

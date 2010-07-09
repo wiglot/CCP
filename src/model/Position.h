@@ -31,7 +31,7 @@ namespace CCP {
 /**
  * Class Position
  */
- class /*CCPModelLib_EXPORT*/ Position {
+ class Position {
 /**
  * Public stuff
  */

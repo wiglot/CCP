@@ -30,10 +30,8 @@ namespace CCP {
 
 class Solution;
 #include "Point.h"
-/**
- * Class Instance
- */
-class /*CCPModelLib_EXPORT*/ Instance {
+
+class Instance {
     /**
      * Public stuff
      */
