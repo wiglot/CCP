@@ -29,8 +29,10 @@
 #include <Solution.h>
 #include "History.h"
 #include "Cluster.h"
+
 #include <rocs/graphDocument.h>
-#include <rocs/graph.h>
+#include <rocs/DataType.h>
+#include <rocs/Data.h>
 
 
 
@@ -56,12 +58,12 @@ TCCRun::~TCCRun() {
 }
 
 
-static CCP::Instance * rocs2tcc ( Graph *graph ) {
+static CCP::Instance * rocs2tcc ( DataType *graph ) {
     int i;
     CCP::Instance * inst =  new CCP::Instance();
-    CCP::Point ** points = new CCP::Point*[graph->nodes().count() ];
-    for ( i = 0; i < graph->nodes().count(); ++i ) {
-        Node * n1 = graph->nodes().at ( i );
+    CCP::Point ** points = new CCP::Point*[graph->data().count() ];
+    for ( i = 0; i < graph->data().count(); ++i ) {
+        Datum * n1 = graph->data().at ( i );
         points[i] = new CCP::Point ( inst,
                                      n1->property ( "coordX" ).toDouble(),
                                      n1->property ( "coordY" ).toDouble(),
@@ -77,43 +79,43 @@ static CCP::Instance * rocs2tcc ( Graph *graph ) {
 
 }
 
-static void tcc2rocs ( CCP::Solution * sol, Graph *g ) {
-    NodeList nodes = g->nodes();
+static void tcc2rocs ( CCP::Solution * sol, DataType *g ) {
+    DataList nodes = g->data();
     g->addDynamicProperty ( "Value", sol->getValue() );
     g->addDynamicProperty ( "TimeTaken", sol->timeTaken() );
     g->addDynamicProperty ( "Iterations", qreal ( sol->iterations() ) );
     g->addDynamicProperty ( "AlgorithmName", sol->algorithmName() );
     QStringList colors;
     colors << "red" << "black" << "blue" << "cyan" << "green" << "yellow";
-    foreach ( Edge *e, g->edges() )    {
+    foreach ( Pointer *e, g->pointers() )    {
         g->remove ( e );
     }
 
     for ( int j = 0; j < sol->instance()->numCenters(); ++j ) {
         CCP::Cluster * cluster = sol->cluster ( j );
         QString color = colors.at ( qrand() %colors.count() );
-        Node* center = nodes.at ( cluster->getCenter()->index() );
+        Datum* center = nodes.at ( cluster->getCenter()->index() );
         center->setWidth ( 0.4 );
         center->setColor ( color );
 
         for ( int i = 0; i < cluster->numPoints(); ++i ) {
             CCP::Point *p = cluster->getPoint ( i );
-            Node * n = nodes.at ( p->index() );
+            Datum * n = nodes.at ( p->index() );
       kDebug() << n->name() << p->index();
             n->setWidth ( 0.2 );
             n->setColor ( color );
-            g->addEdge ( center, n );
+            g->addPointer ( center, n );
         }
     }
 }
 
-static void convertHistory ( CCP::Solution * sol, Graph *g ) {
+static void convertHistory ( CCP::Solution * sol, DataType *g ) {
 //     kDebug() << "Entry point";
-    NodeList nodes = g->nodes();
+    DataList nodes = g->data();
     CCP::History * h = sol->history();
 
     for ( int i = 0; i <  nodes.size(); ++i ) {
-        Node *n = nodes.at ( i );
+        Datum *n = nodes.at ( i );
         h->begin();
         CCP::HistoryStep step = h->moveSteps ( 0 ); //get first step
         QList <QVariant> assigns;
@@ -128,10 +130,10 @@ static void convertHistory ( CCP::Solution * sol, Graph *g ) {
 }
 
 QString TCCRun::run ( QObject* doc ) const {
-    GraphDocument * graphDoc = qobject_cast<GraphDocument*> ( doc );
+    DataTypeDocument * graphDoc = qobject_cast<DataTypeDocument*> ( doc );
     if ( graphDoc ) {
 
-        Graph * graph = graphDoc->activeGraph();
+        DataType * graph = graphDoc->activeDataType();
         CCP::Instance * inst = rocs2tcc ( graph );
         CCP::Solution * sol = new CCP::Solution ( inst );
         sol->constructSolution ( CCP::Density );

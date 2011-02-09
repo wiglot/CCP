@@ -37,9 +37,10 @@ class InterchangeResult{
       double _change;
       Point* _origP,* _destP;
       class Cluster* _origC,* _destC;
+      double _overLoad;
 
   public:
-      InterchangeResult(Point * origPoint, Cluster * origCluster,
+      explicit InterchangeResult(Point * origPoint, Cluster * origCluster,
                         Point * destPoint, Cluster * destCluster)
       {
           _valid = false;
@@ -49,8 +50,20 @@ class InterchangeResult{
           _destP = destPoint;
           _destC = destCluster;
           _origC = origCluster;
+          _overLoad = 0.0;
+      }
+      explicit InterchangeResult()
+      {
+          _valid = false;
+          _canRedo = false;
+          _change = 0.0;
+          _origP = 0;
+          _destP = 0;
+          _destC = 0;
+          _origC = 0;
 
       }
+
       ~InterchangeResult(){ }
       inline bool isValid() const { return _valid;}
       inline double changeInValue(){return _change;}
@@ -59,6 +72,13 @@ class InterchangeResult{
       void valueChange(double c){_change = c;}
       bool undo();
       bool redo();
+
+      void forceUndo(){
+          _overLoad += 2.0;
+          undo();
+          _overLoad -= 2.0;
+      }
+      void setOverLoad(double o){_overLoad = o;}
   };
 
 
@@ -106,9 +126,10 @@ private:
     *   At end return if interchange change was done or not.
     *   \param origPoint Point to be moved to \Cluster dest.
     *   \param dest Other cluster to receive origPoint.
+	*   \param dest Other cluster to receive origPoint.
     *   \return total change in values of distances.
     */
-    InterchangeResult shift(Point* origPoint, Cluster* dest);
+    InterchangeResult shift(CCP::Point* origPoint, CCP::Cluster* dest, const double& overload = 1.0);
 
     /** @brief Interchage points between Clusters.
     *   To make the interchange, is checked if both suport news points after remove originPoint an retPoint.

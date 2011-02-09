@@ -27,13 +27,14 @@ class DATFilePlugin: public FilePluginInterface
   public:
     explicit DATFilePlugin(QObject* parent, const QList< QVariant >&);
     ~DATFilePlugin();
-    
+
     const QStringList extensions() const; //Extensões suportadas
-    
-    GraphDocument * readFile(const QString &file) ; //return 0 se arq. inválido
-    
-    bool writeFile(GraphDocument&, const QString&) ; //false se não gravou.
-  
+
+
+    DataTypeDocument * readFile(const QString &file) ; //return 0 se arq. inválido
+
+    bool writeFile(DataTypeDocument&, const QString&) ; //false se não gravou.
+
 };
 }
 #endif // DATFILEPLUGIN_H

@@ -50,11 +50,11 @@ CCP::History* AlgorithmStruct::history() {
 }
 
 void AlgorithmStruct::updateHistory(){
-    HistoryStep step;
-    for (int i = 0; i < _myInstance->numCenters(); ++i){
-        step.AssignCluster(_centers[i]);
-    }
-    _history->appendStep(step);
+//     HistoryStep step;
+//     for (int i = 0; i < _myInstance->numCenters(); ++i){
+//         step.AssignCluster(_centers[i]);
+//     }
+//     _history->appendStep(step);
 }
 
 
@@ -182,63 +182,6 @@ bool AlgorithmStruct::findBestCenters(unsigned short numClusters) {
             assign(newCenter, count, CCP::Center);
             changed = true;
         }
-
-//        value = tmpcluster->totalDistance();
-//        newCenter = tmpcluster->getCenter();
-//        for (countPoints = 0; countPoints < tmpcluster->numPoints(); ++countPoints){
-//            Point * candidacte = tmpcluster->getPoint(0);
-//            Point *tmpP = tmpcluster->getCenter();
-//            assign(candidacte, count, CCP::Center);
-//            assign(tmpP, count);
-//
-//            // 	tmpcluster->addPoint(tmpcluster->getCenter());
-//            // 	tmpcluster->setCenter(candidacte);
-//            double newValue = tmpcluster->totalDistance();
-//            if (newValue < value){
-//                value = newValue;
-//                newCenter = candidacte;
-//                changed = true;
-//            }
-//        }
-//
-//        //return to newCenter. (or old center if it not change)
-//        if (newCenter != tmpcluster->getCenter()){
-//            assign(tmpcluster->getCenter(), count);
-//            assign(newCenter, count, CCP::Center);
-//
-//            // 	  tmpcluster->removePoint(newCenter);
-//            // 	  tmpcluster->addPoint(tmpcluster->getCenter());
-//            // 	  tmpcluster->setCenter(newCenter);
-//        }
     }
-
-//        value = tmpcluster->totalDistance();
-//        newCenter = tmpcluster->getCenter();
-//        for (countPoints = 0; countPoints < tmpcluster->numPoints(); ++countPoints){
-//            Point * candidacte = tmpcluster->getPoint(0);
-//            Point *tmpP = tmpcluster->getCenter();
-//            assign(candidacte, count, CCP::Center);
-//            assign(tmpP, count);
-//
-//            // 	tmpcluster->addPoint(tmpcluster->getCenter());
-//            // 	tmpcluster->setCenter(candidacte);
-//            double newValue = tmpcluster->totalDistance();
-//            if (newValue < value){
-//                value = newValue;
-//                newCenter = candidacte;
-//                changed = true;
-//            }
-//        }
-//
-//        //return to newCenter. (or old center if it not change)
-//        if (newCenter != tmpcluster->getCenter()){
-//            assign(tmpcluster->getCenter(), count);
-//            assign(newCenter, count, CCP::Center);
-//
-//            // 	  tmpcluster->removePoint(newCenter);
-//            // 	  tmpcluster->addPoint(tmpcluster->getCenter());
-//            // 	  tmpcluster->setCenter(newCenter);
-//        }
-//    }
     return changed;
 }

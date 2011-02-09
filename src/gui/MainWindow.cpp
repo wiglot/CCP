@@ -145,7 +145,8 @@ void MainWindow::setupAction() {
     act->setData(CCP::SimulatedAnnelingShift);
     act = menu->addAction("SA whit Interchange",this, SLOT(improveSolution()));
     act->setData(CCP::SimulatedAnnelingInterchange);
-
+    act = menu->addAction("Hill Climb Shift with overload",this, SLOT(improveSolution()));
+    act->setData(CCP::HillClimbShiftWithOveload);
 
 }
 
@@ -278,6 +279,8 @@ void MainWindow::improveSolution() {
         case CCP::SimulatedAnnelingShift:
             SolutionRunner::queue(_solution, CCP::SimulatedAnnelingShift);
             break;
+        case CCP::HillClimbShiftWithOveload:
+            SolutionRunner::queue(_solution, CCP::HillClimbShiftWithOveload);
         }
     }
 

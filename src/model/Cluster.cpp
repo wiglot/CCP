@@ -33,7 +33,7 @@ bool InterchangeResult::undo(){
         _valid = false;
         _canRedo = true;
         if (_destP == 0){
-            return _destC->shift(_origP, _origC).isValid();
+            return _destC->shift(_origP, _origC, _overLoad).isValid();
         }else{
             return _destC->interchange(_origP,_destP, _origC).isValid();
         }
@@ -47,7 +47,7 @@ bool InterchangeResult::redo(){
         _valid = true;
         _canRedo = false;
         if (_destP == 0){
-            return _origC->shift(_origP, _destC).isValid();
+            return _origC->shift(_origP, _destC, _overLoad).isValid();
         } else {
             return _origC->interchange(_origP, _destP, _destC).isValid();
         }
@@ -231,15 +231,16 @@ Point* Cluster::findBestCenter(){
 }
 
 
-InterchangeResult Cluster::shift(Point* origPoint, Cluster* dest){
+InterchangeResult Cluster::shift(Point* origPoint, Cluster* dest, const double & overload){
     InterchangeResult result(origPoint, this, 0, dest);
     double newDistance = 0.0;
     double oldDistance = 0.0;
+    result.setOverLoad(overload);
     if (dest->contains(origPoint)){
         qDebug() << "Dest cluster allready contains point: " << origPoint->index();
         return result;
     }
-    if (dest->remainCapacity() >= origPoint->demand()){
+    if ((dest->actualDemand() + origPoint->demand()) < (_instance->capacity()*overload)){
         oldDistance = totalDistance() + dest->totalDistance();
 
         if (center == origPoint){

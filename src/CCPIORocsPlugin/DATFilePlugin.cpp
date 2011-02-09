@@ -18,8 +18,9 @@
 */
 
 #include "DATFilePlugin.h"
-#include "graphDocument.h"
-#include "graph.h"
+#include "rocs/graphDocument.h"
+#include "rocs/DataType.h"
+#include <rocs/Data.h>
 #include <KAboutData>
 #include <QRectF>
 #include <KGenericFactory>
@@ -27,7 +28,7 @@
 
 static const KAboutData aboutdata("datfileplugin", 0, ki18n("Open and Save DAT files") , "0.1" );
 
-K_PLUGIN_FACTORY( DATFilePLuginFactory, registerPlugin< Rocs::DATFilePlugin>(); ) 
+K_PLUGIN_FACTORY( DATFilePLuginFactory, registerPlugin< Rocs::DATFilePlugin>(); )
 K_EXPORT_PLUGIN( DATFilePLuginFactory(aboutdata) )
 
 
@@ -49,7 +50,7 @@ const QStringList Rocs::DATFilePlugin::extensions() const
 }
 
 
-GraphDocument * Rocs::DATFilePlugin::readFile(const QString &fileName) {
+DataTypeDocument * Rocs::DATFilePlugin::readFile(const QString &fileName) {
     QFile file(fileName);
     if (!file.open(QFile::ReadOnly | QFile::Text)){
 	return 0;
@@ -60,9 +61,9 @@ GraphDocument * Rocs::DATFilePlugin::readFile(const QString &fileName) {
     double capacity = 0.0;
     QString line;
     QStringList list;
-    GraphDocument * graphDoc = new GraphDocument("Untitled");
+    DataTypeDocument * graphDoc = new DataTypeDocument("Untitled");
 
-    Graph * graph = graphDoc->addGraph(fileName);
+    DataType * graph = graphDoc->addDataType(fileName);
     QTextStream input(&file);
 
     if (!input.atEnd()){
@@ -78,7 +79,7 @@ GraphDocument * Rocs::DATFilePlugin::readFile(const QString &fileName) {
 //      inst->setName(name);
   }
 //  pointsList = new  Point*[numPoints];
-  
+
   while (!input.atEnd()){
       if (count >= numPoints){
 	  break;
@@ -89,7 +90,7 @@ GraphDocument * Rocs::DATFilePlugin::readFile(const QString &fileName) {
 	qDebug() << "Assertion error. Skiping line " << count+2;
 	--count;
       }else {
-	      Node * n = graph->addNode(QString::number(count));
+	      Datum * n = graph->addDatum(QString::number(count));
 	      n->addDynamicProperty("coordX", list[0].toDouble());
 	      n->addDynamicProperty("coordY", list[1].toDouble());
 	      n->addDynamicProperty("Demand", list[3].toDouble());
@@ -98,15 +99,15 @@ GraphDocument * Rocs::DATFilePlugin::readFile(const QString &fileName) {
 	    capacity = list[2].toDouble();
       }
       ++count;
-  }    
+  }
 
     graph->addDynamicProperty("Capacity", capacity);
 
 
-   QRectF outBox; 
-   outBox.setRect(graph->nodes()[0]->property("coordX").toDouble(), graph->nodes()[0]->property("coordY").toDouble(),
+   QRectF outBox;
+   outBox.setRect(graph->data()[0]->property("coordX").toDouble(), graph->data()[0]->property("coordY").toDouble(),
                  0.0,0.0);
-  foreach(Node * n, graph->nodes()){
+  foreach(Datum * n, graph->data()){
       if (n->property("coordY").toDouble() < outBox.top()){
           outBox.setTop(n->property("coordY").toDouble());
       }
@@ -133,7 +134,7 @@ GraphDocument * Rocs::DATFilePlugin::readFile(const QString &fileName) {
 //  KDebug() << ratioX << ratioY;
 //  kDebug() << factorX << factorY;
 
-  foreach(Node * n, graph->nodes()){
+  foreach(Datum * n, graph->data()){
           n->setX((n->property("coordX").toDouble() - outBox.left()) * factorX * ratioX);
           n->setY((n->property("coordY").toDouble() - outBox.top()) * factorY * ratioY);
           n->setWidth(0.2);
@@ -143,10 +144,11 @@ GraphDocument * Rocs::DATFilePlugin::readFile(const QString &fileName) {
 
 }
 
-bool Rocs::DATFilePlugin::writeFile(GraphDocument &/*graph*/ , const QString &filename) {
+bool Rocs::DATFilePlugin::writeFile(DataTypeDocument&/*graph*/ , const QString &filename) {
     QFile file (filename);
     if (file.open(QFile::WriteOnly))
     {
         return true;
     }
+    return false;
 }

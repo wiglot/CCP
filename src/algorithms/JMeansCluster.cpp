@@ -21,6 +21,7 @@
 #include "densitycluster.h"
 #include <QList>
 #include <QTime>
+#include <QDebug>
 
 using namespace CCP;
 
@@ -56,7 +57,8 @@ void JMeansCluster::jmeansMethod()
 
 
     assignToNearest();
-    while (incIter() < 1000){
+    while (incIter() < 100){
+        qDebug() << _iterations;
         fTmp = 0.0;
         for (int count = 0; count < _myInstance->numCenters(); ++count){
             fTmp += _centers[count]->totalDistance();
