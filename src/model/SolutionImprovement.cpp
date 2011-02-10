@@ -244,21 +244,26 @@ Solution SolutionImprovement::WaveShift ( Solution& solution, const double& perc
     QHash <int, QMultiMap<double, int> > nearCluster;
     QMultiMap<double, QPair<int, int> > farFromCenter;
 
-    QHash <int,int> nodesCluster;
+    int count = 100;
+    do {
 
-    for ( int i = 0; i < inst->numPoints(); ++i )
-    {
-        QMultiMap<double, int> clusters;
-        for ( int j = 0; j < inst->numCenters(); ++j )
-            if ( workSol.cluster ( j )->contains ( inst->point ( i ) ) ) {
-                nodesCluster.insert ( i,j );
-                farFromCenter.insert(inst->distance ( workSol.centerOfCluster ( j )->index(), i ), QPair<int, int> (i, j));
-            } else
-                clusters.insert(inst->distance ( workSol.centerOfCluster ( j )->index(), i ), j);
+        QHash <int,int> nodesCluster;
+
+        for ( int i = 0; i < inst->numPoints(); ++i )
+        {
+            QMultiMap<double, int> clusters;
+            for ( int j = 0; j < inst->numCenters(); ++j )
+                if ( workSol.cluster ( j )->contains ( inst->point ( i ) ) ) {
+                    nodesCluster.insert ( i,j );
+                    farFromCenter.insert(inst->distance ( workSol.centerOfCluster ( j )->index(), i ), QPair<int, int> (i, j));
+                } else
+                    clusters.insert(inst->distance ( workSol.centerOfCluster ( j )->index(), i ), j);
 
 
-        nearCluster.insert(i, clusters);
-    }
+            nearCluster.insert(i, clusters);
+        }
+        if (nearCluster.isEmpty())
+            return workSol;
         QMultiMap <qreal, QVector<InterchangeResult>*  > resultList;
         for ( int i = farFromCenter.size()-1; i > ( farFromCenter.size() * ( 1-percNodes ) ); --i )
         {
@@ -267,7 +272,7 @@ Solution SolutionImprovement::WaveShift ( Solution& solution, const double& perc
             for (int j = 0; j < nearCluster.value(node).size()*percClusters; ++j ) {
                 QVector<InterchangeResult> *results = new QVector<InterchangeResult>;
                 Cluster* cluster = workSol.cluster ( nearCluster.value(node).values().at ( j ));
-                if (inst->distance(node, clustOrigin->getCenter()->index()) <= nearCluster.keys().at(i))
+                if (inst->distance(node, clustOrigin->getCenter()->index()) <= nearCluster.keys().at(j))
                     continue;
                 InterchangeResult result =  clustOrigin->shift ( inst->point ( node ), cluster, overload );
                 results->append(result);
@@ -275,41 +280,46 @@ Solution SolutionImprovement::WaveShift ( Solution& solution, const double& perc
                 {
                     qDebug() << "Infactivel.";
                     (*results)+= makeFeasible( workSol, cluster, QPair<Cluster*,int> ( clustOrigin, node ) );
-                    if (cluster->remainCapacity() < 0){
-                      qDebug() << "Still infeasible. rejecting move.";
-                      foreach (InterchangeResult r, (*results))
+                    if (cluster->remainCapacity() < 0) {
+                        qDebug() << "Still infeasible. rejecting move.";
+                        foreach (InterchangeResult r, (*results))
                         r.forceUndo();
-                      continue;
+                        continue;
                     }
                 }
-                if (results->isEmpty()){
-                  delete results;
-                  break;
+                if (results->isEmpty()) {
+                    delete results;
+                    break;
                 }
-                QMutableVectorIterator<InterchangeResult> i(*results);
-                i.toBack();
+
                 qreal red = 0.0;
-                while (i.hasPrevious()) {
-                    red += i.previous().changeInValue();
-                    i.value().forceUndo();
+                for (int i = results->size()-1; i >= 0;--i) {
+//                 QMutableVectorIterator<InterchangeResult> i(*results);
+//                 i.toBack();
+//                 while (i.hasPrevious()) {
+                    red += results->at(i).changeInValue();
+                    results->operator[](i).forceUndo();
                 }
-                qDebug() << "This move prodeccs a gain of " << red;
-                if (red <= 0.0)
+//                 qDebug() << "This move prodeccs a gain of " << red;
+                if (red < 0.0)
                     resultList.insert(red, results);
                 else
-                  delete results;
+                    delete results;
             }
         }
         if (resultList.isEmpty())// && resultList.values().first()->isEmpty())
             return workSol;
-        qDebug() << "Applying results: " << resultList.values().first()->first().isValid();;
-        QMutableVectorIterator<InterchangeResult> i(*(resultList.values().first()));
-        while (i.hasNext())
-            i.next().redo();
+        qDebug() << "Applying results: " << resultList.keys();
+        QVector<InterchangeResult>* result = resultList.values().first();
+        for (int i = 0 ; i < result->size(); ++i)
+            result->operator[](i).redo();
+//         QMutableVectorIterator<InterchangeResult> i(*(resultList.values().first()));
+//         while (i.hasNext())
+//             i.next().redo();
         qDeleteAll( resultList.values() );
         resultList.clear();
-//     }
-//     while ( 1 );
+    }
+    while ( --count > 0 );
     return workSol;
 }
 
@@ -328,7 +338,7 @@ CCP::Solution SolutionImprovement::improve ( CCP::Solution & sol, const Improvem
     case CCP::SimulatedAnnelingInterchange:
         return SAInterchange ( sol );
     case CCP::HillClimbShiftWithOveload:
-        return WaveShift(sol, 1, 1, 2.0);
+        return WaveShift(sol, 0.2, 0.4, 2.0);
     }
 
 }
@@ -346,6 +356,6 @@ QString SolutionImprovement::text ( ImprovementHeuristic type )
     case SimulatedAnnelingInterchange:
         return QString ( "SA with Interchange" );
     case CCP::HillClimbShiftWithOveload:
-        return QString("Hill Climb Shift with Overload");
+        return QString("Wave Shift");
     }
 }

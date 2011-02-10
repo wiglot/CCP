@@ -66,7 +66,7 @@ class InterchangeResult{
 
       ~InterchangeResult(){ }
       inline bool isValid() const { return _valid;}
-      inline double changeInValue(){return _change;}
+      inline double changeInValue() const {return _change;}
 
       void valid(const bool v = true){ _valid = v;}
       void valueChange(double c){_change = c;}
