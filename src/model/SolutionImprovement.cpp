@@ -244,9 +244,9 @@ Solution SolutionImprovement::WaveShift ( Solution& solution, const double& perc
     QHash <int, QMultiMap<double, int> > nearCluster;
     QMultiMap<double, QPair<int, int> > farFromCenter;
 
-    int count = 100;
+    int count = 0;
     do {
-
+        workSol.setIterations(count++);
         QHash <int,int> nodesCluster;
 
         for ( int i = 0; i < inst->numPoints(); ++i )
@@ -283,7 +283,7 @@ Solution SolutionImprovement::WaveShift ( Solution& solution, const double& perc
                     if (cluster->remainCapacity() < 0) {
                         qDebug() << "Still infeasible. rejecting move.";
                         foreach (InterchangeResult r, (*results))
-                        r.forceUndo();
+                          r.forceUndo();
                         continue;
                     }
                 }
@@ -307,7 +307,7 @@ Solution SolutionImprovement::WaveShift ( Solution& solution, const double& perc
                     delete results;
             }
         }
-        if (resultList.isEmpty())// && resultList.values().first()->isEmpty())
+        if (resultList.isEmpty())
             return workSol;
         qDebug() << "Applying results: " << resultList.keys();
         QVector<InterchangeResult>* result = resultList.values().first();
@@ -319,7 +319,7 @@ Solution SolutionImprovement::WaveShift ( Solution& solution, const double& perc
         qDeleteAll( resultList.values() );
         resultList.clear();
     }
-    while ( --count > 0 );
+    while ( 1 );
     return workSol;
 }
 

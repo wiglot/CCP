@@ -31,12 +31,14 @@ signals:
 
     void closing();
 
+public slots:
+    /**Run the improvement method in actual solution.*/
+    void improveSolution(CCP::ImprovementHeuristic imp = CCP::None);
 private slots:
     /** when end of run any algorithm, this method is called to append solution to output.*/
     void finishedAlgorithm(CCP::Solution * sol);
     /** Just whant to show the solution, but not append to exit.*/
     void showSolution(CCP::Solution* sol);
-    void improveSolution();
     void closeInstance();
     void batchDialog();
     /** Calculate and show the infos about the instance. */

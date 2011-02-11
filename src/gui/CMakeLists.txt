@@ -12,4 +12,4 @@ QT4_WRAP_UI(SRC_View_UIS_H ${SRC_View_UIS})
 
 add_library(CCPClusterView SHARED ${SRC_view} ${MOC_CPP} ${SRC_View_UIS_H})
 
-target_link_libraries(CCPClusterView ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY} CCPModelLib)
+target_link_libraries(CCPClusterView ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY} ${QT_QTSCRIPT_LIBRARY} CCPModelLib)

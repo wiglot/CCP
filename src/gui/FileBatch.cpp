@@ -29,6 +29,9 @@
 #include <Instance.h>
 #include <QLabel>
 #include <InstanceInfo.h>
+#include <qscriptengine.h>
+#include <SolutionRunner.h>
+#include <qtimer.h>
 
 
 FileBatch::FileBatch(QWidget* parent, Qt::WindowFlags f): QDialog(parent, f)
@@ -73,6 +76,7 @@ FileBatch::FileBatch(QWidget* parent, Qt::WindowFlags f): QDialog(parent, f)
 QLabel lab("Repeat times:", this);
   lay->addWidget(&lab, 0,5);
   _times = new QLineEdit(tr("Repeat times"), this);
+  _times->setToolTip(tr("You can use keywords like \'clusters\' and \'points\'"));
   lay->addWidget(_times,1,5);
 
   _changeTight = new QCheckBox(tr("Change Tight"), this);
@@ -82,6 +86,9 @@ QLabel lab("Repeat times:", this);
   _emitReport = new QCheckBox(tr("Process info from instances"), this);
   _emitReport->setCheckState(Qt::Unchecked);
   lay->addWidget(_emitReport,3,5);
+  _applyImprovement = new QCheckBox(tr("Apply improvments"), this);
+  _applyImprovement->setChecked(false);
+  lay->addWidget(_applyImprovement, 4,5);
 
 
   this->setLayout(lay);
@@ -104,9 +111,11 @@ void FileBatch::accept()
   bool ok;
   int times = _times->text().toInt(&ok);
   MainWindow * main = qobject_cast<MainWindow*>(parent());
-  if (!ok){
+  if (!ok)
     times = 1;
-  }
+
+  bool improve = _applyImprovement->isChecked();
+
   int tights = 3;
   if (!_changeTight->isChecked()){
       tights = 1;
@@ -134,31 +143,42 @@ void FileBatch::accept()
           out << info.report() << "\n";
         }
       }
+      QString str = _times->text().replace(QRegExp("clusters"), QString::number(main->instance()->numCenters()));
+      str = str.replace(QRegExp("points"), QString::number(main->instance()->numPoints()));
+      QScriptEngine eng;
+      QScriptValue value = eng.evaluate(str).toInt32();
+      if (!eng.hasUncaughtException())
+          times = value.toNumber();
+
       if (_farthest->isChecked()){
-        emit process(CCP::Farthest, true, false);
+        emit process(CCP::Farthest, improve, false);
       }
       if (_density->isChecked()){
-        emit process(CCP::Density, true, false);
+        emit process(CCP::Density, improve, false);
       }
       if (_hmeans->isChecked()){
         for (int i = 0; i < times; ++i)
-            emit process(CCP::HMeans, true, false);
+            emit process(CCP::HMeans, improve, false);
       }
       if (_jmeans->isChecked()){
         for (int i = 0; i < times; ++i)
-            emit process(CCP::JMeans, true, false);
+            emit process(CCP::JMeans, improve, false);
       }
       if (_densityRandom->isChecked()){
-        for (int i = 0; i < times; ++i)
-            emit process(CCP::RandonDensity, true, false);
+        for (int i = 0; i < times; ++i){
+            emit process(CCP::RandonDensity, improve, false);
+           main->improveSolution(CCP::HillClimbShiftWithOveload);
+//            while (SolutionRunner::New()->isRunning())
+//              usleep(100);
+        }
       }
       if (_hmeansDensity->isChecked()){
           for (int i = 0; i < times; ++i)
-                emit process(CCP::DensityHMeans, true, false);
+                emit process(CCP::DensityHMeans, improve, false);
       }
       if (_jmeansDensity->isChecked()){
           for (int i = 0; i < times; ++i)
-              emit process(CCP::DensityJMeans, true, false);
+              emit process(CCP::DensityJMeans, improve, false);
       }
     }
     emit saveResults(filename.append(".out"));

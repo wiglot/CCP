@@ -56,6 +56,7 @@ private:
     QCheckBox* _densityRandom;
 
     QCheckBox* _emitReport;    QCheckBox* _changeTight;
+    QCheckBox* _applyImprovement;
 };
 
 #endif // FILEBATCH_H

@@ -258,31 +258,36 @@ void MainWindow::runAlgorithm( CCP::HeuristicType inType, bool improve, bool use
 
 }
 
-void MainWindow::improveSolution() {
+void MainWindow::improveSolution(CCP::ImprovementHeuristic imp) {
     if (_solution == 0) {
         return;
     }
+    int data = imp;;
     QAction * act = qobject_cast<QAction*>(sender());
-    if (act) {
-        switch (act->data().toInt()) {
-        case CCP::HillClimbShift:
-            SolutionRunner::queue(_solution, CCP::HillClimbShift);
-            break;
-        case CCP::HillClimbInterchange:
-            SolutionRunner::queue(_solution, CCP::HillClimbInterchange);
-            break;
+    if (data == CCP::None && act)
+      data = act->data().toInt();
 
-        case CCP::SimulatedAnnelingInterchange:
-            SolutionRunner::queue(_solution, CCP::SimulatedAnnelingInterchange);
-            break;
 
-        case CCP::SimulatedAnnelingShift:
-            SolutionRunner::queue(_solution, CCP::SimulatedAnnelingShift);
-            break;
-        case CCP::HillClimbShiftWithOveload:
-            SolutionRunner::queue(_solution, CCP::HillClimbShiftWithOveload);
+        switch (data) {
+          case CCP::None: break;
+          case CCP::HillClimbShift:
+              SolutionRunner::queue(_solution, CCP::HillClimbShift);
+              break;
+          case CCP::HillClimbInterchange:
+              SolutionRunner::queue(_solution, CCP::HillClimbInterchange);
+              break;
+
+          case CCP::SimulatedAnnelingInterchange:
+              SolutionRunner::queue(_solution, CCP::SimulatedAnnelingInterchange);
+              break;
+
+          case CCP::SimulatedAnnelingShift:
+              SolutionRunner::queue(_solution, CCP::SimulatedAnnelingShift);
+              break;
+          case CCP::HillClimbShiftWithOveload:
+              SolutionRunner::queue(_solution, CCP::HillClimbShiftWithOveload);
         }
-    }
+
 
 }
 

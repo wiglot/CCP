@@ -18,6 +18,7 @@ namespace CCP{
     };
 
     enum ImprovementHeuristic {
+        None,
         HillClimbShift,
         HillClimbInterchange,
         SimulatedAnnelingShift,
