@@ -249,36 +249,36 @@ bool Solution::isValid(){
     return notFailed;
 }
 
-const Solution& Solution::operator=(const Solution & other){
-    _myInstance = other._myInstance;
-    if (other._centers){
-        _centers = new Cluster*[_myInstance->numCenters()];
+Solution* Solution::clone() const{
+    Solution * newSol = new Solution(_myInstance);
+    if (_centers){
+        newSol->_centers = new Cluster*[_myInstance->numCenters()];
         for (int i = 0; i < _myInstance->numCenters(); ++i){
-            _centers[i] = new Cluster(_myInstance);
-            *_centers[i] = *other._centers[i];
+            newSol->_centers[i] = new Cluster(_myInstance);
+            *(newSol->_centers)[i] = *_centers[i];
         }
-        this->_myAlgorithmName = other._myAlgorithmName;
-        _myIterations = other._myIterations;
-        _myTime = other._myTime;
+        newSol->_myAlgorithmName = _myAlgorithmName;
+        newSol->_myIterations = _myIterations;
+        newSol->_myTime = _myTime;
     }
-    toImprove = other.toImprove;
-    _parent = other._parent;
+    newSol->toImprove = toImprove;
+    newSol->_parent = _parent;
 
-    return *this;
+    return newSol;
 }
 
-Solution Solution::improve(){
-    Solution sol(_myInstance);
+Solution * Solution::improve(){
+    Solution *sol = 0;
 
     if (toImprove){
         QTime count;
         count.start();
-        sol = SolutionImprovement::improve(*this, improveType);
-        sol._parent = this;
-        sol.toImprove = true;
+        sol = SolutionImprovement::improve(this, improveType);
+        sol->_parent = this;
+        sol->toImprove = true;
         toImprove = false;
-        sol._myTime = count.elapsed()/1000.0;
-        sol._myAlgorithmName = SolutionImprovement::text(improveType);
+        sol->_myTime = count.elapsed()/1000.0;
+        sol->_myAlgorithmName = SolutionImprovement::text(improveType);
     }
 
 
@@ -297,3 +297,5 @@ void Solution::setImprovement(ImprovementHeuristic type){
 CCP::History* CCP::Solution::history() {
     return _history;
 }
+
+#include "Solution.moc"

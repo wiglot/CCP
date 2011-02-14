@@ -12,12 +12,10 @@ SolutionImprovement::SolutionImprovement( )
     //    _solution = sol;
 }
 
-Solution  SolutionImprovement::hillClimbShift ( Solution & sol, int K )
+Solution * SolutionImprovement::hillClimbShift ( Solution * sol, int K )
 {
-    Instance * inst = sol.instance();
-    Solution bestSol ( inst );
-    bestSol = sol;
-    double bestValue = sol.getValue();
+    Solution *bestSol  = sol->clone();
+    double bestValue = sol->getValue();
     bool foundBetter = false;
     int count = 0;
 
@@ -25,8 +23,8 @@ Solution  SolutionImprovement::hillClimbShift ( Solution & sol, int K )
     {
         ++count;
 
-        Solution* tmpSol = new Solution ( inst );
-        *tmpSol = bestSol;
+        Solution* tmpSol = bestSol->clone();
+//         *tmpSol = bestSol;
 
         for ( int center= 0; center < tmpSol->instance()->numCenters(); ++center )
         {
@@ -63,30 +61,31 @@ Solution  SolutionImprovement::hillClimbShift ( Solution & sol, int K )
 
         if ( ( bestValue - tmpSol->getValue() ) > 0.001 )
         {
-            bestValue = bestSol.getValue();
-            bestSol = *tmpSol;
+            bestValue = bestSol->getValue();
+            bestSol->deleteLater();
+            bestSol = tmpSol;
             foundBetter = true;
         }
         else
         {
             foundBetter = false;
         }
-        delete tmpSol;
+//         delete tmpSol;
 
     }
     while ( foundBetter && count < 100 );
-    bestSol.setIterations ( count );
+    bestSol->setIterations ( count );
     return bestSol;
 }
 
 
-Solution  SolutionImprovement::hillClimbInterchange ( Solution & sol, int K, int Q )
+Solution * SolutionImprovement::hillClimbInterchange ( Solution * sol, int K, int Q )
 {
-    Instance * inst = sol.instance();
-    Solution bestSol ( inst );
-    bestSol = sol;
+    Instance * inst = sol->instance();
+    Solution * bestSol = sol->clone();
+//     bestSol = sol;
     int count = 0;
-    double bestValue = sol.getValue();
+    double bestValue = sol->getValue();
     bool foundBetter = false;
     InterchangeResult bestMove ( 0,0,0,0 );
     Cluster * cluster;
@@ -116,13 +115,13 @@ Solution  SolutionImprovement::hillClimbInterchange ( Solution & sol, int K, int
             for ( int j = 0;  j <  inst->numCenters(); ++j )
             {
 
-                if ( bestSol.cluster ( j )->contains ( inst->point ( i ) ) )
+                if ( bestSol->cluster ( j )->contains ( inst->point ( i ) ) )
                 {
-                    myCluster = bestSol.cluster ( j );
+                    myCluster = bestSol->cluster ( j );
                 }
                 else
                 {
-                    nearClusters.insert ( inst->distance ( i, bestSol.centerOfCluster ( j )->index() ), bestSol.cluster ( j ) );
+                    nearClusters.insert ( inst->distance ( i, bestSol->centerOfCluster ( j )->index() ), bestSol->cluster ( j ) );
                 }
             }
 
@@ -161,10 +160,9 @@ Solution  SolutionImprovement::hillClimbInterchange ( Solution & sol, int K, int
         bestMove.redo();
 
         //qDebug() << tmpSol->getValue() << bestValue;
-        if ( qAbs ( bestSol.getValue() - bestValue ) > 0.0001 )
+        if ( qAbs ( bestSol->getValue() - bestValue ) > 0.0001 )
         {
-            bestValue = bestSol.getValue();
-//            bestSol = *tmpSol;
+            bestValue = bestSol->getValue();
             foundBetter = true;
         }
         else
@@ -179,85 +177,141 @@ Solution  SolutionImprovement::hillClimbInterchange ( Solution & sol, int K, int
     return bestSol;
 }
 
-Solution  SolutionImprovement::SAShift ( Solution & sol )
+Solution * SolutionImprovement::SAShift ( Solution * sol )
 {
-    Instance * inst = sol.instance();
-    Solution bestSol ( inst );
-    bestSol = sol;
+
+    Solution * bestSol = sol->clone();
 
     return bestSol;
 }
 
-Solution  SolutionImprovement::SAInterchange ( Solution & sol )
+Solution  * SolutionImprovement::SAInterchange ( Solution * sol )
 {
-    Instance * inst = sol.instance();
-    Solution bestSol ( inst );
-    bestSol = sol;
+
+    Solution * bestSol = sol->clone();
 
     return bestSol;
 }
 
-QVector<InterchangeResult> SolutionImprovement::makeFeasible ( Solution &sol, CCP::Cluster* clusterToFeasible , QPair<Cluster*, int> avoidShift )
-{
+QVector<InterchangeResult> SolutionImprovement::improveCluster_v1 ( Solution * sol, CCP::Cluster* clusterToFeasible , QPair<Cluster*, int> avoidShift ){
     QVector<InterchangeResult> ret;
-    Instance * inst = sol.instance();
+    Instance * inst = sol->instance();
     QMultiMap<double, int> distances;
     for ( int i = 0; i < clusterToFeasible->numPoints(); ++i )
         distances.insert ( inst->distance ( clusterToFeasible->getPoint ( i )->index(), clusterToFeasible->getCenter()->index() ),
                            clusterToFeasible->getPoint(i)->index() );
     distances.insert(0, clusterToFeasible->getCenter()->index());
     int i = distances.size();
-    while ( clusterToFeasible->remainCapacity() < 0 && i > 0)
-    {
+
         --i;
         int node = distances.values().at ( i );
         double dist = 1.0e6;
         int clust = -1;
         for ( int j = 0; j < inst->numCenters(); ++j )
         {
-            if ( (sol.cluster ( j ) != avoidShift.first) ^ (node != avoidShift.second) )
-                if ( inst->point(node)->demand() <= sol.cluster(j)->remainCapacity() &&  inst->distance ( node, sol.centerOfCluster ( j )->index() ) < dist )
+            if ( (sol->cluster ( j ) != avoidShift.first) ^ (node != avoidShift.second) )
+                if ( inst->point(node)->demand() <= sol->cluster(j)->remainCapacity() &&  inst->distance ( node, sol->centerOfCluster ( j )->index() ) < dist )
                 {
-                    dist = inst->distance ( node, sol.centerOfCluster ( j )->index() );
+                    dist = inst->distance ( node, sol->centerOfCluster ( j )->index() );
                     clust = j;
                 }
         }
         if (clust == -1)
-            continue;
-        InterchangeResult result =  clusterToFeasible->shift ( inst->point ( node ), sol.cluster ( clust ) );
+            return ret;
+        InterchangeResult result =  clusterToFeasible->shift ( inst->point ( node ), sol->cluster ( clust ) );
         if (result.isValid())
             ret.append(result);
 
-        qDebug() << result.changeInValue();
+    return ret;
+}
+
+QVector< InterchangeResult > SolutionImprovement::improveCluster_v1_1(Solution* sol, Cluster* clusterToFeasible, QPair< Cluster*, int > avoidShift)
+{
+    QVector<InterchangeResult> ret;
+    Instance * inst = sol->instance();
+    do {
+        double dist = 1.0e6;
+        //         int clust = -1;
+        InterchangeResult result;
+        for ( int i = 0; i < clusterToFeasible->numPoints(); ++i )
+        {
+            int node = clusterToFeasible->getPoint ( i )->index();
+
+            for ( int j = 0; j < inst->numCenters(); ++j )
+            {
+                if (((!(sol->cluster ( j ) != avoidShift.first) && (node != avoidShift.second)) ||
+                        ((sol->cluster ( j ) != avoidShift.first) || (node != avoidShift.second)))
+                        && sol->cluster(j) != clusterToFeasible )
+                    if (inst->point(node)->demand() <= sol->cluster(j)->remainCapacity())
+                    {
+                        InterchangeResult r = clusterToFeasible->shift(inst->point(node),  sol->cluster(j));
+                        if (r.isValid() ) {
+                            r.forceUndo();
+                            if (r.changeInValue() < dist) {
+                                dist = r.changeInValue();
+                                result = r;
+                            }
+                        }
+                    }
+            }
+        }
+        if (!result.redo())
+            return ret;
+        ret.append(result);
+
+    } while (1);
+
+}
+
+QVector<InterchangeResult> SolutionImprovement::makeFeasible_v1 ( Solution * sol, CCP::Cluster* clusterToFeasible , QPair<Cluster*, int> avoidShift )
+{
+    QVector<InterchangeResult> ret;
+    while ( clusterToFeasible->remainCapacity() < 0 )
+    {
+      QVector<InterchangeResult> tmp = improveCluster_v1(sol,clusterToFeasible,avoidShift);
+      if (tmp.isEmpty())
+        break;
+      ret += tmp;
     }
     return ret;
 }
 
+QVector<InterchangeResult> SolutionImprovement::makeFeasible_v1_1 ( Solution * sol, CCP::Cluster* clusterToFeasible , QPair<Cluster*, int> avoidShift )
+{
+    QVector <InterchangeResult> ret;
+    while (clusterToFeasible->remainCapacity() < 0){
+      QVector<InterchangeResult> tmp = improveCluster_v1_1(sol,clusterToFeasible,avoidShift);
+      if (tmp.isEmpty())
+        break;
+      ret += tmp;
+    }
+    return ret;
+}
 
-Solution SolutionImprovement::WaveShift ( Solution& solution, const double& percNodes, const double& percClusters, const double& overload )
+Solution * SolutionImprovement::WaveShift ( Solution* solution, const double& percNodes, const double& percClusters, const double& overload , const int & version)
 {
 
-    Instance *inst = solution.getInstance();
-    Solution workSol(inst);
-    workSol = solution;
+    Instance *inst = solution->getInstance();
+    Solution * workSol = solution->clone();
+//     workSol = solution;
 
     QHash <int, QMultiMap<double, int> > nearCluster;
     QMultiMap<double, QPair<int, int> > farFromCenter;
 
     int count = 0;
     do {
-        workSol.setIterations(count++);
+        workSol->setIterations(count++);
         QHash <int,int> nodesCluster;
 
         for ( int i = 0; i < inst->numPoints(); ++i )
         {
             QMultiMap<double, int> clusters;
             for ( int j = 0; j < inst->numCenters(); ++j )
-                if ( workSol.cluster ( j )->contains ( inst->point ( i ) ) ) {
+                if ( workSol->cluster ( j )->contains ( inst->point ( i ) ) ) {
                     nodesCluster.insert ( i,j );
-                    farFromCenter.insert(inst->distance ( workSol.centerOfCluster ( j )->index(), i ), QPair<int, int> (i, j));
+                    farFromCenter.insert(inst->distance ( workSol->centerOfCluster ( j )->index(), i ), QPair<int, int> (i, j));
                 } else
-                    clusters.insert(inst->distance ( workSol.centerOfCluster ( j )->index(), i ), j);
+                    clusters.insert(inst->distance ( workSol->centerOfCluster ( j )->index(), i ), j);
 
 
             nearCluster.insert(i, clusters);
@@ -268,25 +322,41 @@ Solution SolutionImprovement::WaveShift ( Solution& solution, const double& perc
         for ( int i = farFromCenter.size()-1; i > ( farFromCenter.size() * ( 1-percNodes ) ); --i )
         {
             int node = farFromCenter.values().at ( i ).first;
-            Cluster * clustOrigin = workSol.cluster ( nodesCluster.value ( node ) );
+            Cluster * clustOrigin = workSol->cluster ( nodesCluster.value ( node ) );
             for (int j = 0; j < nearCluster.value(node).size()*percClusters; ++j ) {
                 QVector<InterchangeResult> *results = new QVector<InterchangeResult>;
-                Cluster* cluster = workSol.cluster ( nearCluster.value(node).values().at ( j ));
+                Cluster* cluster = workSol->cluster ( nearCluster.value(node).values().at ( j ));
                 if (inst->distance(node, clustOrigin->getCenter()->index()) <= nearCluster.keys().at(j))
                     continue;
                 InterchangeResult result =  clustOrigin->shift ( inst->point ( node ), cluster, overload );
                 results->append(result);
                 if ( cluster->remainCapacity() < 0 )
                 {
-                    qDebug() << "Infactivel.";
-                    (*results)+= makeFeasible( workSol, cluster, QPair<Cluster*,int> ( clustOrigin, node ) );
+//                     qDebug() << "Infactivel.";
+                    switch (version){
+                      case 0:
+                      case 2:
+                        (*results)+= makeFeasible_v1( workSol, cluster, QPair<Cluster*,int> ( clustOrigin, node ) );
+                        break;
+                      case 1:
+                      case 3:
+                        (*results)+= makeFeasible_v1_1( workSol, cluster, QPair<Cluster*,int> ( clustOrigin, node ) );
+                        break;
+                    }
                     if (cluster->remainCapacity() < 0) {
-                        qDebug() << "Still infeasible. rejecting move.";
                         foreach (InterchangeResult r, (*results))
                           r.forceUndo();
                         continue;
                     }
-                }
+                }else
+                  switch (version){
+                    case 2:
+                      (*results) += improveCluster_v1(workSol, cluster, QPair<Cluster*,int> ( clustOrigin, node ) );
+                      break;
+                    case 3:
+                      (*results) += improveCluster_v1_1(workSol, cluster, QPair<Cluster*,int> ( clustOrigin, node ) );
+                      break;
+                  }
                 if (results->isEmpty()) {
                     delete results;
                     break;
@@ -309,7 +379,7 @@ Solution SolutionImprovement::WaveShift ( Solution& solution, const double& perc
         }
         if (resultList.isEmpty())
             return workSol;
-        qDebug() << "Applying results: " << resultList.keys();
+        qDebug() << "Iteration: " <<count <<"Applying results: " << resultList.keys().first();
         QVector<InterchangeResult>* result = resultList.values().first();
         for (int i = 0 ; i < result->size(); ++i)
             result->operator[](i).redo();
@@ -325,7 +395,7 @@ Solution SolutionImprovement::WaveShift ( Solution& solution, const double& perc
 
 
 
-CCP::Solution SolutionImprovement::improve ( CCP::Solution & sol, const ImprovementHeuristic type )
+CCP::Solution * SolutionImprovement::improve ( CCP::Solution * sol, const ImprovementHeuristic type )
 {
     switch ( type )
     {
@@ -337,10 +407,17 @@ CCP::Solution SolutionImprovement::improve ( CCP::Solution & sol, const Improvem
         return SAShift ( sol );
     case CCP::SimulatedAnnelingInterchange:
         return SAInterchange ( sol );
-    case CCP::HillClimbShiftWithOveload:
-        return WaveShift(sol, 0.2, 0.4, 2.0);
+    case CCP::WaveShift:
+        return WaveShift(sol, 0.2, 0.4, 2.0, 0);
+    case CCP::WaveShift_v1:
+      return WaveShift(sol, 0.2, 0.4, 2.0, 1);
+    case CCP::WaveShift_v2:
+      return WaveShift(sol, 0.2, 0.4, 2.0, 2);
+    case CCP::WaveShift_v3:
+      return WaveShift(sol, 0.2, 0.4, 2.0, 3);
+    case None: break;
     }
-
+    return 0;
 }
 
 QString SolutionImprovement::text ( ImprovementHeuristic type )
@@ -355,7 +432,17 @@ QString SolutionImprovement::text ( ImprovementHeuristic type )
         return QString ( "SA with Shift" );
     case SimulatedAnnelingInterchange:
         return QString ( "SA with Interchange" );
-    case CCP::HillClimbShiftWithOveload:
+    case CCP::WaveShift:
         return QString("Wave Shift");
+    case CCP::WaveShift_v1:
+        return QString("Wave Shift V.1");
+    case CCP::WaveShift_v2:
+        return QString("Wave Shift V.2");
+    case CCP::WaveShift_v3:
+        return QString("Wave Shift V.3");
+    case None:
+        return "None";
     }
+    return QString();
 }
+

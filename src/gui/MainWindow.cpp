@@ -145,8 +145,14 @@ void MainWindow::setupAction() {
     act->setData(CCP::SimulatedAnnelingShift);
     act = menu->addAction("SA whit Interchange",this, SLOT(improveSolution()));
     act->setData(CCP::SimulatedAnnelingInterchange);
-    act = menu->addAction("Hill Climb Shift with overload",this, SLOT(improveSolution()));
-    act->setData(CCP::HillClimbShiftWithOveload);
+    act = menu->addAction("Wave Shift v.0",this, SLOT(improveSolution()));
+    act->setData(CCP::WaveShift);
+    act = menu->addAction("Wave Shift v.1",this, SLOT(improveSolution()));
+    act->setData(CCP::WaveShift_v1);
+    act = menu->addAction("Wave Shift v.2",this, SLOT(improveSolution()));
+    act->setData(CCP::WaveShift_v2);
+    act = menu->addAction("Wave Shift v.3",this, SLOT(improveSolution()));
+    act->setData(CCP::WaveShift_v3);
 
 }
 
@@ -284,8 +290,18 @@ void MainWindow::improveSolution(CCP::ImprovementHeuristic imp) {
           case CCP::SimulatedAnnelingShift:
               SolutionRunner::queue(_solution, CCP::SimulatedAnnelingShift);
               break;
-          case CCP::HillClimbShiftWithOveload:
-              SolutionRunner::queue(_solution, CCP::HillClimbShiftWithOveload);
+          case CCP::WaveShift:
+              SolutionRunner::queue(_solution, CCP::WaveShift);
+              break;
+          case CCP::WaveShift_v1:
+              SolutionRunner::queue(_solution, CCP::WaveShift_v1);
+              break;
+          case CCP::WaveShift_v2:
+              SolutionRunner::queue(_solution, CCP::WaveShift_v2);
+              break;
+          case CCP::WaveShift_v3:
+              SolutionRunner::queue(_solution, CCP::WaveShift_v3);
+              break;
         }
 
 

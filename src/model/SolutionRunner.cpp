@@ -61,35 +61,33 @@ void SolutionRunner::run(){
     QPair <Solution *, bool> sol = next();
     while (sol.first){
         if (sol.first->isImprovement()){
-            Solution * improved = new Solution(sol.first->getInstance());
-            *improved = sol.first->improve();
-            if (improved->isValid()){
-                emit finished(improved);
+            if (Solution * improved = sol.first->improve()){
+                if (improved->isValid()){
+                    emit finished(improved);
 
-            }else{
-                emit finished(0);
-                delete improved;
+                }else{
+                    emit finished(0);
+                    improved->deleteLater();
+                }
             }
         }else{
             sol.first->run();
             if (sol.first->isValid()){
                 emit finished(sol.first);
                 if(sol.second){
-                    Solution * imp = new Solution(sol.first->getInstance());
                     sol.first->setImprovement(CCP::HillClimbInterchange);
-                    *imp = sol.first->improve();
+                    Solution * imp = sol.first->improve();
                     if (imp->isValid()){
                         emit finished(imp);
                     }else{
-                        delete imp;
+                        imp->deleteLater();;
                     }
-                    imp = new Solution(sol.first->getInstance());
                     sol.first->setImprovement(CCP::HillClimbShift);
-                    *imp = sol.first->improve();
+                    imp = sol.first->improve();
                     if (imp->isValid()){
                         emit finished(imp);
                     }else{
-                        delete imp;
+                        imp->deleteLater();;
                     }
                 }
             }else{

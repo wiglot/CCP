@@ -43,9 +43,9 @@ namespace CCP {
     /**
  * Class Solution
  */
- class Solution{
-        //    :public QObject {
-        //    Q_OBJECT
+ class Solution
+           :public QObject {
+           Q_OBJECT
         /**
  * Public stuff
  */
@@ -131,7 +131,7 @@ namespace CCP {
 
         bool isImprovement() const { return toImprove;}
 
-        Solution improve();
+        Solution * improve();
 
         Solution * solutionParent() { return _parent;}
 
@@ -140,7 +140,7 @@ namespace CCP {
 
         History * history();
 
-        const Solution & operator=(const Solution & other);
+        Solution * clone() const;
 
         /**
  * Private stuff

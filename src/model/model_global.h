@@ -23,7 +23,10 @@ namespace CCP{
         HillClimbInterchange,
         SimulatedAnnelingShift,
         SimulatedAnnelingInterchange,
-        HillClimbShiftWithOveload
+        WaveShift,
+        WaveShift_v1,
+        WaveShift_v2,
+        WaveShift_v3
     };
 }
 // #ifndef CCPModelLib_EXPORT

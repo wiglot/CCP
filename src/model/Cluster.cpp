@@ -78,9 +78,9 @@ Cluster::~Cluster(){ }
 
 void Cluster::addPoint(Point* p){
     //     _instance->setPointType(p, Consumer);
-    if (remainCapacity() < p->demand()){
-        qDebug() << "Over capacity inserting Point:" << p->index();
-    }
+//     if (remainCapacity() < p->demand()){
+//         qDebug() << "Over capacity inserting Point:" << p->index();
+//     }
     points.append(p);
     _demand += p->demand();
     if (center != 0)

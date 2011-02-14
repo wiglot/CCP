@@ -167,7 +167,7 @@ void FileBatch::accept()
       if (_densityRandom->isChecked()){
         for (int i = 0; i < times; ++i){
             emit process(CCP::RandonDensity, improve, false);
-           main->improveSolution(CCP::HillClimbShiftWithOveload);
+           main->improveSolution(CCP::WaveShift);
 //            while (SolutionRunner::New()->isRunning())
 //              usleep(100);
         }
